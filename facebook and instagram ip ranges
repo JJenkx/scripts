@@ -18,9 +18,12 @@
 50.237.157.0/24
 162.250.133.0/24
 
-Converted from CIDR notation (also known as "slash notation") into IP Range
+Converted from CIDR notation (also known as "slash notation") into IP Range using cidr2ip
+
 https://gist.github.com/deardooley/f7bdf7e464680abb47faf6f69fc5beea
 
+
+cat facebook.instagram.ip.addresses.txt | while IFS= read -r line ; do ./cidr2ip "$line" | perl -pe 's/ - ?/-/igm'; done
 
 
 31.13.24.0-31.13.31.255
@@ -45,7 +48,7 @@ https://gist.github.com/deardooley/f7bdf7e464680abb47faf6f69fc5beea
 
 
 
-
+curl https://gist.githubusercontent.com/deardooley/f7bdf7e464680abb47faf6f69fc5beea/raw/8dce5afd39d0eeb57286d2ab5eaf7d41d47eb742/cidr2ip
 #!/usr/bin/env bash
 
 # Print usage
