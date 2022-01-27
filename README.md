@@ -24,10 +24,10 @@ credit https://stackoverflow.com/questions/16986879/bash-script-to-list-all-ips-
 chmod +x CIDRtoIP.sh
 ```
 ```
-touch completely.expanded.single.ips.txt && cat Facebook.Instagram.CIDR.Notation.IPs.txt Google.CIDR.Notation.IPs.txt | while IFS= read -r line ; do ./CIDRtoIP.sh "$line" >>completely.expanded.single.ips.txt; done
+cat Facebook.Instagram.CIDR.Notation.IPs.txt Google.CIDR.Notation.IPs.txt | while IFS= read -r line ; do ./CIDRtoIP.sh "$line" >>completely.expanded.single.ips.txt; done
 ```
 ```
-touch converted.to.dnscrypt.format.txt && cat completely.expanded.single.ips.txt | perl -0777 -pe 's/^(\d+\.\d+\.\d+.)(0)(?:\1\d+|\n)+(?<=255)/$1*\n/gim' | perl -0777 -pe 's/(?<!\n)\n(?=\d)/\n\n/gim' > converted.to.dnscrypt.format.txt
+cat completely.expanded.single.ips.txt | perl -0777 -pe 's/^(\d+\.\d+\.\d+.)(0)(?:\1\d+|\n)+(?<=255)/$1*\n/gim' | perl -0777 -pe 's/(?<!\n)\n(?=\d)/\n\n/gim' > converted.to.dnscrypt.format.txt
 ```
 <br />
 
