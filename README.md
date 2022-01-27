@@ -17,7 +17,7 @@ printf '\n' ; perl -e 'srand; rand($.) < 1 && ( $line = $_ ) while <>; print $li
 <br />
 <br />
 
-## Convert CIDR IP Range to dnscrypt format for [InviZible Pro](https://github.com/Gedsh/InviZible/)
+## Convert CIDR IP Range to DNSCrypt format for [InviZible Pro](https://github.com/Gedsh/InviZible/)
 
 Generate a list via autonomous system number (ASN)
 
