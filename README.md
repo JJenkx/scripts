@@ -17,7 +17,7 @@ printf '\n' ; perl -e 'srand; rand($.) < 1 && ( $line = $_ ) while <>; print $li
 <br />
 <br />
 
-## Convert CIDR IP Range to dnscrypt format
+## Convert CIDR IP Range to dnscrypt format for InviZible Pro
 
 credit https://stackoverflow.com/questions/16986879/bash-script-to-list-all-ips-in-prefix/22499574#22499574 for .sh script
 ```
