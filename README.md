@@ -19,7 +19,7 @@ printf '\n' ; perl -e 'srand; rand($.) < 1 && ( $line = $_ ) while <>; print $li
 
 ## Convert CIDR IP Range to DNSCrypt format for [InviZible Pro](https://github.com/Gedsh/InviZible/)
 
-Generate a list via autonomous system number (ASN)
+Generate a list via autonomous system number (ASN) query
 
 Facebook's ASN is AS32934
 
