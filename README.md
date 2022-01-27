@@ -1,8 +1,8 @@
 # Personal
 ### (But not private. Do whatever you want with any of this)
-a <br />
-b <br />
-c
+<br />
+<br />
+<br />
 ## Get random quotes from deadwood
 
 printf '\n' ; perl -e 'srand; rand($.) < 1 && ( $line = $_ ) while <>; print $line' deadwood.txt | fold -w 80 -s ; printf '\n'
