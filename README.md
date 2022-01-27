@@ -5,8 +5,13 @@
 <br />
 
 ## Get random quotes from deadwood
+All
 ```
-printf '\n' ; perl -e 'srand; rand($.) < 1 && ( $line = $_ ) while <>; print $line' deadwood.txt | fold -w 80 -s ; printf '\n'
+printf '\n' ; perl -e 'srand; rand($.) < 1 && ( $line = $_ ) while <>; print $line' /home/jjenkx/Scripts/deadwood.txt | perl -p -e 's/    /\n\n/g' | fold -w 80 -s ; printf '\n'
+```
+Jane
+```
+printf '\n' ; perl -e 'srand; rand($.) < 1 && ( $line = $_ ) while <>; print $line' jane.deadwood.txt | perl -p -e 's/    /\n\n/g' | fold -w 80 -s ; printf '\n'
 ```
 <br />
 <br />
