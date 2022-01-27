@@ -5,5 +5,10 @@ Get random quotes from deadwood
 printf '\n' ; perl -e 'srand; rand($.) < 1 && ( $line = $_ ) while <>; print $line' deadwood.txt | fold -w 80 -s ; printf '\n'
 
 
+
 ## Convert CIDR IP Range to dnscrypt format
 
+touch $HOME/completely.expanded.single.ips.txt && cat $HOME/ip.list.CIDR.notation.txt | while IFS= read -r line ; do $HOME/Scripts/cidrtoip "$line" >>$HOME/completely.expanded.single.ips.txt; done
+
+
+touch $HOME/converted.to.dnscrypt.format.txt && cat $HOME/completely.expanded.single.ips.txt | perl -0777 -pe 's/^(\d+\.\d+\.\d+.)(0)(?:\1\d+|\n)+(?<=255)/$1*\n/gim' | perl -0777 -pe 's/(?<!\n)\n(?=\d)/\n\n/gim' > $HOME/converted.to.dnscrypt.format.txt
