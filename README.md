@@ -24,7 +24,7 @@ Generate a list via autonomous system number (ASN)
 Facebook's ASN is AS32934
 
 ```
-whois -h whois.radb.net -- '-i origin AS32934' | grep -ioP '^route:.*\s\K\d.*' | aggregate6 | perl -0777 -pe 's/\A(?!\n)|\n\Z(?<!\n)/\n/igm' >Facebook.Instagram.CIDR.Notation.IPs.txt
+whois -h whois.radb.net -- '-i origin AS32934' | grep -ioP '^route:.*\s\K\d.*' | aggregate6 | perl -0777 -pe 's/\A(?!\n)|\n\Z(?<!\n)/\n/igm' >>Facebook.Instagram.CIDR.Notation.IPs.txt
 ```
 
 credit https://stackoverflow.com/questions/16986879/bash-script-to-list-all-ips-in-prefix/22499574#22499574 for .sh script
@@ -35,7 +35,7 @@ chmod +x CIDRtoIP.sh
 cat Facebook.Instagram.CIDR.Notation.IPs.txt | while IFS= read -r line ; do ./CIDRtoIP.sh "$line" >>completely.expanded.single.ips.txt; done
 ```
 ```
-cat completely.expanded.single.ips.txt | perl -0777 -pe 's/^(\d+\.\d+\.\d+.)(0)(?:\1\d+|\n)+(?<=255)/$1*\n/gim' | perl -0777 -pe 's/(?<!\n)\n(?=\d)/\n\n/gim' > converted.to.dnscrypt.format.txt
+cat completely.expanded.single.ips.txt | perl -0777 -pe 's/^(\d+\.\d+\.\d+.)(0)(?:\1\d+|\n)+(?<=255)/$1*\n/gim' | perl -0777 -pe 's/(?<!\n)\n(?=\d)/\n\n/gim' >> converted.to.dnscrypt.format.txt
 ```
 <br />
 
