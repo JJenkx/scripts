@@ -29,3 +29,13 @@ touch completely.expanded.single.ips.txt && cat Facebook.Instagram.CIDR.Notation
 ```
 touch converted.to.dnscrypt.format.txt && cat completely.expanded.single.ips.txt | perl -0777 -pe 's/^(\d+\.\d+\.\d+.)(0)(?:\1\d+|\n)+(?<=255)/$1*\n/gim' | perl -0777 -pe 's/(?<!\n)\n(?=\d)/\n\n/gim' > converted.to.dnscrypt.format.txt
 ```
+<br />
+The file with the properly formatted schema for "ip-blacklist.txt" will be "converted.to.dnscrypt.format.txt"
+<br />
+Backup InviZible Pro to a zip file.
+<br />
+Paste the contents from file "converted.to.dnscrypt.format.txt" into IZBackup.zip/app_data/dnscrypt-proxy/ip-blacklist.txt
+<br />
+Save zip file
+<br />
+Restore from zip
