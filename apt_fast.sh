@@ -51,7 +51,9 @@ if echo "$@" | grep -q "upgrade\|install\|dist-upgrade"; then
   
   #Calculate value Aria2 --max-concurrent-downloads=<value>
   #Calculate value Aria2 --split=<value>
+  
   if [ "$lines" -ge "$max_concurrent_downloads" ]
+  
   then
     split="$((max_connection_per_server/max_concurrent_downloads))"
   else
@@ -79,6 +81,7 @@ if echo "$@" | grep -q "upgrade\|install\|dist-upgrade"; then
       fi
     
     fi
+  
   fi
   
 ## Adjust $max_concurrent_downloads if there could be a single file remaining that downloads by #itself
