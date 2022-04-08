@@ -112,7 +112,7 @@ if echo "$@" | grep -q "upgrade\|install\|dist-upgrade"; then
   
   apt $@ -y;
   
-  echo -e "\nDone! Verify that all packages were installed successfully. If errors are found, run apt clean as root and try again using apt directly.\n";
+  echo "\napt_fast with Aria2 Pro Core finished installing $lines files\n";
   
   sudo apt clean
   
