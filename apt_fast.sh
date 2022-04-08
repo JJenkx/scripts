@@ -100,7 +100,7 @@ if echo "$@" | grep -q "upgrade\|install\|dist-upgrade"; then
   echo "Set Aria2 --split=$split\n"
   
   
-  aria2c --download-result=full --continue=true --split="$split" --max-connection-per-server="$max_connection_per_server" --max-concurrent-downloads="$max_concurrent_downloads" --min-split-size=8K --piece-length=1K --lowest-speed-limit=1K --dir="/var/cache/apt/archives" --input-file="/tmp/apt-fast.list" --connect-timeout=600 --timeout=600 -m0;
+  aria2c --download-result=full --continue=true --split="$split" --max-connection-per-server="$max_connection_per_server" --max-concurrent-downloads="$max_concurrent_downloads" --min-split-size=8K --piece-length=8K --lowest-speed-limit=1K --dir="/var/cache/apt/archives" --input-file="/tmp/apt-fast.list" --connect-timeout=600 --timeout=600 -m0;
   
   # Show list of files downloaded sorted by size
   printf "\n"
