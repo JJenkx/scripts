@@ -112,7 +112,7 @@ if echo "$@" | grep -q "upgrade\|install\|dist-upgrade"; then
   
   apt $@ -y;
   
-  echo "\napt_fast with Aria2 Pro Core finished installing $lines files\n";
+  echo "\napt_fast with Aria2 Pro Core finished.\n\n$lines files downloaded and installed with apt\n";
   
   sudo apt clean
   
