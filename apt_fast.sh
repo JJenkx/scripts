@@ -32,7 +32,67 @@ if echo "$@" | grep -q "upgrade\|install\|dist-upgrade"; then
   # Have apt-get print the information, including the URI's to the packages
   # Strip out the URI's, and download the packages with Aria2 Pro Core for speediness
   apt -y --print-uris $@ | egrep -o -e "(https?|ftp)://(www\.)?[^\']+" > /tmp/apt-fast.list;
-  aria2c --continue=true --split=16 --max-connection-per-server=64 --max-concurrent-downloads=4 --min-split-size=8K --piece-length=1K --lowest-speed-limit=1K --dir="/var/cache/apt/archives" --input-file="/tmp/apt-fast.list" --connect-timeout=600 --timeout=600 -m0;
+  lines="$(wc -l < /tmp/apt-fast.list)"
+
+
+  # Set Aria2 Max Connections and Concurrent Downloads
+  max_connection_per_server="36"
+  max_concurrent_downloads="4"
+  
+  
+
+  # Predefine Split to use all connections.
+  split="$max_connection_per_server"
+  
+  
+  #Set Aria2 --max-concurrent-downloads
+  #Set Aria2 --split=$split
+  if [ "$lines" -ge "$max_concurrent_downloads" ]
+  then
+    split="$((max_connection_per_server/max_concurrent_downloads))"
+  else
+    
+    if [ "$lines" -ne "1" ]
+    then
+      if [ "$lines" -eq "2" ]
+      then
+        split="$((max_connection_per_server/2))"
+      fi
+      
+      if [ "$lines" -eq "3" ]
+      then
+        split="$((max_connection_per_server/3))"
+      fi
+  
+      if [ "$lines" -eq "4" ]
+      then
+        split="$((max_connection_per_server/4))"
+      fi
+      
+      if [ "$lines" -gt "4" ]
+      then
+        split="$((max_connection_per_server/max_concurrent_downloads))"
+      fi
+    fi
+  fi
+
+## Adjust $max_concurrent_downloads if there could be a single file remaining that downloads by #itself
+#remainder="$((lines%$max_concurrent_downloads))"
+#
+#if [ "$lines" -ge "$max_concurrent_downloads" ]
+#then   
+#  if [ "$remainder" -le "1" ]
+#  then 
+#    max_concurrent_downloads="$((max_concurrent_downloads-1))"
+#    split="$((max_connection_per_server/max_concurrent_downloads))"
+#  fi
+#fi
+
+echo "Set Aria2 --max-concurrent-downloads=$max_concurrent_downloads"
+echo "Set Aria2 --split=$split\n"
+
+
+  /home/jjenkx/.local/bin/aria2c --continue=true --split="$split" --max-connection-per-server="$max_connection_per_server" --max-concurrent-downloads="$max_concurrent_downloads" --min-split-size=8K --piece-length=1K --lowest-speed-limit=1K --dir="/var/cache/apt/archives" --input-file="/tmp/apt-fast.list" --connect-timeout=600 --timeout=600 -m0;
 
   # Perform the user's requested action via apt-get
   apt $@ -y;
