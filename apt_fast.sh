@@ -108,7 +108,7 @@ if echo "$@" | grep -q "upgrade\|install\|dist-upgrade"; then
   
   apt $@ -y;
   
-  echo -e "\nDone! Verify that all packages were installed successfully. If errors are found, run apt-get clean as root and try again using apt-get directly.\n";
+  echo -e "\nDone! Verify that all packages were installed successfully. If errors are found, run apt clean as root and try again using apt directly.\n";
   
   sudo apt clean
   
