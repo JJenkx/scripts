@@ -27,13 +27,13 @@
 # If the user entered arguments contain upgrade, install, or dist-upgrade
 if echo "$@" | grep -q "upgrade\|install\|dist-upgrade"; then
   
-  printf "\n\n" 
+  printf "\n\n"
   echo "apt_fast with Aria2 Pro Core started";
-  
+  printf "\n"
   
   # Have apt-get print the information, including the URI's to the packages
   # Strip out the URI's, and download the packages with Aria2 Pro Core for speediness
-  apt -y --print-uris $@ | egrep -o -e "(https?|ftp)://(www\.)?[^\']+" > /tmp/apt-fast.list;
+  apt -y --print-uris $@ 2>/dev/null | egrep -o -e "(https?|ftp)://(www\.)?[^\']+" > /tmp/apt-fast.list;
   
   
   # Put filecount in variable
@@ -97,12 +97,12 @@ if echo "$@" | grep -q "upgrade\|install\|dist-upgrade"; then
   echo "Set Aria2 --split=$split\n"
   
   
-  /home/jjenkx/.local/bin/aria2c --download-result=full --continue=true --split="$split" --max-connection-per-server="$max_connection_per_server" --max-concurrent-downloads="$max_concurrent_downloads" --min-split-size=8K --piece-length=1K --lowest-speed-limit=1K --dir="/var/cache/apt/archives" --input-file="/tmp/apt-fast.list" --connect-timeout=600 --timeout=600 -m0;
+  aria2c --download-result=full --continue=true --split="$split" --max-connection-per-server="$max_connection_per_server" --max-concurrent-downloads="$max_concurrent_downloads" --min-split-size=8K --piece-length=1K --lowest-speed-limit=1K --dir="/var/cache/apt/archives" --input-file="/tmp/apt-fast.list" --connect-timeout=600 --timeout=600 -m0;
   
   # Show list of files downloaded sorted by size
-  printf "\n\n"
+  printf "\n"
   exa -lhaFumh --group-directories-first --ignore-glob="lock|partial" --no-permissions --no-user --no-time -s size /var/cache/apt/archives
-  printf "\n\n" 
+  printf "\n\n"
   
   # Perform the user's requested action via apt-get
   
