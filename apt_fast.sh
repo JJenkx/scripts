@@ -4,7 +4,7 @@
 # Modified from https://gist.github.com/voyeg3r/409041
 
 
-# Install local user: mkdir -p $HOME/.local/scripts && touch $HOME/.local/scripts/apt_fast.sh && wget -c https://raw.githubusercontent.com/JJenkx/Personal/main/apt_fast.sh > $HOME/.local/scripts/apt_fast.sh && userhome="$HOME"; sudo chmod +x "$userhome"/.local/scripts/apt_fast.sh
+# Install local user: wget -c https://raw.githubusercontent.com/JJenkx/Personal/main/apt_fast.sh -P "$HOME/.local/scripts" ; userhome="$HOME" ; sudo chmod +x "$userhome"/.local/scripts/apt_fast.sh
 
 
 # Auto add $HOME/.local/scripts to $PATH ?
