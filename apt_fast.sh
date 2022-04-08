@@ -5,7 +5,7 @@
 
 
 # Install local user: 
-# curl https://raw.githubusercontent.com/JJenkx/Personal/main/apt_fast.sh >$HOME/.local/scripts/apt_fast.sh ; userhome="$HOME" ; sudo chmod +x "$userhome"/.local/scripts/apt_fast.sh
+# mkdir -p $HOME/.local/scripts ; curl https://raw.githubusercontent.com/JJenkx/Personal/main/apt_fast.sh >$HOME/.local/scripts/apt_fast.sh ; userhome="$HOME" ; sudo chmod +x "$userhome"/.local/scripts/apt_fast.sh
 
 
 # Auto add $HOME/.local/scripts to $PATH ?
