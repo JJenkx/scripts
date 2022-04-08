@@ -28,9 +28,9 @@
 # If the user entered arguments contain upgrade, install, or dist-upgrade
 if echo "$@" | grep -q "upgrade\|install\|dist-upgrade"; then
   
-  printf "\n\n"
-  echo "apt_fast with Aria2 Pro Core started";
   printf "\n"
+  printf "\033[1;33mapt_fast\033[1;0m with \033[1;29mAria2 Pro Core\033[1;0m started."
+  printf "\n\n"
   
   # Have apt-get print the information, including the URI's to the packages
   # Strip out the URI's, and download the packages with Aria2 Pro Core for speediness
@@ -112,8 +112,8 @@ if echo "$@" | grep -q "upgrade\|install\|dist-upgrade"; then
   
   apt $@ -y;
   
-  echo "\napt_fast with Aria2 Pro Core finished.\n\n$lines files downloaded and installed with apt\n";
-  
+  printf "\n\033[1;33mapt_fast\033[1;0m with \033[1;29mAria2 Pro Core\033[1;0m finished.\n\n\033[1;29m$lines\033[1;0m files downloaded with \033[1;29mAria2\033[1;0m and installed with \033[1;29mapt\n\n"
+
   sudo apt clean
   
 else
