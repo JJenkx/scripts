@@ -30,7 +30,7 @@ if echo "$@" | grep -q "upgrade\|install\|dist-upgrade"; then
   
   printf "\n"
   printf "\033[1;33mapt_fast\033[1;0m with \033[1;29mAria2 Pro Core\033[1;0m started."
-  printf "\n\n"
+  printf "\n"
   
   # Have apt-get print the information, including the URI's to the packages
   # Strip out the URI's, and download the packages with Aria2 Pro Core for speediness
@@ -40,50 +40,51 @@ if echo "$@" | grep -q "upgrade\|install\|dist-upgrade"; then
   # Put filecount in variable
   lines="$(wc -l < /tmp/apt-fast.list)"
   
-  
-  # Set here Aria2 Max Connections and Concurrent Downloads
-  max_connection_per_server="36"
-  max_concurrent_downloads="4"
-  
-  
-  # Predefine Split to use all connections.
-  split="$max_connection_per_server"
-  
-  
-  #Calculate value Aria2 --max-concurrent-downloads=<value>
-  #Calculate value Aria2 --split=<value>
-  
-  if [ "$lines" -ge "$max_concurrent_downloads" ]
-  
+  if [ "$lines" -ne "0" ]
   then
-    split="$((max_connection_per_server/max_concurrent_downloads))"
-  else
+    # Set here Aria2 Max Connections and Concurrent Downloads
+    max_connection_per_server="36"
+    max_concurrent_downloads="4"
     
-    if [ "$lines" -ne "1" ]
+    
+    # Predefine Split to use all connections.
+    split="$max_connection_per_server"
+    
+    
+    #Calculate value Aria2 --max-concurrent-downloads=<value>
+    #Calculate value Aria2 --split=<value>
+    
+    if [ "$lines" -ge "$max_concurrent_downloads" ]
+    
     then
-      if [ "$lines" -eq "2" ]
-      then
-        split="$((max_connection_per_server/2))"
-      fi
+      split="$((max_connection_per_server/max_concurrent_downloads))"
+    else
       
-      if [ "$lines" -eq "3" ]
+      if [ "$lines" -ne "1" ]
       then
-        split="$((max_connection_per_server/3))"
-      fi
+        if [ "$lines" -eq "2" ]
+        then
+          split="$((max_connection_per_server/2))"
+        fi
+        
+        if [ "$lines" -eq "3" ]
+        then
+          split="$((max_connection_per_server/3))"
+        fi
+        
+        if [ "$lines" -eq "4" ]
+        then
+          split="$((max_connection_per_server/4))"
+        fi
+        
+        if [ "$lines" -gt "4" ]
+        then
+          split="$((max_connection_per_server/max_concurrent_downloads))"
+        fi
       
-      if [ "$lines" -eq "4" ]
-      then
-        split="$((max_connection_per_server/4))"
-      fi
-      
-      if [ "$lines" -gt "4" ]
-      then
-        split="$((max_connection_per_server/max_concurrent_downloads))"
       fi
     
     fi
-  
-  fi
   
 ## Adjust $max_concurrent_downloads if there could be a single file remaining that downloads by #itself
 #remainder="$((lines%$max_concurrent_downloads))"
@@ -97,27 +98,36 @@ if echo "$@" | grep -q "upgrade\|install\|dist-upgrade"; then
 #  fi
 #fi
   
-  echo "Set Aria2 --max-concurrent-downloads=$max_concurrent_downloads"
-  echo "Set Aria2 --split=$split\n"
-  
-  
-  aria2c --download-result=full --continue=true --split="$split" --max-connection-per-server="$max_connection_per_server" --max-concurrent-downloads="$max_concurrent_downloads" --min-split-size=8K --piece-length=8K --lowest-speed-limit=1K --dir="/var/cache/apt/archives" --input-file="/tmp/apt-fast.list" --connect-timeout=600 --timeout=600 -m0;
-  
-  # Show list of files downloaded sorted by size
-  printf "\n"
-  exa -lhaFumh --group-directories-first --ignore-glob="lock|partial" --no-permissions --no-user --no-time -s size /var/cache/apt/archives
-  printf "\n\n"
-  
-  # Perform the user's requested action via apt-get
-  
-  apt $@ -y;
-  
-  printf "\n\033[1;33mapt_fast\033[1;0m with \033[1;29mAria2 Pro Core\033[1;0m finished.\n\n\033[1;29m$lines\033[1;0m files downloaded with \033[1;29mAria2\033[1;0m and installed with \033[1;29mapt\n\n"
+    echo "Set Aria2 --max-concurrent-downloads=$max_concurrent_downloads"
+    echo "Set Aria2 --split=$split\n"
+    aria2c --download-result=full --continue=true --split="$split" --max-connection-per-server="$max_connection_per_server" --max-concurrent-downloads="$max_concurrent_downloads" --min-split-size=8K --piece-length=8K --lowest-speed-limit=1K --dir="/var/cache/apt/archives" --input-file="/tmp/apt-fast.list" --connect-timeout=600 --timeout=600 -m0;
+    
+    
+    # Show list of files downloaded sorted by size
+    printf "\n\033[1;37mFiles downloaded: Sorted by size\n\033[;0m"
+    exa -lF --group-directories-first --ignore-glob="lock|partial" --no-permissions --no-user --no-time -s size /var/cache/apt/archives
+    printf "\n\n"
 
-  sudo apt clean
+    
+    
+    # Perform the user's requested action via apt-get
+    
+    apt $@ -y;
+    
+    printf "\n\033[1;33mapt_fast\033[1;0m with \033[1;29mAria2 Pro Core\033[1;0m finished.\n\n\033[1;29m$lines\033[1;0m files downloaded with \033[1;29mAria2\033[1;0m and installed with \033[1;29mapt\n\n"
+    
+    sudo apt clean
   
+  else
+  
+    printf "\n\033[1;31mNo updates found.\n\033[;0m\n"
+  
+  fi
+
 else
+
   apt $@;
+
 fi
 
 
