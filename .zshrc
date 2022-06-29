@@ -65,3 +65,4 @@ then
 fi
 done
 export PATH=$(tr ':' '\n' <<< "$PATH" | LC_ALL=C sort -u | perl -0777 -pe 's/[^\A]\K\n+(?!\Z)/:/gm')
+unset -f append_path
