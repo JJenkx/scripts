@@ -38,4 +38,30 @@ alias dl='noglob aria2c -s 32 -x 32 -j 8 -c -k 8K --piece-length=28K --lowest-sp
 alias my.gdmap='noglob sudo sh -c '\''nohup gdmap --folder=/ &>/dev/null & '\'' ' 
 
 
+PathList='
+$HOME/.local/bin
+$HOME/.local/scripts
+'
 
+AbsoluteHome="$(echo $HOME | perl -pe 's/(\/)/\\$1/g')"
+
+RealPathHome="$(echo $PathList | sed "s/\$HOME/$AbsoluteHome/g" )"
+
+append_path () {
+    case ":$PATH:" in
+        *:"$1":*)
+            ;;
+        *)
+            PATH="${PATH:+$PATH:}$1"
+    esac
+}
+
+for line in $(echo $RealPathHome)
+do
+dir="$line";
+if [ -d "$dir" ]
+then
+  append_path "$line"
+fi
+done
+export PATH=$(tr ':' '\n' <<< "$PATH" | LC_ALL=C sort -u | perl -0777 -pe 's/[^\A]\K\n+(?!\Z)/:/gm')
