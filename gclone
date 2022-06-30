@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# Install LFS:
+# sudo pacman -S git-lfs && git lfs install
 #
 # Clone Git repositories and download LFS files in parallel
 #
