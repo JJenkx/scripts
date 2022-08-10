@@ -29,7 +29,7 @@ printf "\n"
 # Prompt for ripgrep --after-context --before-context size
 IFS= read -rp 'Set number of lines to output before and after match:
 
-rg -A -B values: ' ripgrepcontextsize
+rg -C value: ' ripgrepcontextsize
 
 
 
@@ -54,7 +54,7 @@ then
 
     printf "Decompressing with xz because \$FILEPATTERN '$FILEPATTERN' matches \$MATCH_XZ_REGEX '$MATCH_XZ_REGEX'\n\n"
     
-    find "$WORKINGDIR" -name '*' -type f -regextype posix-extended -iregex '(^.*\/'$FILEPATTERN'$)' | sort -g | parallel -j+0 --eta --bar 'printf "\n\n\n\n\n\n"{}"\n"; xz -kd --stdout "{}" | rg -iP -A "'$ripgrepcontextsize'" -B "'$ripgrepcontextsize'" "'$searchregexESCAPED'" ' >"$OUTFILE" ; 
+    find "$WORKINGDIR" -name '*' -type f -regextype posix-extended -iregex '(^.*\/'$FILEPATTERN'$)' | sort -g | parallel -j+0 --eta --bar 'printf "\n\n\n\n\n\n"{}"\n"; xz -kd --stdout "{}" | rg -j1 -iP -C "'$ripgrepcontextsize'" "'$searchregexESCAPED'" ' >"$OUTFILE" ; 
 
 else
 
@@ -65,7 +65,7 @@ else
         printf "Decompressing with 7z because \$FILEPATTERN '$FILEPATTERN' matches \$MATCH_7Z_REGEX '$MATCH_7Z_REGEX'\n\n"
 
         find "$WORKINGDIR" -name '*' -type f -regextype posix-extended -iregex '(^.*\/'$FILEPATTERN'$)' | sort -g | 
-        parallel -j+0 --eta --bar 'printf "\n\n\n\n\n\n"{}"\n"; 7z e -so "{}" | rg -iP -A "'$ripgrepcontextsize'" -B "'$ripgrepcontextsize'" "'$searchregexESCAPED'" ' >"$OUTFILE" ; 
+        parallel -j+0 --eta --bar 'printf "\n\n\n\n\n\n"{}"\n"; 7z e -so "{}" | rg -j1 -iP -C "'$ripgrepcontextsize'" "'$searchregexESCAPED'" ' >"$OUTFILE" ; 
 
     else
 
