@@ -1,4 +1,4 @@
-# Use powerline
+--# Use powerline
 USE_POWERLINE="true"
 # Source manjaro-zsh-configuration
 if [[ -e /usr/share/zsh/manjaro-zsh-config ]]; then
@@ -15,6 +15,8 @@ fi
 
 # Install
 # cp ~/.zshrc ~/.zshrc$(date +%Y%m%d%H%M%S%N).bak ; wget -O- -q "https://github.com/JJenkx/Personal/raw/main/.zshrc" >~/.zshrc ; exec zsh
+
+
 
 
 
@@ -59,7 +61,7 @@ export PATH=$HOME/.local/share/gem/ruby/3.0.0/bin:$PATH
 
 
 # Ripgrep find files
-rgf() {
+function rgf {
     #do things with parameters like $1 such as
     rg "$PWD" --files --hidden 2>/dev/null | rg -iP "$@"
 }
@@ -69,7 +71,7 @@ rgf() {
 
 
 # Ripgrep find files, return files within single quotes
-rgff() {
+function rgff {
     #do things with parameters like $1 such as
     rg "$PWD" --files --hidden 2>/dev/null | perl -pe 's/(?='\'')/'\''\\'\''/g' | perl -pe 's/(?=^|\n)/'\''/g' | rg -iP "$@"
 }
@@ -115,13 +117,14 @@ alias llt='exa -lhaFHumh --group-directories-first --icons -s type'
 # misc
 alias hist='cat ~/.zhistory'
 alias listening='watch -n 0.3 ss -plunt'
-alias lsblk.me='lsblk -o MOUNTPOINT,SIZE,FSAVAIL,PATH,UUID,FSTYPE'
 alias makename='shuf -n250 /home/jjenkx/.local/urban.sorted.txt | tr "\012" "_" | head -c -1 | perl -pe '\''s/([^_]+_){4}[^_]+\K_/\n/gm'\'' | sed y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/ ; printf "\n"'
 alias mpv="noglob mpv"
+alias my.functions='declare -f $(cat ~/.zshrc | rg -Po "^function \K[^ ]+" ) '
 alias my.gdmap='noglob sudo sh -c '\''nohup gdmap --folder=/ &>/dev/null & '\'' ' 
+alias my.lsblk='lsblk -o MOUNTPOINT,SIZE,FSAVAIL,PATH,UUID,FSTYPE'
 alias pigz='pigz --keep'
-alias rpulse='systemctl --user restart pulseaudio.service'
 alias rplasma='killall plasmashell && kstart5 plasmashell'
+alias rpulse='systemctl --user restart pulseaudio.service'
 alias unpigz='unpigz --keep'
 alias unrarall='unrar x "*.rar" ./extracted/'
 alias vpn='nohup sudo sh -c "killall openvpn >/dev/null 2>&1 &" ; sleep 3 ; nohup sudo sh -c "openvpn /path.to/my.ovpn >/dev/null 2>&1 &"'
