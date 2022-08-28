@@ -1,4 +1,4 @@
---# Use powerline
+# Use powerline
 USE_POWERLINE="true"
 # Source manjaro-zsh-configuration
 if [[ -e /usr/share/zsh/manjaro-zsh-config ]]; then
@@ -8,7 +8,6 @@ fi
 if [[ -e /usr/share/zsh/manjaro-zsh-prompt ]]; then
   source /usr/share/zsh/manjaro-zsh-prompt
 fi
-
 
 
 
@@ -60,6 +59,22 @@ export PATH=$HOME/.local/share/gem/ruby/3.0.0/bin:$PATH
 
 
 
+# Return mpv watch history newest to oldest
+# Need line "write-filename-in-watch-later-config=yes" in mpv.conf
+function mpvhist {
+  HOW_MANY_TO_RETURN=1000
+  WATCH_LATER_DIR='/home/jjenkx/.config/mpv/watch_later/'
+  cat $(find "$WATCH_LATER_DIR" -type f -printf "%T@ %p\n" | sort | cut -c23- | tail -$HOW_MANY_TO_RETURN) | perl -0777 -pe 's/^[^#].*\n|# (.+\/)(.*)/'\''$1$2'\''\n$2/gm' | rg --colors 'match:none' --colors 'match:fg:0,200,0' --colors 'match:bg:0,0,0' --colors 'match:style:bold' -B1 -P "^[^'\/].*" 
+}
+
+
+
+function mpvnohup {
+  nohup mpv "$@" &>/dev/null & 
+}
+
+
+
 # Ripgrep find files
 function rgf {
     #do things with parameters like $1 such as
@@ -75,6 +90,11 @@ function rgff {
     #do things with parameters like $1 such as
     rg "$PWD" --files --hidden 2>/dev/null | perl -pe 's/(?='\'')/'\''\\'\''/g' | perl -pe 's/(?=^|\n)/'\''/g' | rg -iP "$@"
 }
+
+
+
+# Testing
+alias sortfast='sort -S$(($(sed '\''/MemF/!d;s/[^0-9]*//g'\'' /proc/meminfo)/2048)) $([ `nproc` -gt 1 ]&&echo -n --parallel=`nproc`)'
 
 
 
@@ -108,28 +128,34 @@ alias dl16='noglob aria2c -s 16 -x 16 -j 8 -c -k 28K --piece-length=256K --lowes
 alias dl32='noglob aria2c -s 32 -x 32 -j 8 -c -k 28K --piece-length=256K --lowest-speed-limit=10K --retry-wait=2 --continue=true '
 
 # exa
-alias ll='exa -lhaFHumh --group-directories-first --icons'
-alias lle='exa -lhaFHumh --group-directories-first --icons -s extension'
-alias llm='exa -lhaFHumh --group-directories-first --icons -s modified'
-alias lls='exa -lhaFHumh --group-directories-first --icons -s size'
-alias llt='exa -lhaFHumh --group-directories-first --icons -s type'
+alias ll='exa -lhaFHumh --group-directories-first --octal-permissions --icons'
+alias le='exa -lhaFHumh --group-directories-first --octal-permissions --icons -s extension'
+alias lm='exa -lhaFHumh --group-directories-first --octal-permissions --icons -s modified'
+alias ls='exa -lhaFHumh --group-directories-first --octal-permissions --icons -s size'
+alias lt='exa -lhaFHumh --group-directories-first --octal-permissions --icons -s type'
 
 # misc
+alias editzsh='nano ~/.zshrc'
 alias hist='cat ~/.zhistory'
 alias listening='watch -n 0.3 ss -plunt'
 alias makename='shuf -n250 /home/jjenkx/.local/urban.sorted.txt | tr "\012" "_" | head -c -1 | perl -pe '\''s/([^_]+_){4}[^_]+\K_/\n/gm'\'' | sed y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/ ; printf "\n"'
-alias mpv="noglob mpv"
 alias my.functions='declare -f $(cat ~/.zshrc | rg -Po "^function \K[^ ]+" ) '
 alias my.gdmap='noglob sudo sh -c '\''nohup gdmap --folder=/ &>/dev/null & '\'' ' 
 alias my.lsblk='lsblk -o MOUNTPOINT,SIZE,FSAVAIL,PATH,UUID,FSTYPE'
 alias pigz='pigz --keep'
 alias rplasma='killall plasmashell && kstart5 plasmashell'
-alias rpulse='systemctl --user restart pulseaudio.service'
+#alias rpulse='systemctl --user restart pulseaudio.service'
+alias rpulse='kquitapp5 plasmashell && kstart5 plasmashell > /dev/null 2>&1'
 alias unpigz='unpigz --keep'
 alias unrarall='unrar x "*.rar" ./extracted/'
 alias vpn='nohup sudo sh -c "killall openvpn >/dev/null 2>&1 &" ; sleep 3 ; nohup sudo sh -c "openvpn /path.to/my.ovpn >/dev/null 2>&1 &"'
 alias vps='ssh -i /path.to/keyfile username@domain.xy -p <portnum>'
 alias wea='curl wttr.in'
+alias logout='qdbus org.kde.ksmserver /KSMServer logout 0 0 0'
+alias logoff='qdbus org.kde.ksmserver /KSMServer logout 0 0 0'
+alias mpvplaylast='nohup mpv "$(cat $(echo /home/jjenkx/.config/mpv/watch_later/$(exa --reverse -s modified /home/jjenkx/.config/mpv/watch_later/ | head -1)) | head -1 | cut -c3-)"  &>/dev/null & '
+
+
 
 # Password/Alias Generation
 alias pw='len=40; tr -dc A-Za-z0-9\!\?\*\^\_ < /dev/urandom | head -c ${len} | xargs'
