@@ -10,6 +10,9 @@ if [[ -e /usr/share/zsh/manjaro-zsh-prompt ]]; then
 fi
 
 
+has() {
+  command -v "$1" 1>/dev/null 2>&1
+}
 
 
 # Install
@@ -60,6 +63,37 @@ export PATH=$HOME/.local/share/gem/ruby/3.0.0/bin:$PATH
 
 
 function updatefacebookip {
+#!/usr/bin/env sh
+if ! command -v whois 1>/dev/null 2>&1 ; then
+  printf "\n\nNeed to install whois dependency.\n\n"
+#  read -r -p "${1:-Are you sure? [Y/n]} " installwhois
+vared -p 'Run "sudo pacman -S --needed whois" ? [Y/n]: ' -c installwhois
+  case "$installwhois" in
+      [yY][eE][sS]|[yY]|"") 
+          unset installwhois
+          sudo pacman -S --needed whois
+          ;;
+      *)
+          unset installwhois
+          false
+          ;;
+  esac
+fi
+if ! command -v aggregate6 1>/dev/null 2>&1 ; then
+  printf "\n\nNeed to install aggregate6 dependency.\n\n" ; 
+#  read -r -p "${1:-Are you sure? [Y/n]} " installaggregate
+vared -p 'Run "pip3 install aggregate6" ? [Y/n]: ' -c installaggregate
+  case "$installaggregate" in
+      [yY][eE][sS]|[yY]|"") 
+          unset installaggregate
+          pip3 install aggregate6
+          ;;
+      *)
+          unset installaggregate
+          false
+          ;;
+  esac
+fi
 BLOCKFILEDIR="$HOME/.local/firewall/"
 mkdir -p "$BLOCKFILEDIR"
 whois -h whois.radb.net -- '-i origin AS32934' | grep -ioP '^route:.*\s\K\d.*' | aggregate6 >"$BLOCKFILEDIR"facebook.ipv4
@@ -67,6 +101,7 @@ printf "\n\ncat "$BLOCKFILEDIR"facebook.ipv4"":\n\n""$(cat "$BLOCKFILEDIR"facebo
 whois -h whois.radb.net -- '-i origin AS32934' | grep -ioP '^route6:.*\s\K\d.*' | aggregate6 >"$BLOCKFILEDIR"facebook.ipv6
 printf "\n\ncat "$BLOCKFILEDIR"facebook.ipv6"":\n\n""$(cat "$BLOCKFILEDIR"facebook.ipv6)\n\n\n\n\n"
 unset BLOCKFILEDIR
+return 0
 }
 
 
@@ -78,6 +113,7 @@ BLOCKFILEDIR="$HOME/.local/firewall/"
 mkdir -p "$BLOCKFILEDIR"
 
 if [[ -e "$BLOCKFILEDIR"facebook.ipv4 ]]; then
+    printf "Blocking IPV4 IPs in iptables chains:\n    FORWARD, OUTPUT, and INPUT."
     cat "$BLOCKFILEDIR"facebook.ipv4 | 
     while IFS= read -r line ; do {
         sudo iptables -t filter -I FORWARD -s "$line" -j DROP
@@ -91,6 +127,7 @@ else
 fi
 
 if [[ -e "$BLOCKFILEDIR"facebook.ipv6 ]]; then
+    printf "Blocking IPV6 IPs in ip6tables chains:\n    FORWARD, OUTPUT, and INPUT."
     cat $HOME/.local/firewall/facebook.ipv6 | 
     while IFS= read -r line ; do {
         sudo ip6tables -t filter -I FORWARD -s "$line" -j DROP
