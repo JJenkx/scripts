@@ -60,7 +60,7 @@ export PATH=$HOME/.local/share/gem/ruby/3.0.0/bin:$PATH
 
 
 function updatefacebookip {
-export BLOCKFILEDIR="$HOME/.local/firewall/"
+BLOCKFILEDIR="$HOME/.local/firewall/"
 mkdir -p "$BLOCKFILEDIR"
 whois -h whois.radb.net -- '-i origin AS32934' | grep -ioP '^route:.*\s\K\d.*' | aggregate6 >"$BLOCKFILEDIR"facebook.ipv4
 printf "\n\ncat "$BLOCKFILEDIR"facebook.ipv4"":\n\n""$(cat "$BLOCKFILEDIR"facebook.ipv4)\n\n\n"
@@ -74,7 +74,7 @@ unset BLOCKFILEDIR
 
 
 function blockfacebook {
-export BLOCKFILEDIR="$HOME/.local/firewall/"
+BLOCKFILEDIR="$HOME/.local/firewall/"
 mkdir -p "$BLOCKFILEDIR"
 
 if [[ -e "$BLOCKFILEDIR"facebook.ipv4 ]]; then
