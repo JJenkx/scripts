@@ -74,7 +74,6 @@ unset BLOCKFILEDIR
 
 
 function blockfacebook {
-
 export BLOCKFILEDIR="$HOME/.local/firewall/"
 mkdir -p "$BLOCKFILEDIR"
 
@@ -241,14 +240,14 @@ alias watchdir5modified='watch --color -n "5.0" exa -lhaFHumh -r --color=always 
 alias watchdir5size='watch --color -n "5.0" exa -lhaFHumh -r --color=always --octal-permissions --group-directories-first --icons -s size'
 alias watchdir5type='watch --color -n "5.0" exa -lhaFHumh --color=always --octal-permissions --group-directories-first --icons -s type'
 
-alias watchdir10='watch --color -n "5.0" exa -lhaFHumh --color=always --octal-permissions --group-directories-first --icons'
-alias watchdir10accessed='watch --color -n "5.0" exa -lhaFHumh -r --color=always --octal-permissions --group-directories-first --icons -s accessed'
-alias watchdir10created='watch --color -n "5.0" exa -lhaFHumh -r --color=always --octal-permissions --group-directories-first --icons -s created'
-alias watchdir10extension='watch --color -n "5.0" exa -lhaFHumh --color=always --octal-permissions --group-directories-first --icons -s extension'
-alias watchdir10inode='watch --color -n "5.0" exa -lhaFHumh --color=always --octal-permissions --group-directories-first --icons -s inode'
-alias watchdir10modified='watch --color -n "5.0" exa -lhaFHumh -r --color=always --octal-permissions --group-directories-first --icons -s modified'
-alias watchdir10size='watch --color -n "5.0" exa -lhaFHumh -r --color=always --octal-permissions --group-directories-first --icons -s size'
-alias watchdir10type='watch --color -n "5.0" exa -lhaFHumh --color=always --octal-permissions --group-directories-first --icons -s type'
+alias watchdir10='watch --color -n "10.0" exa -lhaFHumh --color=always --octal-permissions --group-directories-first --icons'
+alias watchdir10accessed='watch --color -n "10.0" exa -lhaFHumh -r --color=always --octal-permissions --group-directories-first --icons -s accessed'
+alias watchdir10created='watch --color -n "10.0" exa -lhaFHumh -r --color=always --octal-permissions --group-directories-first --icons -s created'
+alias watchdir10extension='watch --color -n "10.0" exa -lhaFHumh --color=always --octal-permissions --group-directories-first --icons -s extension'
+alias watchdir10inode='watch --color -n "10.0" exa -lhaFHumh --color=always --octal-permissions --group-directories-first --icons -s inode'
+alias watchdir10modified='watch --color -n "10.0" exa -lhaFHumh -r --color=always --octal-permissions --group-directories-first --icons -s modified'
+alias watchdir10size='watch --color -n "10.0" exa -lhaFHumh -r --color=always --octal-permissions --group-directories-first --icons -s size'
+alias watchdir10type='watch --color -n "10.0" exa -lhaFHumh --color=always --octal-permissions --group-directories-first --icons -s type'
 
 # misc
 #alias rpulse='systemctl --user restart pulseaudio.service'
