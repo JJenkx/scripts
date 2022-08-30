@@ -107,7 +107,7 @@ return 0
 
 
 
-
+# sudo pacman -R whois && pip uninstall aggregate6
 function blockfacebook {
 BLOCKFILEDIR="$HOME/.local/firewall/"
 mkdir -p "$BLOCKFILEDIR"
@@ -298,9 +298,9 @@ alias logoff='qdbus org.kde.ksmserver /KSMServer logout 0 0 0'
 alias logout='qdbus org.kde.ksmserver /KSMServer logout 0 0 0'
 alias makename='shuf -n250 /home/jjenkx/.local/urban.sorted.txt | tr "\012" "_" | head -c -1 | perl -pe '\''s/([^_]+_){4}[^_]+\K_/\n/gm'\'' | sed y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/ ; printf "\n"'
 alias mpvplaylast='nohup mpv "$(cat $(echo /home/jjenkx/.config/mpv/watch_later/$(exa --reverse -s modified /home/jjenkx/.config/mpv/watch_later/ | head -1)) | head -1 | cut -c3-)"  &>/dev/null & '
-alias my.functions='declare -f $(cat ~/.zshrc | rg -Po "^function \K[^ ]+" ) '
-alias my.gdmap='noglob sudo sh -c '\''nohup gdmap --folder=/ &>/dev/null & '\'' ' 
-alias my.lsblk='lsblk -o MOUNTPOINT,SIZE,FSAVAIL,PATH,UUID,FSTYPE'
+alias myfunctions='declare -f $(cat ~/.zshrc | rg -Po "^function \K[^ ]+" ) '
+alias mygdmap='noglob sudo sh -c '\''nohup gdmap --folder=/ &>/dev/null & '\'' ' 
+alias mylsblk='lsblk -o MOUNTPOINT,SIZE,FSAVAIL,PATH,UUID,FSTYPE'
 alias pigz='pigz --keep'
 alias rpulse='systemctl --user restart pulseaudio.service'
 alias salias='alias | perl -pe "s/\n/\n\n\n\n/gm" | rg -iP -A 2 -B 2'
