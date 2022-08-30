@@ -113,7 +113,7 @@ BLOCKFILEDIR="$HOME/.local/firewall/"
 mkdir -p "$BLOCKFILEDIR"
 
 if [[ -e "$BLOCKFILEDIR"facebook.ipv4 ]]; then
-    printf "Blocking IPV4 IPs in iptables chains:\n    FORWARD, OUTPUT, and INPUT."
+    printf "\n\nBlocking IPV4 IPs in iptables chains:\n    FORWARD, OUTPUT, and INPUT.\n\n"
     cat "$BLOCKFILEDIR"facebook.ipv4 | 
     while IFS= read -r line ; do {
         sudo iptables -t filter -I FORWARD -s "$line" -j DROP
@@ -127,7 +127,7 @@ else
 fi
 
 if [[ -e "$BLOCKFILEDIR"facebook.ipv6 ]]; then
-    printf "Blocking IPV6 IPs in ip6tables chains:\n    FORWARD, OUTPUT, and INPUT."
+    printf "Blocking IPV6 IPs in ip6tables chains:\n    FORWARD, OUTPUT, and INPUT.\n\n"
     cat $HOME/.local/firewall/facebook.ipv6 | 
     while IFS= read -r line ; do {
         sudo ip6tables -t filter -I FORWARD -s "$line" -j DROP
@@ -298,9 +298,9 @@ alias logoff='qdbus org.kde.ksmserver /KSMServer logout 0 0 0'
 alias logout='qdbus org.kde.ksmserver /KSMServer logout 0 0 0'
 alias makename='shuf -n250 /home/jjenkx/.local/urban.sorted.txt | tr "\012" "_" | head -c -1 | perl -pe '\''s/([^_]+_){4}[^_]+\K_/\n/gm'\'' | sed y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/ ; printf "\n"'
 alias mpvplaylast='nohup mpv "$(cat $(echo /home/jjenkx/.config/mpv/watch_later/$(exa --reverse -s modified /home/jjenkx/.config/mpv/watch_later/ | head -1)) | head -1 | cut -c3-)"  &>/dev/null & '
-alias myfunctions='declare -f $(cat ~/.zshrc | rg -Po "^function \K[^ ]+" ) '
-alias mygdmap='noglob sudo sh -c '\''nohup gdmap --folder=/ &>/dev/null & '\'' ' 
-alias mylsblk='lsblk -o MOUNTPOINT,SIZE,FSAVAIL,PATH,UUID,FSTYPE'
+alias my.functions='declare -f $(cat ~/.zshrc | rg -Po "^function \K[^ ]+" ) '
+alias my.gdmap='noglob sudo sh -c '\''nohup gdmap --folder=/ &>/dev/null & '\'' ' 
+alias my.lsblk='lsblk -o MOUNTPOINT,SIZE,FSAVAIL,PATH,UUID,FSTYPE'
 alias pigz='pigz --keep'
 alias rpulse='systemctl --user restart pulseaudio.service'
 alias salias='alias | perl -pe "s/\n/\n\n\n\n/gm" | rg -iP -A 2 -B 2'
