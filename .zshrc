@@ -59,26 +59,96 @@ export PATH=$HOME/.local/share/gem/ruby/3.0.0/bin:$PATH
 
 
 
+function updatefacebookip {
+export BLOCKFILEDIR="$HOME/.local/firewall/"
+mkdir -p "$BLOCKFILEDIR"
+whois -h whois.radb.net -- '-i origin AS32934' | grep -ioP '^route:.*\s\K\d.*' | aggregate6 >"$BLOCKFILEDIR"facebook.ipv4
+printf "\n\ncat "$BLOCKFILEDIR"facebook.ipv4"":\n\n""$(cat "$BLOCKFILEDIR"facebook.ipv4)\n\n\n"
+whois -h whois.radb.net -- '-i origin AS32934' | grep -ioP '^route6:.*\s\K\d.*' | aggregate6 >"$BLOCKFILEDIR"facebook.ipv6
+printf "\n\ncat "$BLOCKFILEDIR"facebook.ipv6"":\n\n""$(cat "$BLOCKFILEDIR"facebook.ipv6)\n\n\n\n\n"
+unset BLOCKFILEDIR
+}
+
+
+
+
+
+function blockfacebook {
+
+export BLOCKFILEDIR="$HOME/.local/firewall/"
+mkdir -p "$BLOCKFILEDIR"
+
+if [[ -e "$BLOCKFILEDIR"facebook.ipv4 ]]; then
+    cat "$BLOCKFILEDIR"facebook.ipv4 | 
+    while IFS= read -r line ; do {
+        sudo iptables -t filter -I FORWARD -s "$line" -j DROP
+        sudo iptables -A OUTPUT -d "$line" -j DROP
+        sudo iptables -A INPUT -d "$line" -j DROP
+    }; done
+    printf "\n\ncat "$BLOCKFILEDIR"facebook.ipv4"":\n\n""$(cat "$BLOCKFILEDIR"facebook.ipv4)\n\n\n"
+    unset IFS
+else
+    printf "\n\n"$BLOCKFILEDIR"facebook.ipv4 not found.\nRun updatefacebookip to generate it\n\n\n"
+fi
+
+if [[ -e "$BLOCKFILEDIR"facebook.ipv6 ]]; then
+    cat $HOME/.local/firewall/facebook.ipv6 | 
+    while IFS= read -r line ; do {
+        sudo ip6tables -t filter -I FORWARD -s "$line" -j DROP
+        sudo ip6tables -A OUTPUT -d "$line" -j DROP
+        sudo ip6tables -A INPUT -d "$line" -j DROP
+    }; done
+    printf "\n\ncat "$BLOCKFILEDIR"facebook.ipv6"":\n\n""$(cat "$BLOCKFILEDIR"facebook.ipv6)\n\n\n"
+    unset IFS
+else
+    printf "\n\n"$BLOCKFILEDIR"facebook.ipv6 not found.\nRun updatefacebookip to generate it\n\n\n"
+fi
+unset BLOCKFILEDIR
+}
+
+
+
+
+
 # Return mpv watch history newest to oldest
 # Need line "write-filename-in-watch-later-config=yes" in mpv.conf
 function mpvhist {
-  HOW_MANY_TO_RETURN=1000
-  WATCH_LATER_DIR='/home/jjenkx/.config/mpv/watch_later/'
-  cat $(find "$WATCH_LATER_DIR" -type f -printf "%T@ %p\n" | sort | cut -c23- | tail -$HOW_MANY_TO_RETURN) | perl -0777 -pe 's/^[^#].*\n|# (.+\/)(.*)/'\''$1$2'\''\n$2/gm' | rg --colors 'match:none' --colors 'match:fg:0,200,0' --colors 'match:bg:0,0,0' --colors 'match:style:bold' -B1 -P "^[^'\/].*" 
+HOW_MANY_TO_RETURN=1000
+WATCH_LATER_DIR='/home/jjenkx/.config/mpv/watch_later/'
+cat $(find "$WATCH_LATER_DIR" -type f -printf "%T@ %p\n" | sort | cut -c23- | tail -$HOW_MANY_TO_RETURN) | perl -0777 -pe 's/^[^#].*\n|# (.+\/)(.*)/'\''$1$2'\''\n$2/gm' | rg --colors 'match:none' --colors 'match:fg:0,200,0' --colors 'match:bg:0,0,0' --colors 'match:style:bold' -B1 -P "^[^'\/].*" 
 }
+
+
+
+
+
+ups () { 
+printf "https://ups.com/track?tracknum=$@\n"
+}
+
+
+
+
+
+usps () {
+printf "https://tools.usps.com/go/TrackConfirmAction_input?strOrigTrackNum=$@\n"
+}
+
+
 
 
 
 function mpvnohup {
-  nohup mpv "$@" &>/dev/null & 
+nohup mpv "$@" &>/dev/null & 
 }
+
+
 
 
 
 # Ripgrep find files
 function rgf {
-    #do things with parameters like $1 such as
-    rg "$PWD" --files --hidden 2>/dev/null | rg -iP "$@"
+rg "$PWD" --files --hidden 2>/dev/null | rg -iP "$@"
 }
 
 
@@ -87,8 +157,7 @@ function rgf {
 
 # Ripgrep find files, return files within single quotes
 function rgff {
-    #do things with parameters like $1 such as
-    rg "$PWD" --files --hidden 2>/dev/null | perl -pe 's/(?='\'')/'\''\\'\''/g' | perl -pe 's/(?=^|\n)/'\''/g' | rg -iP "$@"
+rg "$PWD" --files --hidden 2>/dev/null | perl -pe 's/(?='\'')/'\''\\'\''/g' | perl -pe 's/(?=^|\n)/'\''/g' | rg -iP "$@"
 }
 
 
@@ -128,40 +197,88 @@ alias dl16='noglob aria2c -s 16 -x 16 -j 8 -c -k 28K --piece-length=256K --lowes
 alias dl32='noglob aria2c -s 32 -x 32 -j 8 -c -k 28K --piece-length=256K --lowest-speed-limit=10K --retry-wait=2 --continue=true '
 
 # exa
-alias ll='exa -lhaFHumh --group-directories-first --octal-permissions --icons'
+alias la='exa -lhaFHumh --group-directories-first --octal-permissions --icons -s accessed'
+alias lc='exa -lhaFHumh --group-directories-first --octal-permissions --icons -s created'
 alias le='exa -lhaFHumh --group-directories-first --octal-permissions --icons -s extension'
+alias ll='exa -lhaFHumh --group-directories-first --octal-permissions --icons'
 alias lm='exa -lhaFHumh --group-directories-first --octal-permissions --icons -s modified'
 alias ls='exa -lhaFHumh --group-directories-first --octal-permissions --icons -s size'
 alias lt='exa -lhaFHumh --group-directories-first --octal-permissions --icons -s type'
 
+alias watchdir.5='watch --color -n "0.5" exa -lhaFHumh --color=always --octal-permissions --group-directories-first --icons'
+alias watchdir.5accessed='watch --color -n "0.5" exa -lhaFHumh -r --color=always --octal-permissions --group-directories-first --icons -s accessed'
+alias watchdir.5created='watch --color -n "0.5" exa -lhaFHumh -r --color=always --octal-permissions --group-directories-first --icons -s created'
+alias watchdir.5extension='watch --color -n "0.5" exa -lhaFHumh --color=always --octal-permissions --group-directories-first --icons -s extension'
+alias watchdir.5inode='watch --color -n "0.5" exa -lhaFHumh --color=always --octal-permissions --group-directories-first --icons -s inode'
+alias watchdir.5modified='watch --color -n "0.5" exa -lhaFHumh -r --color=always --octal-permissions --group-directories-first --icons -s modified'
+alias watchdir.5size='watch --color -n "0.5" exa -lhaFHumh -r --color=always --octal-permissions --group-directories-first --icons -s size'
+alias watchdir.5type='watch --color -n "0.5" exa -lhaFHumh --color=always --octal-permissions --group-directories-first --icons -s type'
+
+alias watchdir1='watch --color -n "1.0" exa -lhaFHumh --color=always --octal-permissions --group-directories-first --icons'
+alias watchdir1accessed='watch --color -n "1.0" exa -lhaFHumh -r --color=always --octal-permissions --group-directories-first --icons -s accessed'
+alias watchdir1created='watch --color -n "1.0" exa -lhaFHumh -r --color=always --octal-permissions --group-directories-first --icons -s created'
+alias watchdir1extension='watch --color -n "1.0" exa -lhaFHumh --color=always --octal-permissions --group-directories-first --icons -s extension'
+alias watchdir1inode='watch --color -n "1.0" exa -lhaFHumh --color=always --octal-permissions --group-directories-first --icons -s inode'
+alias watchdir1modified='watch --color -n "1.0" exa -lhaFHumh -r --color=always --octal-permissions --group-directories-first --icons -s modified'
+alias watchdir1size='watch --color -n "1.0" exa -lhaFHumh -r --color=always --octal-permissions --group-directories-first --icons -s size'
+alias watchdir1type='watch --color -n "1.0" exa -lhaFHumh --color=always --octal-permissions --group-directories-first --icons -s type'
+
+alias watchdir2='watch --color -n "2.0" exa -lhaFHumh --color=always --octal-permissions --group-directories-first --icons'
+alias watchdir2accessed='watch --color -n "2.0" exa -lhaFHumh -r --color=always --octal-permissions --group-directories-first --icons -s accessed'
+alias watchdir2created='watch --color -n "2.0" exa -lhaFHumh -r --color=always --octal-permissions --group-directories-first --icons -s created'
+alias watchdir2extension='watch --color -n "2.0" exa -lhaFHumh --color=always --octal-permissions --group-directories-first --icons -s extension'
+alias watchdir2inode='watch --color -n "2.0" exa -lhaFHumh --color=always --octal-permissions --group-directories-first --icons -s inode'
+alias watchdir2modified='watch --color -n "2.0" exa -lhaFHumh -r --color=always --octal-permissions --group-directories-first --icons -s modified'
+alias watchdir2size='watch --color -n "2.0" exa -lhaFHumh -r --color=always --octal-permissions --group-directories-first --icons -s size'
+alias watchdir2type='watch --color -n "2.0" exa -lhaFHumh --color=always --octal-permissions --group-directories-first --icons -s type'
+
+alias watchdir5='watch --color -n "5.0" exa -lhaFHumh --color=always --octal-permissions --group-directories-first --icons'
+alias watchdir5accessed='watch --color -n "5.0" exa -lhaFHumh -r --color=always --octal-permissions --group-directories-first --icons -s accessed'
+alias watchdir5created='watch --color -n "5.0" exa -lhaFHumh -r --color=always --octal-permissions --group-directories-first --icons -s created'
+alias watchdir5extension='watch --color -n "5.0" exa -lhaFHumh --color=always --octal-permissions --group-directories-first --icons -s extension'
+alias watchdir5inode='watch --color -n "5.0" exa -lhaFHumh --color=always --octal-permissions --group-directories-first --icons -s inode'
+alias watchdir5modified='watch --color -n "5.0" exa -lhaFHumh -r --color=always --octal-permissions --group-directories-first --icons -s modified'
+alias watchdir5size='watch --color -n "5.0" exa -lhaFHumh -r --color=always --octal-permissions --group-directories-first --icons -s size'
+alias watchdir5type='watch --color -n "5.0" exa -lhaFHumh --color=always --octal-permissions --group-directories-first --icons -s type'
+
+alias watchdir10='watch --color -n "5.0" exa -lhaFHumh --color=always --octal-permissions --group-directories-first --icons'
+alias watchdir10accessed='watch --color -n "5.0" exa -lhaFHumh -r --color=always --octal-permissions --group-directories-first --icons -s accessed'
+alias watchdir10created='watch --color -n "5.0" exa -lhaFHumh -r --color=always --octal-permissions --group-directories-first --icons -s created'
+alias watchdir10extension='watch --color -n "5.0" exa -lhaFHumh --color=always --octal-permissions --group-directories-first --icons -s extension'
+alias watchdir10inode='watch --color -n "5.0" exa -lhaFHumh --color=always --octal-permissions --group-directories-first --icons -s inode'
+alias watchdir10modified='watch --color -n "5.0" exa -lhaFHumh -r --color=always --octal-permissions --group-directories-first --icons -s modified'
+alias watchdir10size='watch --color -n "5.0" exa -lhaFHumh -r --color=always --octal-permissions --group-directories-first --icons -s size'
+alias watchdir10type='watch --color -n "5.0" exa -lhaFHumh --color=always --octal-permissions --group-directories-first --icons -s type'
+
 # misc
+#alias rpulse='systemctl --user restart pulseaudio.service'
+alias cpdir='sudo rsync -aEhU --progress'
+alias cpf='sudo rsync -EghoptU --progress'
+alias editbashrc='sudo nano /etc/bash.bashrc'
 alias editzsh='nano ~/.zshrc'
 alias hist='cat ~/.zhistory'
 alias listening='watch -n 0.3 ss -plunt'
+alias logoff='qdbus org.kde.ksmserver /KSMServer logout 0 0 0'
+alias logout='qdbus org.kde.ksmserver /KSMServer logout 0 0 0'
 alias makename='shuf -n250 /home/jjenkx/.local/urban.sorted.txt | tr "\012" "_" | head -c -1 | perl -pe '\''s/([^_]+_){4}[^_]+\K_/\n/gm'\'' | sed y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/ ; printf "\n"'
+alias mpvplaylast='nohup mpv "$(cat $(echo /home/jjenkx/.config/mpv/watch_later/$(exa --reverse -s modified /home/jjenkx/.config/mpv/watch_later/ | head -1)) | head -1 | cut -c3-)"  &>/dev/null & '
 alias my.functions='declare -f $(cat ~/.zshrc | rg -Po "^function \K[^ ]+" ) '
 alias my.gdmap='noglob sudo sh -c '\''nohup gdmap --folder=/ &>/dev/null & '\'' ' 
 alias my.lsblk='lsblk -o MOUNTPOINT,SIZE,FSAVAIL,PATH,UUID,FSTYPE'
 alias pigz='pigz --keep'
-alias rplasma='killall plasmashell && kstart5 plasmashell'
-#alias rpulse='systemctl --user restart pulseaudio.service'
-alias rpulse='kquitapp5 plasmashell && kstart5 plasmashell > /dev/null 2>&1'
+alias rpulse='systemctl --user restart pulseaudio.service'
+alias salias='alias | perl -pe "s/\n/\n\n\n\n/gm" | rg -iP -A 2 -B 2'
 alias unpigz='unpigz --keep'
 alias unrarall='unrar x "*.rar" ./extracted/'
 alias vpn='nohup sudo sh -c "killall openvpn >/dev/null 2>&1 &" ; sleep 3 ; nohup sudo sh -c "openvpn /path.to/my.ovpn >/dev/null 2>&1 &"'
 alias vps='ssh -i /path.to/keyfile username@domain.xy -p <portnum>'
 alias wea='curl wttr.in'
-alias logout='qdbus org.kde.ksmserver /KSMServer logout 0 0 0'
-alias logoff='qdbus org.kde.ksmserver /KSMServer logout 0 0 0'
-alias mpvplaylast='nohup mpv "$(cat $(echo /home/jjenkx/.config/mpv/watch_later/$(exa --reverse -s modified /home/jjenkx/.config/mpv/watch_later/ | head -1)) | head -1 | cut -c3-)"  &>/dev/null & '
-
 
 
 # Password/Alias Generation
 alias pw='len=40; tr -dc A-Za-z0-9\!\?\*\^\_ < /dev/urandom | head -c ${len} | xargs'
 alias pwgen='pwgen -sy 40 20'
 alias pwmake='printf '\''\nAdd or remove any characters after '\''\'\'''\''tr -dc'\''\'\'''\''\nto make a random custom password.\nSet password length with len=\n\nprintf '\''\'\'''\''\\n\\n'\''\'\'''\'' ; len=40; tr -dc A-Za-z0-9\!\?\*\^\_ < /dev/urandom | head -c ${len} | xargs ; printf '\''\'\'''\''\\n\\n'\''\'\'''\''\n\n'\'''
-alias makename='for ITEM in $(len=300; tr -dc A-Za-z013 < /dev/urandom | head -c ${len} | xargs | perl -nle'\''print for /.{9}/g'\'' | perl -0777 -p -e '\''s/(?<=^.)/aeiou/egm'\'' | perl -0777 -p -e '\''s/(?=.)/ /g'\'' | perl -MList::Util=shuffle -alne '\''print shuffle @F'\''); do { echo "$ITEM" ; shuf -n1 /usr/share/dict/words | tr '\''\012'\'' '\''_'\'' | tr -d '\''\'\'''\'''\''\'\'' | sed y/åäâáçêéèíñôóöüûABCDEFGHIJKLMNOPQRSTUVWXYZbxesohy/aaaaceeeinooouuabcd3fgh1jklmnopqrstuvwxyzBX3S04Y/ ; } done && echo'
 alias wordpass="shuf -n200 ~/.local/db/urban.txt | tr '\012' '_' | head -c -1 | perl -pe 's/([^_]+_){3}[^_]+\K_/\n/gm' && echo"
 
 
@@ -258,11 +375,11 @@ cargo install cargo-update
 printf '\n\n\n\nRunning:\n         cargo install-update -a\n\n\n\n'
 cargo install-update -a
 
+printf '\n\n\n\nRunning:\n         /usr/bin/python3 -m pip install --upgrade pip\n\n\n\n'
+/usr/bin/python3 -m pip install --upgrade pip
+
 printf '\n\n\n\nRunning:\n         pip3 list --outdated --format=freeze | grep -v "\^\\-e" | cut -d = -f 1 | xargs -n1 pip3 install -U\n\n\n\n'
 pip3 list --outdated --format=freeze | grep -v '^\-e' | cut -d = -f 1 | xargs -n1 pip3 install -U
-
-printf '\n\n\n\nRunning:\n         pip list --outdated --format=freeze | grep -v "\^\\-e" | cut -d = -f 1 | xargs -n1 pip install -U\n\n\n\n'
-pip list --outdated --format=freeze | grep -v '^\-e' | cut -d = -f 1 | xargs -n1 pip install -U
 
 }
 
@@ -348,3 +465,4 @@ fi
 
 
 
+#alias makename='for ITEM in $(len=300; tr -dc A-Za-z013 < /dev/urandom | head -c ${len} | xargs | perl -nle'\''print for /.{9}/g'\'' | perl -0777 -p -e '\''s/(?<=^.)/aeiou/egm'\'' | perl -0777 -p -e '\''s/(?=.)/ /g'\'' | perl -MList::Util=shuffle -alne '\''print shuffle @F'\''); do { echo "$ITEM" ; shuf -n1 /usr/share/dict/words | tr '\''\012'\'' '\''_'\'' | tr -d '\''\'\'''\'''\''\'\'' | sed y/åäâáçêéèíñôóöüûABCDEFGHIJKLMNOPQRSTUVWXYZbxesohy/aaaaceeeinooouuabcd3fgh1jklmnopqrstuvwxyzBX3S04Y/ ; } done && echo'
