@@ -10,15 +10,16 @@ if [[ -e /usr/share/zsh/manjaro-zsh-prompt ]]; then
 fi
 
 
-has() {
-  command -v "$1" 1>/dev/null 2>&1
-}
 
 
-# Install
+
+# Install this script. Will backup your current file and replace it with this one
+
 # cp ~/.zshrc ~/.zshrc$(date +%Y%m%d%H%M%S%N).bak ; wget -O- -q "https://github.com/JJenkx/Personal/raw/main/.zshrc" >~/.zshrc ; exec zsh
 
-
+# Some of the dependencies
+# sudo pacman -S --needed exa imagemagick libwebp mpv parallel pigz ripgrep rsync whois
+# pip3 install aggregate6 yt-dlp 
 
 
 
@@ -62,6 +63,7 @@ export PATH=$HOME/.local/share/gem/ruby/3.0.0/bin:$PATH
 
 
 
+# Get Facebook/Meta Ip addresses for blocking them
 function updatefacebookip {
 #!/usr/bin/env sh
 if ! command -v whois 1>/dev/null 2>&1 ; then
@@ -107,7 +109,8 @@ return 0
 
 
 
-# sudo pacman -R whois && pip uninstall aggregate6
+
+# Block Facebook/Meta IPs after running "updatefacebookip"
 function blockfacebook {
 BLOCKFILEDIR="$HOME/.local/firewall/"
 mkdir -p "$BLOCKFILEDIR"
@@ -146,55 +149,45 @@ unset BLOCKFILEDIR
 
 
 
-# Return mpv watch history newest to oldest
-# Need line "write-filename-in-watch-later-config=yes" in mpv.conf
-function mpvhist {
-HOW_MANY_TO_RETURN=1000
+# MPV
+
+# Return mpv watch history newest to oldest. Need line "write-filename-in-watch-later-config=yes" in mpv.conf
+function .mpvhist {
 WATCH_LATER_DIR='/home/jjenkx/.config/mpv/watch_later/'
+HOW_MANY_TO_RETURN=1000
 cat $(find "$WATCH_LATER_DIR" -type f -printf "%T@ %p\n" | sort | cut -c23- | tail -$HOW_MANY_TO_RETURN) | perl -0777 -pe 's/^[^#].*\n|# (.+\/)(.*)/'\''$1$2'\''\n$2/gm' | rg --colors 'match:none' --colors 'match:fg:0,200,0' --colors 'match:bg:0,0,0' --colors 'match:style:bold' -B1 -P "^[^'\/].*" 
+unset WATCH_LATER_DIR
 }
 
+# Open MPV without binding to terminal
+function .mpv {
+setsid >/dev/null 2>&1 </dev/null mpv "$@" 2>&1 >/dev/null & 
+}
+
+# Open the newest file recorded in $WATCH_LATER_DIR. Need line "write-filename-in-watch-later-config=yes" in mpv.conf
+function .mpvlast {
+WATCH_LATER_DIR='/home/jjenkx/.config/mpv/watch_later/'
+.mpv "$(cat $(echo /home/jjenkx/.config/mpv/watch_later/$(exa --reverse -s modified /home/jjenkx/.config/mpv/watch_later/ | head -1)) | head -1 | cut -c3-)"
+unset WATCH_LATER_DIR
+}
+#alias .mpvlast='nohup mpv "$(cat $(echo /home/jjenkx/.config/mpv/watch_later/$(exa --reverse -s modified /home/jjenkx/.config/mpv/watch_later/ | head -1)) | head -1 | cut -c3-)"  &>/dev/null & '
 
 
 
 
+
+# Tracking shipments
+# Turn UPS tracking number into url
 ups () { 
 printf "https://ups.com/track?tracknum=$@\n"
 }
 
-
-
-
-
+# Turn USPS tracking number into url
 usps () {
 printf "https://tools.usps.com/go/TrackConfirmAction_input?strOrigTrackNum=$@\n"
 }
 
 
-
-
-
-function mpvnohup {
-nohup mpv "$@" &>/dev/null & 
-}
-
-
-
-
-
-# Ripgrep find files
-function rgf {
-rg "$PWD" --files --hidden 2>/dev/null | rg -iP "$@"
-}
-
-
-
-
-
-# Ripgrep find files, return files within single quotes
-function rgff {
-rg "$PWD" --files --hidden 2>/dev/null | perl -pe 's/(?='\'')/'\''\\'\''/g' | perl -pe 's/(?=^|\n)/'\''/g' | rg -iP "$@"
-}
 
 
 
@@ -213,6 +206,31 @@ alias yt='noglob yt-dlp --output '\''$HOME/Videos/yt-dlp/%(channel)s/%(upload_da
 # Download youtube and open in mpv
 alias yp='noglob yt-dlp --exec '\''nohup mpv '\''%(filepath)q'\'' &>/dev/null & '\'' --output '\''$HOME/Videos/yt-dlp/%(channel)s/%(upload_date>%Y-%m-%d)s_%(title)s/%(title)s_%(duration>%H-%M-%S)s_%(upload_date>%Y-%m-%d)s_%(resolution)s_Channel_(%(channel_id)s)_URL_(%(id)s).%(ext)s'\'' --ffmpeg-location /home/jjenkx/.local/bin.notpath/ --restrict-filenames --external-downloader aria2c --downloader-args "aria2c: -s 32 -x 32 -j 8 -c -k 8K --piece-length=28K --lowest-speed-limit=10K --retry-wait=2 --continue=true  --download-result=full " --write-description --write-info-json --write-thumbnail --prefer-free-formats --remux-video mkv --embed-chapters --sponsorblock-remove "sponsor,selfpromo,interaction,intro,outro,preview " --download-archive $HOME/Videos/yt-dlp/.yt-dlp-archived-done.txt '
 
+
+
+
+
+# Package Management
+
+#!/bin/bash
+# function update packages
+function upall {
+printf '\n\n\n\nRunning:\n         sudo pacman -Syu\n\n'
+sudo pacman -Syu
+printf '\n\n\n\nRunning:\n         yay -Syu\n\n\n\n'
+yay -Syu
+printf '\n\n\n\nRunning:\n         rustup update stable\n\n\n\n'
+rustup update stable
+printf '\n\n\n\nRunning:\n         cargo install cargo-update\n\n\n\n'
+cargo install cargo-update
+printf '\n\n\n\nRunning:\n         cargo install-update -a\n\n\n\n'
+cargo install-update -a
+printf '\n\n\n\nRunning:\n         /usr/bin/python3 -m pip install --upgrade pip\n\n\n\n'
+/usr/bin/python3 -m pip install --upgrade pip
+printf '\n\n\n\nRunning:\n         pip3 list --outdated --format=freeze | grep -v "\^\\-e" | cut -d = -f 1 | xargs -n1 pip3 install -U\n\n\n\n'
+pip3 list --outdated --format=freeze | grep -v '^\-e' | cut -d = -f 1 | xargs -n1 pip3 install -U
+}
+
 alias paci='sudo pacman -S --needed'
 alias pacsyu='sudo pacman -Syu'                  # update only standard pkgs
 alias pacsyyu='sudo pacman -Syyu'                # Refresh pkglist & update standard pkgs
@@ -223,6 +241,34 @@ alias yaysyu='yay -Syu'                          # update standard pkgs and AUR 
 #alias unlock='sudo rm /var/lib/pacman/db.lck'    # remove pacman lock
 #alias cleanup='sudo pacman -Rns $(pacman -Qtdq)' # remove orphaned packages
 
+
+
+
+
+# misc
+alias editbashrc='sudo nano /etc/bash.bashrc'
+alias editzsh='nano ~/.zshrc'
+alias hist='cat ~/.zhistory'
+alias listening='watch -n 0.3 ss -plunt'
+alias logoff='qdbus org.kde.ksmserver /KSMServer logout 0 0 0'
+alias logout='qdbus org.kde.ksmserver /KSMServer logout 0 0 0'
+alias makename='shuf -n250 /home/jjenkx/.local/urban.sorted.txt | tr "\012" "_" | head -c -1 | perl -pe '\''s/([^_]+_){4}[^_]+\K_/\n/gm'\'' | sed y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/ ; printf "\n"'
+alias myfunctions='declare -f $(cat ~/.zshrc | rg -Po "^function \K[^ ]+" ) '
+alias mygdmap='noglob sudo sh -c '\''nohup gdmap --folder=/ &>/dev/null & '\'' ' 
+alias mylsblk='lsblk -o MOUNTPOINT,SIZE,FSAVAIL,PATH,UUID,FSTYPE'
+alias pigz='pigz --keep'
+alias rpulse='systemctl --user restart pulseaudio.service'
+alias salias='alias | perl -pe "s/\n/\n\n\n\n/gm" | rg -iP -A 2 -B 2'
+alias unpigz='unpigz --keep'
+alias unrarall='unrar x "*.rar" ./extracted/'
+alias vpn='nohup sudo sh -c "killall openvpn >/dev/null 2>&1 &" ; sleep 3 ; nohup sudo sh -c "openvpn /path.to/my.ovpn >/dev/null 2>&1 &"'
+alias vps='ssh -i /path.to/keyfile username@domain.xy -p <portnum>'
+alias wea='curl wttr.in'
+
+
+
+
+
 # Download file with aria2c compiled with limits removed. https://github.com/JJenkx/aria2 .
 alias dl='noglob aria2c -s 8 -x 8 -j 8 -c -k 28K --piece-length=256K --lowest-speed-limit=10K --retry-wait=2 --continue=true '
 alias dl1='noglob aria2c -s 1 -x 1 -j 8 -c -k 28K --piece-length=256K --lowest-speed-limit=10K --retry-wait=2 --continue=true '
@@ -231,6 +277,10 @@ alias dl4='noglob aria2c -s 4 -x 4 -j 8 -c -k 28K --piece-length=256K --lowest-s
 alias dl8='noglob aria2c -s 8 -x 8 -j 8 -c -k 28K --piece-length=256K --lowest-speed-limit=10K --retry-wait=2 --continue=true '
 alias dl16='noglob aria2c -s 16 -x 16 -j 8 -c -k 28K --piece-length=256K --lowest-speed-limit=10K --retry-wait=2 --continue=true '
 alias dl32='noglob aria2c -s 32 -x 32 -j 8 -c -k 28K --piece-length=256K --lowest-speed-limit=10K --retry-wait=2 --continue=true '
+
+
+
+
 
 # exa
 alias la='exa -lhaFHumh --group-directories-first --octal-permissions --icons -s accessed'
@@ -286,29 +336,60 @@ alias watchdir10modified='watch --color -n "10.0" exa -lhaFHumh -r --color=alway
 alias watchdir10size='watch --color -n "10.0" exa -lhaFHumh -r --color=always --octal-permissions --group-directories-first --icons -s size'
 alias watchdir10type='watch --color -n "10.0" exa -lhaFHumh --color=always --octal-permissions --group-directories-first --icons -s type'
 
-# misc
-#alias rpulse='systemctl --user restart pulseaudio.service'
-alias cpdir='sudo rsync -aEhU --progress'
-alias cpf='sudo rsync -EghoptU --progress'
-alias editbashrc='sudo nano /etc/bash.bashrc'
-alias editzsh='nano ~/.zshrc'
-alias hist='cat ~/.zhistory'
-alias listening='watch -n 0.3 ss -plunt'
-alias logoff='qdbus org.kde.ksmserver /KSMServer logout 0 0 0'
-alias logout='qdbus org.kde.ksmserver /KSMServer logout 0 0 0'
-alias makename='shuf -n250 /home/jjenkx/.local/urban.sorted.txt | tr "\012" "_" | head -c -1 | perl -pe '\''s/([^_]+_){4}[^_]+\K_/\n/gm'\'' | sed y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/ ; printf "\n"'
-alias mpvplaylast='nohup mpv "$(cat $(echo /home/jjenkx/.config/mpv/watch_later/$(exa --reverse -s modified /home/jjenkx/.config/mpv/watch_later/ | head -1)) | head -1 | cut -c3-)"  &>/dev/null & '
-alias myfunctions='declare -f $(cat ~/.zshrc | rg -Po "^function \K[^ ]+" ) '
-alias mygdmap='noglob sudo sh -c '\''nohup gdmap --folder=/ &>/dev/null & '\'' ' 
-alias mylsblk='lsblk -o MOUNTPOINT,SIZE,FSAVAIL,PATH,UUID,FSTYPE'
-alias pigz='pigz --keep'
-alias rpulse='systemctl --user restart pulseaudio.service'
-alias salias='alias | perl -pe "s/\n/\n\n\n\n/gm" | rg -iP -A 2 -B 2'
-alias unpigz='unpigz --keep'
-alias unrarall='unrar x "*.rar" ./extracted/'
-alias vpn='nohup sudo sh -c "killall openvpn >/dev/null 2>&1 &" ; sleep 3 ; nohup sudo sh -c "openvpn /path.to/my.ovpn >/dev/null 2>&1 &"'
-alias vps='ssh -i /path.to/keyfile username@domain.xy -p <portnum>'
-alias wea='curl wttr.in'
+
+
+
+
+# Ripgrep find files
+function rgf {
+rg "$PWD" --files --hidden 2>/dev/null | rg -iP "$@"
+}
+
+
+
+
+
+# Ripgrep find files, return files within single quotes
+function rgff {
+rg "$PWD" --files --hidden 2>/dev/null | perl -pe 's/(?='\'')/'\''\\'\''/g' | perl -pe 's/(?=^|\n)/'\''/g' | rg -iP "$@"
+}
+
+
+
+
+
+# rsync source dest
+alias cpdir='sudo rsync --devices --executability --group --human-readable --links --owner --perms --progress --recursive --specials --stats --times --update --verbose'
+alias cpdirdry='sudo rsync --devices --dry-run --executability --group --human-readable --links --owner --perms --progress --recursive --specials --stats --times --update --verbose'
+    #  --dry-run       ,  -n,     perform a trial run with no changes made
+    #  --executability ,  -E,     preserve executability
+    #  --human-readable,  -h,     output numbers in a human-readable format
+    #  --update        ,  -u,     skip files that are newer on the receiver
+    #  --verbose       ,  -v,     increase verbosity
+    #  --recursive     ,  -r,     recurse into directories
+    #  --links         ,  -l,     copy symlinks as symlinks
+    #  --perms         ,  -p,     preserve permissions
+    #  --times         ,  -t,     preserve modification times
+    #  --group         ,  -g,     preserve group
+    #  --owner         ,  -o,     preserve owner (super-user only)
+    #  --specials                 preserve special files
+    #  --devices                  preserve device files (super-user only)
+    #  --progress                 show progress during transfer
+    #  --stats                    give some file-transfer stats
+
+alias cpf='sudo rsync --executability --group --human-readable --owner --perms --progress --stats --times --verbose'
+    #  --executability ;  -E,         preserve executability
+    #  --group         ;  -g,         preserve group
+    #  --human-readable;  -h,         output numbers in a human-readable format
+    #  --owner         ;  -o,         preserve owner (super-user only)
+    #  --perms         ;  -p,         preserve permissions
+    #  --progress      ;              show progress during transfer
+    #  --stats         ;              give some file-transfer stats
+    #  --times         ;  -t,         preserve modification times
+    #  --verbose       ;  -v          increase verbosity
+
+
+
 
 
 # Password/Alias Generation
@@ -321,8 +402,8 @@ alias wordpass="shuf -n200 ~/.local/db/urban.txt | tr '\012' '_' | head -c -1 | 
 
 
 
+# convert webp to jpg if static or gif/mp4 if animated
 #!/bin/bash
-# function convert webp to jpg if static or gif/mp4 if animated
 # Deps Arch: sudo pacman -S imagemagick libwebp parallel
 function webpconvert {
 ######### Set hard path. No links like "$HOME" Etc.
@@ -391,40 +472,8 @@ unset QUALITY_TWO
 
 
 
+# extract common file formats
 #!/bin/bash
-# function update packages
-
-function upall {
-
-printf '\n\n\n\nRunning:\n         sudo pacman -Syu\n\n'
-sudo pacman -Syu
-
-printf '\n\n\n\nRunning:\n         yay -Syu\n\n\n\n'
-yay -Syu
-
-printf '\n\n\n\nRunning:\n         rustup update stable\n\n\n\n'
-rustup update stable
-
-printf '\n\n\n\nRunning:\n         cargo install cargo-update\n\n\n\n'
-cargo install cargo-update
-
-printf '\n\n\n\nRunning:\n         cargo install-update -a\n\n\n\n'
-cargo install-update -a
-
-printf '\n\n\n\nRunning:\n         /usr/bin/python3 -m pip install --upgrade pip\n\n\n\n'
-/usr/bin/python3 -m pip install --upgrade pip
-
-printf '\n\n\n\nRunning:\n         pip3 list --outdated --format=freeze | grep -v "\^\\-e" | cut -d = -f 1 | xargs -n1 pip3 install -U\n\n\n\n'
-pip3 list --outdated --format=freeze | grep -v '^\-e' | cut -d = -f 1 | xargs -n1 pip3 install -U
-
-}
-
-
-
-
-
-#!/bin/bash
-# function Extract for common file formats
 SAVEIFS=$IFS
 IFS="$(printf '\n\t')"
 function extract {
@@ -476,6 +525,7 @@ IFS=$SAVEIFS
 
 
 
+# Extract multipart rar files.
 #!/bin/bash
 # Name - extractall.sh
 # Purpose - Extract multiple zip and rar files to ./ectracted folder
@@ -497,6 +547,7 @@ else
   echo "If conditions failed"
 fi
 }
+
 
 
 
