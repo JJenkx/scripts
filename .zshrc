@@ -54,10 +54,44 @@ unset -f append_path
 
 
 
+
+
+# Restart buggy plasma
+function rplasma {
+timeout 5 kquitapp5 plasmashell
+pgrep -U $USER -x plasmashell &>/dev/null && pkill -U $USER -x plasmashell
+pgrep -U $USER -x plasmashell &>/dev/null && pkill -U $USER -x -9 plasmashell # here the process does not get to clean-up.
+killall -9 plasmashell #sends a signal to all processes running any of the specified commands
+pgrep -U $USER -x plasmashell &>/dev/null && echo "ERROR: cannot kill plasmashell"
+sleep 2s
+setsid >/dev/null 2>&1 </dev/null nohup kstart5 plasmashell 2>&1 >/dev/null & 
+echo "Script done"
+}
+
+
+
+
+
+
+
 # Install Ruby Gems to ~/gems
 export GEM_HOME=$HOME/gems
 export PATH=$HOME/gems/bin:$PATH
 export PATH=$HOME/.local/share/gem/ruby/3.0.0/bin:$PATH
+
+
+
+
+
+alias psreport='ps axo class,comm,euid,f,fname,ni,pcpu,pgrp,pid,ppid,pri,psr,rtprio,ruid,sess,stat,tid,tmout,tpgid,tt,tty,user,wchan,wchan:14 >~/Documents/Reports/ps.axo.report'
+
+alias disk='df -h | grep sd \
+	    | sed -e "s_/dev/sda[1-9]_\x1b[34m&\x1b[0m_" \
+	    | sed -e "s_/dev/sd[b-z][1-9]_\x1b[33m&\x1b[0m_" \
+	    | sed -e "s_[,0-9]*[MG]_\x1b[36m&\x1b[0m_" \
+	    | sed -e "s_[0-9]*%_\x1b[32m&\x1b[0m_" \
+	    | sed -e "s_9[0-9]%_\x1b[31m&\x1b[0m_" \
+	    | sed -e "s_/mnt/[-_A-Za-z0-9]*_\x1b[34;1m&\x1b[0m_"'
 
 
 
@@ -152,7 +186,7 @@ unset BLOCKFILEDIR
 # MPV
 
 # Return mpv watch history newest to oldest. Need line "write-filename-in-watch-later-config=yes" in mpv.conf
-function .mpvhist {
+function mpvhist {
 WATCH_LATER_DIR='/home/jjenkx/.config/mpv/watch_later/'
 HOW_MANY_TO_RETURN=1000
 cat $(find "$WATCH_LATER_DIR" -type f -printf "%T@ %p\n" | sort | cut -c23- | tail -$HOW_MANY_TO_RETURN) | perl -0777 -pe 's/^[^#].*\n|# (.+\/)(.*)/'\''$1$2'\''\n$2/gm' | rg --colors 'match:none' --colors 'match:fg:0,200,0' --colors 'match:bg:0,0,0' --colors 'match:style:bold' -B1 -P "^[^'\/].*" 
@@ -204,7 +238,7 @@ alias sortfast='sort -S$(($(sed '\''/MemF/!d;s/[^0-9]*//g'\'' /proc/meminfo)/204
 alias yt='noglob yt-dlp --output '\''$HOME/Videos/yt-dlp/%(channel)s/%(upload_date>%Y-%m-%d)s_%(title)s/%(title)s_%(duration>%H-%M-%S)s_%(upload_date>%Y-%m-%d)s_%(resolution)s_Channel_(%(channel_id)s)_URL_(%(id)s).%(ext)s'\'' --ffmpeg-location /home/jjenkx/.local/bin.notpath/ --restrict-filenames --external-downloader aria2c --downloader-args "aria2c: -s 32 -x 32 -j 8 -c -k 8K --piece-length=128K --lowest-speed-limit=10K --retry-wait=2 --continue=true " --write-description --write-info-json --write-thumbnail --prefer-free-formats --remux-video mkv --embed-chapters --sponsorblock-remove "sponsor,selfpromo,interaction,intro,outro,preview " --download-archive $HOME/Videos/yt-dlp/.yt-dlp-archived-done.txt '
 
 # Download youtube and open in mpv
-alias yp='noglob yt-dlp --exec '\''nohup mpv '\''%(filepath)q'\'' &>/dev/null & '\'' --output '\''$HOME/Videos/yt-dlp/%(channel)s/%(upload_date>%Y-%m-%d)s_%(title)s/%(title)s_%(duration>%H-%M-%S)s_%(upload_date>%Y-%m-%d)s_%(resolution)s_Channel_(%(channel_id)s)_URL_(%(id)s).%(ext)s'\'' --ffmpeg-location /home/jjenkx/.local/bin.notpath/ --restrict-filenames --external-downloader aria2c --downloader-args "aria2c: -s 32 -x 32 -j 8 -c -k 8K --piece-length=28K --lowest-speed-limit=10K --retry-wait=2 --continue=true  --download-result=full " --write-description --write-info-json --write-thumbnail --prefer-free-formats --remux-video mkv --embed-chapters --sponsorblock-remove "sponsor,selfpromo,interaction,intro,outro,preview " --download-archive $HOME/Videos/yt-dlp/.yt-dlp-archived-done.txt '
+alias yp='noglob yt-dlp --exec '\''nohup mpv '\''%(filepath)q'\'' &>/dev/null & '\'' --output '\''$HOME/Videos/yt-dlp/%(channel)s/%(upload_date>%Y-%m-%d)s_%(title)s/%(title)s_%(duration>%H-%M-%S)s_%(upload_date>%Y-%m-%d)s_%(resolution)s_Channel_(%(channel_id)s)_URL_(%(id)s).%(ext)s'\'' --ffmpeg-location /home/jjenkx/.local/bin.notpath/ --restrict-filenames --external-downloader aria2c --downloader-args "aria2c: -s 64 -x 64 -j 8 -c -k 8K --piece-length=256K --lowest-speed-limit=150K --retry-wait=2 --continue=true  --download-result=full " --write-description --write-info-json --write-thumbnail --prefer-free-formats --remux-video mkv --embed-chapters --sponsorblock-remove "sponsor,selfpromo,interaction,intro,outro,preview " --download-archive $HOME/Videos/yt-dlp/.yt-dlp-archived-done.txt '
 
 
 
@@ -246,6 +280,7 @@ alias yaysyu='yay -Syu'                          # update standard pkgs and AUR 
 
 
 # misc
+alias checkrootkits="sudo rkhunter --update; sudo rkhunter --propupd; sudo rkhunter --check"
 alias editbashrc='sudo nano /etc/bash.bashrc'
 alias editzsh='nano ~/.zshrc'
 alias hist='cat ~/.zhistory'
@@ -335,6 +370,16 @@ alias watchdir10inode='watch --color -n "10.0" exa -lhaFHumh --color=always --oc
 alias watchdir10modified='watch --color -n "10.0" exa -lhaFHumh -r --color=always --octal-permissions --group-directories-first --icons -s modified'
 alias watchdir10size='watch --color -n "10.0" exa -lhaFHumh -r --color=always --octal-permissions --group-directories-first --icons -s size'
 alias watchdir10type='watch --color -n "10.0" exa -lhaFHumh --color=always --octal-permissions --group-directories-first --icons -s type'
+
+
+
+
+
+# Find find files
+function findfile {
+searchregex="$@"
+find "$PWD" -name "*" -type f -regextype posix-extended -iregex "$searchregex"
+}
 
 
 
@@ -553,3 +598,8 @@ fi
 
 
 #alias makename='for ITEM in $(len=300; tr -dc A-Za-z013 < /dev/urandom | head -c ${len} | xargs | perl -nle'\''print for /.{9}/g'\'' | perl -0777 -p -e '\''s/(?<=^.)/aeiou/egm'\'' | perl -0777 -p -e '\''s/(?=.)/ /g'\'' | perl -MList::Util=shuffle -alne '\''print shuffle @F'\''); do { echo "$ITEM" ; shuf -n1 /usr/share/dict/words | tr '\''\012'\'' '\''_'\'' | tr -d '\''\'\'''\'''\''\'\'' | sed y/åäâáçêéèíñôóöüûABCDEFGHIJKLMNOPQRSTUVWXYZbxesohy/aaaaceeeinooouuabcd3fgh1jklmnopqrstuvwxyzBX3S04Y/ ; } done && echo'
+
+
+
+
+
