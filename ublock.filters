@@ -1,0 +1,168 @@
+!from WL start
+!www.amazon.com##.a-spacing-double-large.a-section
+!www.amazon.com##.a-text-normal.s-desktop-toolbar.a-size-base
+!www.amazon.com##.nav-sprite-v1.navLeftFooter
+!www.amazon.com##.rhf-frame
+!www.amazon.com##.s-image
+!www.amazon.com##.s-shopping-adviser.a-spacing-none.a-section
+!www.amazon.com##.sg-col-4-of-20.sg-col.sg-col-4-of-16.s-matching-dir.sg-col-4-of-12
+!www.amazon.com##.sg-col-4-of-20.sg-col.sg-col-4-of-16.s-matching-dir.sg-col-4-of-12 > .sg-col-inner
+!www.amazon.com##.widgetId\=feedback.template\=FEEDBACK.slot\=MAIN.celwidget > .a-spacing-top-medium.a-spacing-medium.a-section > .sg-row
+!www.amazon.com###navbar-main
+!www.amazon.com##div.s-widget.s-flex-full-width.s-result-item.a-spacing-none.a-section:nth-of-type(31)
+!www.amazon.com##div.sg-col-12-of-16.sg-col.s-widget.sg-col-16-of-20.sg-col-0-of-12.s-result-item
+*##+js(aopr, AudioBuffer.prototype.getChannelData)
+*##+js(aopr, BaseAudioContext.prototype.createOscillator)
+*##+js(aopr, HTMLCanvasElement.prototype.toDataURL)
+*##+js(aopr, WebGLRenderingContext.prototype.getExtension)
+*##+js(aopr, WebGLRenderingContext.prototype.getParameter)
+*##+js(set, navigator.deviceMemory, 4)
+*##+js(set, navigator.hardwareConcurrency, 4)
+*##+js(set, navigator.maxTouchPoints, 0)
+*##+js(set, navigator.plugins, undefined)
+||b.thumbs.redditmedia.com/egOaVtRGQV_soQtPCgvoT0r7NhDNiLtLBEUvmh2CpNs.png$image
+||ichef.bbci.co.uk/news/*/cpsprodpb/179AB/production/_125838669_index_promo_macron_kroes-nc.png$image
+abcnews.go.com##.Article__Column--sidebar.Article__Column
+abcnews.go.com##.Article__Footer--news.Article__Footer
+abcnews.go.com##.Article__Header__Share.flex-no-wrap.flex.Share
+abcnews.go.com##.FeaturedMedia
+abcnews.go.com##.footer__container
+abcnews.go.com##.Image__Wrapper--relative.Image__Wrapper
+abcnews.go.com##.navigation__menu
+abcnews.go.com##svg
+arstechnica.com##.tranquility_annotation_selection
+arstechnica.com##.tranquility_menu
+arstechnica.com###tranquility_more_links_btn
+arxiv.org##svg
+blog.playstation.com##svg
+blog.pushwoosh.com##svg
+chrome.google.com##.Yb
+chrome.google.com##.yD5gtd
+community.chocolatey.org##.show.fade.modal-backdrop
+community.chocolatey.org###package-disclaimer
+covid19.ncdhhs.gov##.message
+getpocket.com##* > svg
+gfycat.com##.type3.pro-cta
+githubmemory.com##svg
+hackingfather.com##.a6116dd4715611699746304.g6116dd47155f4740256305
+hackingfather.com##.m6116dd614d215014459429.l6116dd614d1f8996964468
+health.clevelandclinic.org##svg
+ihealthlabs.com##svg
+indyweek.com###pico_prompt
+it.slashdot.org##svg
+lawandcrime.com##svg
+news.sky.com##svg
+odysee.com##.claim-preview--premium-plus
+odysee.com##.menu__list--notifications-list > [href]
+odysee.com##li.claim-preview--premium-plus.claim-preview--tile.card > [href="/$/membership"]
+old.reddit.com##.happening-now
+old.reddit.com##.listingsignupbar.infobar
+old.reddit.com##.premium-banner
+old.reddit.com##.titlebox
+old.reddit.com##polygon
+outlook.live.com##._1fti_QgAzqGWPGlqh_FSvI
+outlook.live.com##div:has(>div>div>span:has-text(It looks like you're using an ad blocker.))
+outlook.live.com##div>button>div>span:has-text(Upgrade to Microsoft 365 with premium Outlook features)
+simplywall.st###modal-container
+techxplore.com##.article-actions
+techxplore.com##.categories
+techxplore.com##.d-print-none.d-lg-block.d-none.article-sidebar.col-xl-3.col-lg-4.col-md.offset-xl-1
+techxplore.com##.d-print-none.my-4.article-main__explore
+techxplore.com##.d-print-none.py-5.footer > .container
+techxplore.com##.flex-wrap.justify-content-between.header-articles-nav.d-flex
+techxplore.com##.mb-lg-0.mb-5.mt-3.col-12 > .d-print-none.align-items-center.d-flex.my-4.article-interaction
+techxplore.com##.modal-dialog
+techxplore.com##.mt-4.article-main__note
+techxplore.com##.p-0.mb-0.bg-white.breadcrumb
+techxplore.com##.p-3.text-muted.border
+techxplore.com##.pt-lg-0.pt-4.align-items-center.row
+techxplore.com##.w-75.text-center.my-4
+techxplore.com###feedback-to-editors > .modal-dialog > .modal-content
+techxplore.com###js-news-related-slider
+techxplore.com###js-soc-panel
+www.aljazeera.com##svg
+www.amazon.com##.sg-col-4-of-20.sg-col.sg-col-4-of-16.s-matching-dir.sg-col-4-of-12
+www.amazon.com##.widgetId\=feedback.template\=FEEDBACK.slot\=MAIN.celwidget.s-widget-container-height-medium.s-spacing-medium.s-widget-container
+www.amazon.com###ape_Search_auto-bottom-advertising-0_portal-batch-fast-btf-loom_placement
+www.amazon.com###ewc
+www.amazon.com###nav-flyout-ewc
+www.amazon.com##div.s-widget-spacing-large.sg-col-12-of-16.sg-col.s-widget.sg-col-16-of-20.sg-col-0-of-12.s-result-item
+www.bbc.com##.tp-active.tp-backdrop
+www.bbc.com##.tp-modal
+www.bleepingcomputer.com##header
+www.bloomberg.com###fortress-paywall-container-root
+www.bloomberg.com###fortress-preblocked-container-root
+www.cargurus.com##svg
+www.cityam.com##svg
+www.cnet.com##svg
+www.costco.com###header-top > div
+www.crutchfield.com##svg
+www.eater.com##.c-toaster-stuck.c-toaster-active.c-toaster
+www.etsy.com##svg
+www.healthtap.com###lightboxContainer
+www.healthtap.com###lightboxOverlay
+www.iflscience.com##svg
+www.iptorrents.com##div.tmS
+www.latimes.com##.met-flyout
+www.latimes.com##.ncm-container
+www.latimes.com##.wrapclicker
+www.marketwatch.com##.has-ad.full-width.bulletins.column--full.column
+www.nbcnews.com##svg
+www.newyorker.com##.stacked-navigation__grid.grid-items-0.grid
+www.nrk.no##.article-header-sidebar.sl18.sl12.sl9.sl6.s4.fl.col.g22 > .sl18.sl12.sl9.sl6.s2.fl.col.g11 > .container-widget-content > .article-share > .nrkno-no-print.nrkno-share > a.nrk-button--o.nrk-button > svg
+www.nrk.no##svg
+www.nytimes.com##.e1x0szx60.css-17nqy7q.expanded-dock.shown.MAG_web_regi_us_sale_apple-pay-dock-ecd-test
+www.nytimes.com##.efw9frv0.css-3fbowa.expanded-dock.expanded.shown.MAG_web_all_Monthly-Sale-dock
+www.pcgamer.com##.exit-intent__wrapper
+www.pcgamer.com##.exitIntent
+www.reuters.com##footer
+www.reuters.com##svg
+www.rollingstone.com##svg
+www.tampabay.com##svg
+www.techrepublic.com##svg
+www.theatlantic.com###paywall
+www.theatlantic.com##svg
+www.thecybersecuritytimes.com##.wp-block-image
+www.thecybersecuritytimes.com###logo_wrapper
+www.thecybersecuritytimes.com###nav_wrapper
+www.theverge.com##.c-entry-group-labels--article.c-entry-group-labels
+www.theverge.com##.c-footer
+www.theverge.com##.c-newsletter_signup_box__main
+www.theverge.com##.c-related-list
+www.theverge.com##.c-tab-bar
+www.theverge.com##.l-header
+www.theverge.com##.link-skip.sr-only
+www.theverge.com##svg
+www.tweaking4all.com##.t4a_helpus
+www.tweaking4all.com###amazing > div > .t4a_helpus
+www.tweaking4all.com###post-7028 > .t4a_post_content > .t4a_helpus
+www.urbandictionary.com##svg
+www.verdict.co.uk##.c-newsletter-signup
+www.verdict.co.uk##.c-post-single__header-meta-before
+www.verdict.co.uk##.data_t_holder
+www.verdict.co.uk##.footer-logo
+www.verdict.co.uk##.newsletter-modal
+www.verdict.co.uk##.sections
+www.verdict.co.uk###siteHeader
+www.verdict.co.uk##svg
+www.vox.com###mByqXs
+www.vox.com###uP9FTl > div
+www.vox.com##svg
+www.wired.com##.site-navigation.standard-navigation--mobile-option-cm.standard-navigation--mobile-logo-align-undefined.standard-navigation--logo-align-left.standard-navigation--palette-standard.standard-navigation--decoration-border-thin--standard.standard-navigation
+www.wired.com##.standard-navigation__primary-links
+www.yalemedicine.org##svg
+www.youtube.com##.sbdd_b
+www.youtube.com##.ytd-donation-shelf-renderer.style-scope
+www.youtube.com##.ytd-feed-nudge-renderer.style-scope
+www.youtube.com##.ytd-mealbar-promo-renderer.style-scope
+www.youtube.com##.ytd-primetime-promo-renderer.style-scope
+www.youtube.com##.ytd-rich-section-renderer.style-scope
+www.youtube.com##.ytd-rich-section-renderer.style-scope > .ytd-rich-shelf-renderer.style-scope
+www.youtube.com###clarify-box > .ytd-watch-flexy.style-scope
+www.youtube.com###dismissible > .ytd-feed-nudge-renderer.style-scope
+www.youtube.com###dismissible > .ytd-statement-banner-renderer.style-scope
+www.youtube.com###offer-module
+www.youtube.com###shelf-container
+www.youtube.com##ytd-clarification-renderer.ytd-item-section-renderer.style-scope
+www.zdnet.com##svg
+!from WL end
