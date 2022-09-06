@@ -72,8 +72,6 @@ echo "Script done"
 
 
 
-
-
 # Install Ruby Gems to ~/gems
 export GEM_HOME=$HOME/gems
 export PATH=$HOME/gems/bin:$PATH
@@ -83,15 +81,23 @@ export PATH=$HOME/.local/share/gem/ruby/3.0.0/bin:$PATH
 
 
 
-alias psreport='ps axo class,comm,euid,f,fname,ni,pcpu,pgrp,pid,ppid,pri,psr,rtprio,ruid,sess,stat,tid,tmout,tpgid,tt,tty,user,wchan,wchan:14 >~/Documents/Reports/ps.axo.report'
+function disks {
+echo "╓───── m o u n t . p o i n t s"; \
+echo "╙────────────────────────────────────── ─ ─ "; \
+lsblk -a | rg -Pv "^(dev|run|tmpfs|loop)" ; echo ""; \
+echo "╓───── d i s k . u s a g e";\
+echo "╙────────────────────────────────────── ─ ─ "; \
+df -h | rg -Pv "^(Filesystem|dev|/dev/loop|run|tmpfs|loop)" | sort -g \
+| perl -pe 's/^(\/dev\/)(sda\d+)?(sd[b-z]\d+)?(nvme[^ ]+)?/\x1b[34;1m$1\x1b[0m\x1b[37;1m$2\x1b[0m\x1b[33;1m$3\x1b[0m\x1b[32;1m$4\x1b[0m/gm' \
+| perl -pe 's/(9\d%)/\x1b[31;1m$1\x1b[0m/gm' \
+| perl -0777 -pe 's/\A/Filesystem      Size  Used Avail Use% Mounted on\n/gm' ; 
+}
 
-alias disk='df -h | grep sd \
-	    | sed -e "s_/dev/sda[1-9]_\x1b[34m&\x1b[0m_" \
-	    | sed -e "s_/dev/sd[b-z][1-9]_\x1b[33m&\x1b[0m_" \
-	    | sed -e "s_[,0-9]*[MG]_\x1b[36m&\x1b[0m_" \
-	    | sed -e "s_[0-9]*%_\x1b[32m&\x1b[0m_" \
-	    | sed -e "s_9[0-9]%_\x1b[31m&\x1b[0m_" \
-	    | sed -e "s_/mnt/[-_A-Za-z0-9]*_\x1b[34;1m&\x1b[0m_"'
+
+
+
+
+alias psreport='ps axo class,comm,euid,f,fname,ni,pcpu,pgrp,pid,ppid,pri,psr,rtprio,ruid,sess,stat,tid,tmout,tpgid,tt,tty,user,wchan,wchan:14 >~/Documents/Reports/ps.axo.report'
 
 
 
@@ -280,6 +286,10 @@ alias yaysyu='yay -Syu'                          # update standard pkgs and AUR 
 
 
 # misc
+alias '..'='cd ..'
+alias '...'="cd ../.."
+alias '....'="cd ../../.."
+alias '.....'="cd ../../../.."
 alias checkrootkits="sudo rkhunter --update; sudo rkhunter --propupd; sudo rkhunter --check"
 alias editbashrc='sudo nano /etc/bash.bashrc'
 alias editzsh='nano ~/.zshrc'
@@ -318,13 +328,14 @@ alias dl32='noglob aria2c -s 32 -x 32 -j 8 -c -k 28K --piece-length=256K --lowes
 
 
 # exa
-alias la='exa -lhaFHumh --group-directories-first --octal-permissions --icons -s accessed'
-alias lc='exa -lhaFHumh --group-directories-first --octal-permissions --icons -s created'
-alias le='exa -lhaFHumh --group-directories-first --octal-permissions --icons -s extension'
-alias ll='exa -lhaFHumh --group-directories-first --octal-permissions --icons'
-alias lm='exa -lhaFHumh --group-directories-first --octal-permissions --icons -s modified'
-alias ls='exa -lhaFHumh --group-directories-first --octal-permissions --icons -s size'
-alias lt='exa -lhaFHumh --group-directories-first --octal-permissions --icons -s type'
+alias la='exa --no-permissions --no-filesize --no-user --time-style=long-iso --time=accessed -lhaFh@ --group-directories-first --icons -s accessed'
+alias lc='exa --no-permissions --no-filesize --no-user --time-style=long-iso --time=created -lhaFh@ --group-directories-first --icons -s accessed'
+alias le='exa --no-permissions --no-filesize --no-user --no-time -lhaFh@ --group-directories-first --icons -s extension'
+alias ll='exa -lhaghm@ --time-style=long-iso --octal-permissions --group-directories-first --icons'
+alias lm='exa --no-permissions --no-filesize --no-user --time-style=long-iso --time=modified -lhaFh@ --group-directories-first --icons -s modified'
+alias ls='exa --no-permissions --no-user --no-time -lah --group-directories-first --icons -s size'
+alias lt='exa --no-permissions --no-user --no-time --no-filesize -lah --group-directories-first --icons -s type'
+alias lo='exa --octal-permissions --no-permissions --no-filesize --no-user --no-time -lah --group-directories-first --icons -s type'
 
 alias watchdir.5='watch --color -n "0.5" exa -lhaFHumh --color=always --octal-permissions --group-directories-first --icons'
 alias watchdir.5accessed='watch --color -n "0.5" exa -lhaFHumh -r --color=always --octal-permissions --group-directories-first --icons -s accessed'
