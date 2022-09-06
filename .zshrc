@@ -404,8 +404,8 @@ rg "$PWD" --files --hidden 2>/dev/null | perl -pe 's/(?='\'')/'\''\\'\''/g' | pe
 
 
 # rsync source dest
-alias cpdir='sudo rsync --devices --executability --group --human-readable --links --owner --perms --progress --recursive --specials --stats --times --update --verbose'
-alias cpdirdry='sudo rsync --devices --dry-run --executability --group --human-readable --links --owner --perms --progress --recursive --specials --stats --times --update --verbose'
+alias cpdir='sudo rsync --devices --executability --group --human-readable --links --owner --perms --progress --recursive --specials --stats --times --verbose'
+alias cpdirdry='sudo rsync --devices --dry-run --executability --group --human-readable --links --owner --perms --progress --recursive --specials --stats --times --verbose'
     #  --dry-run       ,  -n,     perform a trial run with no changes made
     #  --executability ,  -E,     preserve executability
     #  --human-readable,  -h,     output numbers in a human-readable format
