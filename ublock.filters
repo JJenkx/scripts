@@ -166,3 +166,25 @@ www.youtube.com###shelf-container
 www.youtube.com##ytd-clarification-renderer.ytd-item-section-renderer.style-scope
 www.zdnet.com##svg
 !from WL end
+
+!from PL start
+||iptorrents.com/pic/du/1d.gif$image
+iptorrents.com##div.tmS:nth-of-type(1)
+iptorrents.com##div.tmS:nth-of-type(2)
+old.reddit.com##.happening-now
+old.reddit.com##.listingsignupbar.infobar
+old.reddit.com##.premium-banner
+stackoverflow.com##.is-visible.s-popover
+www.mississippicir.org##.copy-layer-background.sqs-slide-layer-content
+www.ssga.com##.ssmp-global-modal.ssmp-mobile-header.ssmp-header
+www.theguardian.com##:xpath(/html/body/aside[2]/gu-island/div/div/div/section)
+www.youtube.com##.sbsb_a
+www.youtube.com##.style-scope.ytd-thumbnail-overlay-loading-preview-renderer
+www.youtube.com##.ytd-info-panel-container-renderer.style-scope
+www.youtube.com##inline-preview-player
+www.youtube.com##tp-yt-paper-dialog.ytd-popup-container.style-scope
+www.youtube.com##ytd-rich-section-renderer.ytd-rich-grid-renderer.style-scope > .ytd-rich-section-renderer.style-scope
+www.youtube.com##ytd-video-preview
+zaiste.net##.border-b.border-gray-500.bg-gray-700
+zaiste.net##footer
+!from PL end
