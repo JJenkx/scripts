@@ -302,7 +302,8 @@ alias myfunctions='\
       declare -f $(cat ~/.zshrc \
     | rg -Po "^function \K[^ ]+" ) \
     | perl -0777 -pe "s/\n(?![^\s]+ \(\) \{)/NEWLINEHOLDER/gm" \
-    | sort | perl -0777 -pe "s/NEWLINEHOLDER/\n/gm" \
+    | sort \
+    | perl -0777 -pe "s/NEWLINEHOLDER/\n/gm" \
     | perl -0777 -pe "s/\n(?=[^\s]+ \(\) \{)/\n\n\n\n\n\n\n\n\n/gm" \
 '
 alias mygdmap='noglob sudo sh -c '\''nohup gdmap --folder=/ &>/dev/null & '\'' ' 
