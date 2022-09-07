@@ -353,14 +353,18 @@ alias dl32='noglob aria2c -s 32 -x 32 -j 8 -c -k 28K --piece-length=256K --lowes
 
 
 # exa
+
 alias la='exa --no-permissions --no-filesize --no-user --time-style=long-iso --time=accessed -lhaFh@ --group-directories-first --icons -s accessed'
-alias lc='exa --no-permissions --no-filesize --no-user --time-style=long-iso --time=created -lhaFh@ --group-directories-first --icons -s accessed'
+alias lc='exa --no-permissions --no-filesize --no-user --time-style=long-iso  --time=created -lhaFh@ --group-directories-first --icons -s accessed'
 alias le='exa --no-permissions --no-filesize --no-user --no-time -lhaFh@ --group-directories-first --icons -s extension'
+alias lg='exa --octal-permissions --no-permissions --no-filesize --no-time -lahg --group-directories-first --icons -s none'
 alias ll='exa -lhaghm@ --time-style=long-iso --octal-permissions --group-directories-first --icons'
 alias lm='exa --no-permissions --no-filesize --no-user --time-style=long-iso --time=modified -lhaFh@ --group-directories-first --icons -s modified'
+alias lo='exa --octal-permissions --no-permissions --no-filesize --no-time -lahg --group-directories-first --icons -s none'
+alias lp='exa --octal-permissions --no-permissions --no-filesize --no-time -lahg --group-directories-first --icons -s none'
 alias ls='exa --no-permissions --no-user --no-time -lah --group-directories-first --icons -s size'
 alias lt='exa --no-permissions --no-user --no-time --no-filesize -lah --group-directories-first --icons -s type'
-alias lo='exa --octal-permissions --no-permissions --no-filesize --no-user --no-time -lah --group-directories-first --icons -s type'
+
 
 alias watchdir.5='watch --color -n "0.5" exa -lhaFHumh --color=always --octal-permissions --group-directories-first --icons'
 alias watchdir.5accessed='watch --color -n "0.5" exa -lhaFHumh -r --color=always --octal-permissions --group-directories-first --icons -s accessed'
