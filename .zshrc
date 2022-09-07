@@ -54,8 +54,6 @@ unset -f append_path
 
 
 
-
-
 # Restart buggy plasma
 function rplasma {
 timeout 5 kquitapp5 plasmashell
