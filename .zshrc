@@ -298,7 +298,13 @@ alias listening='watch -n 0.3 ss -plunt'
 alias logoff='qdbus org.kde.ksmserver /KSMServer logout 0 0 0'
 alias logout='qdbus org.kde.ksmserver /KSMServer logout 0 0 0'
 alias makename='shuf -n250 /home/jjenkx/.local/urban.sorted.txt | tr "\012" "_" | head -c -1 | perl -pe '\''s/([^_]+_){4}[^_]+\K_/\n/gm'\'' | sed y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/ ; printf "\n"'
-alias myfunctions='declare -f $(cat ~/.zshrc | rg -Po "^function \K[^ ]+" ) '
+alias myfunctions='\
+      declare -f $(cat ~/.zshrc \
+    | rg -Po "^function \K[^ ]+" ) \
+    | perl -0777 -pe "s/\n(?![^\s]+ \(\) \{)/NEWLINEHOLDER/gm" \
+    | sort | perl -0777 -pe "s/NEWLINEHOLDER/\n/gm" \
+    | perl -0777 -pe "s/\n(?=[^\s]+ \(\) \{)/\n\n\n\n\n\n\n\n\n/gm" \
+'
 alias mygdmap='noglob sudo sh -c '\''nohup gdmap --folder=/ &>/dev/null & '\'' ' 
 alias mylsblk='lsblk -o MOUNTPOINT,SIZE,FSAVAIL,PATH,UUID,FSTYPE'
 alias pigz='pigz --keep'
