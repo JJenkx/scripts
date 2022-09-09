@@ -304,6 +304,11 @@ alias '..'='cd ..'
 alias '...'="cd ../.."
 alias '....'="cd ../../.."
 alias '.....'="cd ../../../.."
+alias .1='cd ..'
+alias .2='cd ../..'
+alias .3='cd ../../..'
+alias .4='cd ../../../..'
+alias .5='cd ../../../../..'
 alias checkrootkits="sudo rkhunter --update; sudo rkhunter --propupd; sudo rkhunter --check"
 alias editbashrc='sudo nano /etc/bash.bashrc'
 alias editzsh='nano ~/.zshrc'
@@ -352,14 +357,15 @@ alias dl32='noglob aria2c -s 32 -x 32 -j 8 -c -k 28K --piece-length=256K --lowes
 
 # exa
 
+alias l.="find "$PWD" -maxdepth 1 -name '*' -type f -regextype posix-extended -regex '(^.*/\.[^\/]+$)' -exec exa --octal-permissions --no-permissions -lahg "{}" + "
 alias la='exa --no-permissions --no-filesize --no-user --time-style=long-iso --time=accessed -lhaFh@ --group-directories-first --icons -s accessed'
 alias lc='exa --no-permissions --no-filesize --no-user --time-style=long-iso  --time=created -lhaFh@ --group-directories-first --icons -s accessed'
 alias le='exa --no-permissions --no-filesize --no-user --no-time -lhaFh@ --group-directories-first --icons -s extension'
-alias lg='exa --octal-permissions --no-permissions --no-filesize --no-time -lahg --group-directories-first --icons -s none'
+alias lg='exa --octal-permissions --no-permissions --no-filesize --no-time -lahg --group-directories-first --icons -s name'
 alias ll='exa -lhaghm@ --time-style=long-iso --octal-permissions --group-directories-first --icons'
 alias lm='exa --no-permissions --no-filesize --no-user --time-style=long-iso --time=modified -lhaFh@ --group-directories-first --icons -s modified'
-alias lo='exa --octal-permissions --no-permissions --no-filesize --no-time -lahg --group-directories-first --icons -s none'
-alias lp='exa --octal-permissions --no-permissions --no-filesize --no-time -lahg --group-directories-first --icons -s none'
+alias lo='exa --octal-permissions --no-permissions --no-filesize --no-time -lahg --group-directories-first --icons -s name'
+alias lp='exa --octal-permissions --no-permissions --no-filesize --no-time -lahg --group-directories-first --icons -s name'
 alias ls='exa --no-permissions --no-user --no-time -lah --group-directories-first --icons -s size'
 alias lt='exa --no-permissions --no-user --no-time --no-filesize -lah --group-directories-first --icons -s type'
 
@@ -603,6 +609,36 @@ function extract {
 fi
 }
 IFS=$SAVEIFS
+
+
+
+
+
+## Extract files
+	ex ()
+	{
+	    if [ -f "$1" ] ; then
+	     case $1 in
+	       *.tar.bz2)   tar xjf $1   ;;
+	       *.tar.gz)    tar xzf $1   ;;
+	       *.bz2)       bunzip2 $1   ;;
+	       *.rar)       unrar x $1   ;;
+	       *.gz)        gunzip $1    ;;
+	       *.tar)       tar xf $1    ;;
+	       *.tbz2)      tar xjf $1   ;;
+	       *.tgz)       tar xzf $1   ;;
+	       *.zip)       unzip $1     ;;
+	       *.Z)         uncompress $1;;
+	       *.7z)        7z x $1      ;;
+	       *.deb)       ar x $1      ;;
+	       *.tar.xz)    tar xf $1    ;;
+	       *.tar.zst)   unzstd $1    ;;
+	       *)           echo "'$1' cannot be extracted via ex()" ;;
+	     esac
+	   else
+	     echo "'$1' is not a valid file"
+	   fi
+	}
 
 
 
