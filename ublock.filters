@@ -1,4 +1,33 @@
-!from WL start
+
+!*##html,body:style(overflow: visible !important;)
+!outlook.live.com##div:has(>div>div>span:has-text(It looks like you're using an ad blocker.))
+!outlook.live.com##div[aria-label][data-max-width] > div[class^="_"] >div[class] > div.ms-FocusZone.disableTextSelection + div[class]:not([data-focuszone-id]):not([role]) > button
+!outlook.live.com##div[autoid].hiddenOverflow > div[autoid] a.o365button[href*="_Upgrade"]
+!outlook.live.com##div[class][style] > div[data-focuszone-id*="FocusZone"] + div[class] > div[class] > button[class]
+!outlook.live.com##div>button>div>span:has-text(Upgrade to Microsoft 365 with premium Outlook features)
+!twitter.com##:xpath(/html/body/div[1]/div/div/div[1]/div[2]/div/div/div/div/div/div[2]/div[1])
+!twitter.com##:xpath(/html/body/div[1]/div/div/div[1]/div/div[1]/div/div)
+!twitter.com##:xpath(/html/body/div[1]/div/div/div[1]/div/div[1]/div/div/div/div[2])
+!twitter.com##:xpath(/html/body/div[1]/div/div/div[1]/div/div[1]/div/div/div/div/div/div/div/div)
+!twitter.com##:xpath(/html/body/div[1]/div/div/div[2]/div[3])
+!twitter.com##:xpath(/html/body/div[1]/div/div/div[2]/header)
+!twitter.com##:xpath(/html/body/div[1]/div/div/div[2]/header/div/div/div)
+!twitter.com##:xpath(/html/body/div[1]/div/div/div[2]/main/div/div/div/div[2]/div/div[2]/div/div/div)
+!twitter.com##:xpath(/html/body/div[1]/div/div/div[2]/main/div/div/div/div[2]/div/div[2]/div/div/div/div[3]/section)
+!twitter.com##:xpath(/html/body/div[1]/div/div/div[2]/main/div/div/div/div[2]/div/div[2]/div/div/div/div[7]/nav)
+!twitter.com##:xpath(/html/body/div[1]/div/div/div[2]/main/div/div/div/div/div/div[2]/div/div/section/div/div/div[8]/div/div/section/div)
+!twitter.com##:xpath(/html/body/div[1]/div/div/div[2]/main/div/div/div/div/div/div[2]/div/div/section/div/div/div[contains(string(),'Topics to follow')])
+!twitter.com##:xpath(/html/body/div[2]/div/div/div[1]/div[1]/div[2]/div/div/div)
+!twitter.com##:xpath(/html/body/div[2]/div/div/div[1]/div[2]/div/div/div/div/div/*)
+!twitter.com##:xpath(/html/body/div[2]/div/div/div[1]/div/div[1]/div/div/div)
+!twitter.com##:xpath(/html/body/div[2]/div/div/div[2]/div[3])
+!twitter.com##:xpath(/html/body/div[2]/div/div/div[2]/header/div/div/div)
+!twitter.com##:xpath(/html/body/div[2]/div/div/div[2]/main/div/div/div/div[1]/div/div[2]/div/div/section/div/div/div[7]/div/div/div[contains(string(),'Topics to follow')])
+!twitter.com##:xpath(/html/body/div[2]/div/div/div[2]/main/div/div/div/div[1]/div/div[2]/div/div/section/div/div/div[8]/div/div/section/div)
+!twitter.com##:xpath(/html/body/div[2]/div/div/div[2]/main/div/div/div/div[2]/div/div[2]/div/div/div/div[3]/section)
+!twitter.com##:xpath(/html/body/div[2]/div/div/div[2]/main/div/div/div/div/div/div[2]/div/div/section/div/div/div[5]/div/div/div[contains(string(),'Topics to follow')])
+!twitter.com##:xpath(/html/body/div[2]/div/div/div[2]/main/div/div/div/div/div/div[2]/div/div/section/div/div/div[6]/div/div/section/div)
+!twitter.com##html,body:style(overflow: visible !important;)
 !www.amazon.com##.a-spacing-double-large.a-section
 !www.amazon.com##.a-text-normal.s-desktop-toolbar.a-size-base
 !www.amazon.com##.nav-sprite-v1.navLeftFooter
@@ -21,7 +50,9 @@
 *##+js(set, navigator.maxTouchPoints, 0)
 *##+js(set, navigator.plugins, undefined)
 ||b.thumbs.redditmedia.com/egOaVtRGQV_soQtPCgvoT0r7NhDNiLtLBEUvmh2CpNs.png$image
+||buy.tinypass.com/checkout/template/cacheableShow$subdocument
 ||ichef.bbci.co.uk/news/*/cpsprodpb/179AB/production/_125838669_index_promo_macron_kroes-nc.png$image
+||img2.zamunda.se/pic/test.jpg$image
 abcnews.go.com##.Article__Column--sidebar.Article__Column
 abcnews.go.com##.Article__Footer--news.Article__Footer
 abcnews.go.com##.Article__Header__Share.flex-no-wrap.flex.Share
@@ -41,6 +72,8 @@ chrome.google.com##.yD5gtd
 community.chocolatey.org##.show.fade.modal-backdrop
 community.chocolatey.org###package-disclaimer
 covid19.ncdhhs.gov##.message
+discord.com##:xpath(/html/body/div[2]/div[2]/div/div[1]/div/div[2]/div/div[1]/div/div[*][contains(string(),'Want to take full advantage')])
+discord.com##:xpath(/html/body/div[2]/div[2]/div/div[3]/div/div/div/div[*][contains(string(),'Boost this server to add')])
 getpocket.com##* > svg
 gfycat.com##.type3.pro-cta
 githubmemory.com##svg
@@ -60,10 +93,20 @@ old.reddit.com##.listingsignupbar.infobar
 old.reddit.com##.premium-banner
 old.reddit.com##.titlebox
 old.reddit.com##polygon
+outlook.live.com##:xpath(/html/body/div[3]/div/div[1]/div/div[1]/div[2]/div/div/div/div/div[2]/div[*]//*[ contains(@title,'Skype') or contains(@title,'Qr Connect') or contains(@title,'Help') or contains(@title,'OneNote feed') or contains(@title,'What' ) or contains(string(),'Meet Now') ])
+outlook.live.com##:xpath(/html/body/div[3]/div/div[2]/div[2]/div[2]/div[1]/div/div/div[*][contains(string(),'It looks like')])
+outlook.live.com##:xpath(/html/body/div[3]/div/div[2]/div[2]/div[2]/div[1]/div/div/div[1]/div/div/div[2]/button[contains(string(),'Upgrade to Microsoft 365 with premium')])
 outlook.live.com##._1fti_QgAzqGWPGlqh_FSvI
 outlook.live.com##div:has(>div>div>span:has-text(It looks like you're using an ad blocker.))
 outlook.live.com##div>button>div>span:has-text(Upgrade to Microsoft 365 with premium Outlook features)
 simplywall.st###modal-container
+stackoverflow.com##.is-visible.s-popover
+techcrunch.com##.article__content-outer > .newsletter-signup-block
+techcrunch.com##.article__floating-wrap
+techcrunch.com##.article-footer
+techcrunch.com##.newsletter-signup-block
+techcrunch.com##.sidebar--article.sidebar
+techcrunch.com##.site-footer
 techxplore.com##.article-actions
 techxplore.com##.categories
 techxplore.com##.d-print-none.d-lg-block.d-none.article-sidebar.col-xl-3.col-lg-4.col-md.offset-xl-1
@@ -102,12 +145,16 @@ www.etsy.com##svg
 www.healthtap.com###lightboxContainer
 www.healthtap.com###lightboxOverlay
 www.iflscience.com##svg
-www.iptorrents.com##div.tmS
+www.instagram.com###mount_0_0_zI > div > div > .du4w35lb.l9j0dhe7.rq0escxv > div > div
 www.latimes.com##.met-flyout
 www.latimes.com##.ncm-container
 www.latimes.com##.wrapclicker
 www.marketwatch.com##.has-ad.full-width.bulletins.column--full.column
+www.mississippicir.org##.copy-layer-background.sqs-slide-layer-content
 www.nbcnews.com##svg
+www.ndtv.com##.noti_bgstyle
+www.ndtv.com##.noti_wrap
+www.ndtv.com###firework1
 www.newyorker.com##.stacked-navigation__grid.grid-items-0.grid
 www.nrk.no##.article-header-sidebar.sl18.sl12.sl9.sl6.s4.fl.col.g22 > .sl18.sl12.sl9.sl6.s2.fl.col.g11 > .container-widget-content > .article-share > .nrkno-no-print.nrkno-share > a.nrk-button--o.nrk-button > svg
 www.nrk.no##svg
@@ -118,6 +165,7 @@ www.pcgamer.com##.exitIntent
 www.reuters.com##footer
 www.reuters.com##svg
 www.rollingstone.com##svg
+www.ssga.com##.ssmp-global-modal.ssmp-mobile-header.ssmp-header
 www.tampabay.com##svg
 www.techrepublic.com##svg
 www.theatlantic.com###paywall
@@ -125,6 +173,7 @@ www.theatlantic.com##svg
 www.thecybersecuritytimes.com##.wp-block-image
 www.thecybersecuritytimes.com###logo_wrapper
 www.thecybersecuritytimes.com###nav_wrapper
+www.theguardian.com##:xpath(/html/body/aside[2]/gu-island/div/div/div/section)
 www.theverge.com##.c-entry-group-labels--article.c-entry-group-labels
 www.theverge.com##.c-footer
 www.theverge.com##.c-newsletter_signup_box__main
@@ -133,6 +182,13 @@ www.theverge.com##.c-tab-bar
 www.theverge.com##.l-header
 www.theverge.com##.link-skip.sr-only
 www.theverge.com##svg
+www.torrentleech.org##.centerTopBar.col-md-3 > .col-md-9
+www.torrentleech.org##.col-xs-4.col-md-1.foreign.category
+www.torrentleech.org##.text-center.highlight-address.message
+www.torrentleech.org##.text-center.highlight-news-bar.message
+www.torrentleech.org##.text-center.info.message
+www.torrentleech.org##.xxx.single.col-xs-4.col-md-1.category
+www.torrentleech.org##span.topMenuAds.div-menu-item.centerTopBar:nth-of-type(1)
 www.tweaking4all.com##.t4a_helpus
 www.tweaking4all.com###amazing > div > .t4a_helpus
 www.tweaking4all.com###post-7028 > .t4a_post_content > .t4a_helpus
@@ -151,40 +207,30 @@ www.vox.com##svg
 www.wired.com##.site-navigation.standard-navigation--mobile-option-cm.standard-navigation--mobile-logo-align-undefined.standard-navigation--logo-align-left.standard-navigation--palette-standard.standard-navigation--decoration-border-thin--standard.standard-navigation
 www.wired.com##.standard-navigation__primary-links
 www.yalemedicine.org##svg
+www.youtube.com##.autocomplete-suggestions
+www.youtube.com##.sbdd_a.gstl_50 > div
 www.youtube.com##.sbdd_b
+www.youtube.com##.sbsb_a
+www.youtube.com##.style-scope.ytd-thumbnail-overlay-loading-preview-renderer
 www.youtube.com##.ytd-donation-shelf-renderer.style-scope
 www.youtube.com##.ytd-feed-nudge-renderer.style-scope
-www.youtube.com##.ytd-mealbar-promo-renderer.style-scope
+www.youtube.com##.ytd-info-panel-container-renderer.style-scope
+www.youtube.com##.ytd-mealbar-promo-renderer
 www.youtube.com##.ytd-primetime-promo-renderer.style-scope
 www.youtube.com##.ytd-rich-section-renderer.style-scope
-www.youtube.com##.ytd-rich-section-renderer.style-scope > .ytd-rich-shelf-renderer.style-scope
 www.youtube.com###clarify-box > .ytd-watch-flexy.style-scope
 www.youtube.com###dismissible > .ytd-feed-nudge-renderer.style-scope
 www.youtube.com###dismissible > .ytd-statement-banner-renderer.style-scope
 www.youtube.com###offer-module
 www.youtube.com###shelf-container
-www.youtube.com##ytd-clarification-renderer.ytd-item-section-renderer.style-scope
-www.zdnet.com##svg
-!from WL end
-
-!from PL start
-||iptorrents.com/pic/du/1d.gif$image
-iptorrents.com##div.tmS:nth-of-type(1)
-iptorrents.com##div.tmS:nth-of-type(2)
-old.reddit.com##.happening-now
-old.reddit.com##.listingsignupbar.infobar
-old.reddit.com##.premium-banner
-stackoverflow.com##.is-visible.s-popover
-www.mississippicir.org##.copy-layer-background.sqs-slide-layer-content
-www.ssga.com##.ssmp-global-modal.ssmp-mobile-header.ssmp-header
-www.theguardian.com##:xpath(/html/body/aside[2]/gu-island/div/div/div/section)
-www.youtube.com##.sbsb_a
-www.youtube.com##.style-scope.ytd-thumbnail-overlay-loading-preview-renderer
-www.youtube.com##.ytd-info-panel-container-renderer.style-scope
 www.youtube.com##inline-preview-player
 www.youtube.com##tp-yt-paper-dialog.ytd-popup-container.style-scope
+www.youtube.com##ytd-clarification-renderer.ytd-item-section-renderer.style-scope
+www.youtube.com##ytd-horizontal-card-list-renderer.ytd-item-section-renderer.style-scope
 www.youtube.com##ytd-rich-section-renderer.ytd-rich-grid-renderer.style-scope > .ytd-rich-section-renderer.style-scope
 www.youtube.com##ytd-video-preview
+www.zdnet.com##svg
 zaiste.net##.border-b.border-gray-500.bg-gray-700
 zaiste.net##footer
-!from PL end
+zamunda.se##.blocker-form
+zamunda.se##.magla
