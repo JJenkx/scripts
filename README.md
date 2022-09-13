@@ -4,7 +4,7 @@
 <br />
 
 
-###Import zshrc:
+##Import zshrc:
 
 ```
 cp ~/.zshrc ~/.zshrc$(date +%Y%m%d%H%M%S%N).bak ; wget -O- -q "https://github.com/JJenkx/Personal/raw/main/.zshrc" >~/.zshrc ; exec zsh
@@ -12,11 +12,11 @@ cp ~/.zshrc ~/.zshrc$(date +%Y%m%d%H%M%S%N).bak ; wget -O- -q "https://github.co
 
 
 <br />
-<br />
 
-###Import scripts
+##Import scripts
 
 ```
+
 scripts='https://raw.githubusercontent.com/JJenkx/Personal/main/.zshrc
 https://raw.githubusercontent.com/JJenkx/Personal/main/backupplasmadesktop.sh
 https://raw.githubusercontent.com/JJenkx/Personal/main/CIDRtoIP.sh
@@ -26,8 +26,10 @@ https://raw.githubusercontent.com/JJenkx/Personal/main/searchstackoverflowdatadu
 https://raw.githubusercontent.com/JJenkx/Personal/main/searchwikipedia.sh
 https://raw.githubusercontent.com/JJenkx/Personal/main/tts.sh'
 cat<<< "$scripts" | parallel -j 8 wget -O $HOME/.local/scripts/{/} {}
+
 ```
 
+<br />
 
 
 ## Get random quotes from deadwood
