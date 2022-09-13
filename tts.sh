@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 
 # Coqui TTS bash script to generate TTS and playback long text in real time
 # Works by splitting text file into segments and generating a playlist file containing entries for all split files.
@@ -7,7 +7,7 @@
 # Dependencies
 # TTS https://github.com/coqui-ai/TTS
 # find |or| ripgrep
-# bc cat echo ffmpeg ls mkdir mv perl printf rm sort split tail touch wc
+# bc cat echo espeak-ng ffmpeg ls mkdir mv perl printf rm sort split tail touch wc sudo
 
 
 
@@ -16,19 +16,70 @@
 ##################
 
 # TTSFILE is the main text file. All text put here will be converted to speach
-TTSFILE="$HOME/tts/tts.txt"
+TTSFILE="$HOME/Documents/tts.txt"
 
 # Split TTSFILE file at this number of text lines. TTS will be run for each split file
 SplitTextAtLines=10
 
 # WORKINGDIR is where text split files, proccessed wav files, temp files, and playlist files will be created
-WORKINGDIR="$HOME/tts/"
+WORKINGDIR="$HOME/Documents/tts/"
 
 # Use Ripgrep or Find? Set value "Ripgrep" or "Find"
 RipgrepOrFind="Ripgrep"
 
 # Set TTS model name to use. Run "tts --list_models" to find more
+
 UseModel="tts_models/en/ljspeech/tacotron2-DDC_ph"
+
+
+#UseModel="tts_models/en/blizzard2013/capacitron-t2-c150"
+#UseModel="tts_models/en/blizzard2013/capacitron-t2-c50"
+#UseModel="tts_models/en/ek1/tacotron2"                     # Froze for 20 minutes
+#UseModel="tts_models/en/ljspeech/fast_pitch"
+#UseModel="tts_models/en/ljspeech/glow-tts"                 # Don't like voice, Processed fine
+#UseModel="tts_models/en/ljspeech/speedy-speech"
+#UseModel="tts_models/en/ljspeech/tacotron2-DCA"
+#UseModel="tts_models/en/ljspeech/tacotron2-DDC_ph"
+#UseModel="tts_models/en/ljspeech/tacotron2-DDC"
+#UseModel="tts_models/en/ljspeech/vits"
+#UseModel="tts_models/en/sam/tacotron-DDC"
+#UseModel="tts_models/en/vctk/fast_pitch"
+#UseModel="tts_models/en/vctk/vits"
+
+#UseModel="tts_models/de/thorsten/tacotron2-DCA"
+#UseModel="tts_models/de/thorsten/tacotron2-DDC"
+#UseModel="tts_models/de/thorsten/vits"
+#UseModel="tts_models/es/mai/tacotron2-DDC"
+#UseModel="tts_models/ewe/openbible/vits"
+#UseModel="tts_models/fr/mai/tacotron2-DDC"
+#UseModel="tts_models/hau/openbible/vits"
+#UseModel="tts_models/it/mai_female/glow-tts"
+#UseModel="tts_models/it/mai_female/vits"
+#UseModel="tts_models/it/mai_male/glow-tts"
+#UseModel="tts_models/it/mai_male/vits"
+#UseModel="tts_models/ja/kokoro/tacotron2-DDC"
+#UseModel="tts_models/lin/openbible/vits"
+#UseModel="tts_models/multilingual/multi-dataset/your_tts"
+#UseModel="tts_models/nl/mai/tacotron2-DDC"
+#UseModel="tts_models/tr/common-voice/glow-tts"
+#UseModel="tts_models/tw_akuapem/openbible/vits"
+#UseModel="tts_models/tw_asante/openbible/vits"
+#UseModel="tts_models/uk/mai/glow-tts"
+#UseModel="tts_models/yor/openbible/vits"
+#UseModel="tts_models/zh-CN/baker/tacotron2-DDC-GST"
+
+vared -p 'Preformat text with perl? [Y/n]: ' -c FormatText
+	  case "$FormatText" in
+	      [yY][eE][sS]|[yY]|"") 
+	          unset FormatText
+	          FormatText="Yes"
+	          ;;
+	      *)
+	          unset FormatText
+	          FormatText="No"
+	          ;;
+	  esac
+
 
 ##################
 ##################
@@ -55,20 +106,24 @@ rm -f "$WORKINGDIR"*temp.txt*
 printf "" > "$WORKINGDIR"ffmpeg.combine.txt
 
 
+if [[ "$FormatText" == "Yes" ]] ;
+  then
 
-# Preformat "$TTSFILE" for better encoding results
+  # Preformat "$TTSFILE" for better encoding results
 
-# Change char ' to char ’ when between letters a-z
-perl -C -Mutf8 -0777 -p -i -e 's/([a-z])('\'')([a-z])/$1’$3/igm' "$TTSFILE"
+  # Change char ' to char ’ when between letters a-z
+  perl -C -Mutf8 -0777 -p -i -e 's/([a-z])('\'')([a-z])/$1’$3/igm' "$TTSFILE"
 
-# Remove all characters not matching 0-9!’a-z \?\n\.,- and replace with a space.
-perl -C -Mutf8 -0777 -p -i -e 's/[^0-9!’a-z \?\n\.,-]/ /igm' "$TTSFILE"
+  # Remove all characters not matching 0-9!’a-z \?\n\.,- and replace with a space.
+  perl -C -Mutf8 -0777 -p -i -e 's/[^0-9!’a-z \?\n\.,-]/ /igm' "$TTSFILE"
 
-# Insert newline after char "." and "?"
-perl -C -Mutf8 -0777 -p -i -e 's/(?:\.|\?)\K\n*/\n/igm' "$TTSFILE"
+  # Insert newline after char "." and "?"
+  perl -C -Mutf8 -0777 -p -i -e 's/(?:\.|\?)\K\n*/\n/igm' "$TTSFILE"
 
-# Remove leading and trailing spaces on each line
-perl -C -Mutf8 -0777 -p -i -e 's/^ *(.*) */$1/igm' "$TTSFILE"
+  # Remove leading and trailing spaces on each line
+  perl -C -Mutf8 -0777 -p -i -e 's/^ *(.*) */$1/igm' "$TTSFILE"
+
+fi
 
 
 
@@ -198,3 +253,15 @@ if [[ "$RipgrepOrFind" == "Find" ]] ;
     fi
 fi
 
+unset FilesInPlaylist
+unset FormatText
+unset line
+unset LinesInPlaylist
+unset q
+unset regexpath
+unset RenameFileTo
+unset RipgrepOrFind
+unset SplitTextAtLines
+unset TTSFILE
+unset UseModel
+unset WORKINGDIR
