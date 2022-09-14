@@ -235,3 +235,9 @@ zaiste.net##.border-b.border-gray-500.bg-gray-700
 zaiste.net##footer
 zamunda.se##.blocker-form
 zamunda.se##.magla
+
+! 2022-09-14 https://www.reddit.com
+www.reddit.com##:xpath(/html/body/div[2]/div/div[2]/div[2]/div/div[contains(string(),'Create an account') or contains(string(),'Create Community')]):remove()
+www.reddit.com##:xpath(/html/body/div[2]/div/div[2]/div[2]/div/div/div/div[2]/div[4]/div[2]/div[contains(string(),'Moderators') and contains(string(),'About Community')]):remove()
+www.reddit.com##:xpath(/html/body//div/video/parent::*/parent::*/parent::*/parent::*/parent::*/parent::*):remove()
+
