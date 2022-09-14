@@ -15,21 +15,31 @@
 ##################
 ##################
 
-# TTSFILE is the main text file. All text put here will be converted to speach
-TTSFILE="$HOME/Documents/tts.txt"
 
-# Split TTSFILE file at this number of text lines. TTS will be run for each split file
-SplitTextAtLines=10
+export regexpath="$(echo "$WorkingDir" | perl -pe 's/\//\\\//gm')"
 
-# WORKINGDIR is where text split files, proccessed wav files, temp files, and playlist files will be created
-WORKINGDIR="$HOME/Documents/tts/"
+# ttsfile is the main text file. All text put here will be converted to speach
+export ttsfile="$HOME/Documents/tts.txt"
+
+# Split ttsfile file at this number of text lines. TTS will be run for each split file
+export SplitTextAtLines=15
+
+# WorkingDir is where text split files, proccessed wav files, temp files, and playlist files will be created
+export WorkingDir="$HOME/Documents/tts/"
 
 # Use Ripgrep or Find? Set value "Ripgrep" or "Find"
-RipgrepOrFind="Ripgrep"
+export RipgrepOrFind="Find"
 
 # Set TTS model name to use. Run "tts --list_models" to find more
+export UseModel="tts_models/en/ljspeech/tacotron2-DDC_ph"
 
-UseModel="tts_models/en/ljspeech/tacotron2-DDC_ph"
+# Run more than 1 TTS instance in parallel. 3 instances saturates 32 threads on a 5950x
+export ttsinstances=3
+
+
+##################
+##################
+# Set values end
 
 
 #UseModel="tts_models/en/blizzard2013/capacitron-t2-c150"
@@ -68,6 +78,18 @@ UseModel="tts_models/en/ljspeech/tacotron2-DDC_ph"
 #UseModel="tts_models/yor/openbible/vits"
 #UseModel="tts_models/zh-CN/baker/tacotron2-DDC-GST"
 
+
+
+# Begin script
+##################
+##################
+
+
+# Timer in thousands of a second set start
+start=$(($(date +%s%N)/1000000))
+
+
+# User input to decide if preformat text
 vared -p 'Preformat text with perl? [Y/n]: ' -c FormatText
 	  case "$FormatText" in
 	      [yY][eE][sS]|[yY]|"") 
@@ -81,54 +103,41 @@ vared -p 'Preformat text with perl? [Y/n]: ' -c FormatText
 	  esac
 
 
-##################
-##################
-# Set values end
-
-
-
-
-
-# Begin script
-##################
-##################
-
-
-
 # Create dir and file if not exist
-mkdir -p "$WORKINGDIR"
-touch "$TTSFILE"
+mkdir -p "$WorkingDir"
+touch "$ttsfile"
 
 
 
 # Clean/Delete old files
-rm -f "$WORKINGDIR"*temp.txt*
-printf "" > "$WORKINGDIR"ffmpeg.combine.txt
+rm -f "$WorkingDir"*temp.txt
+rm -f "$WorkingDir"*temp.wav
+printf "" > "$WorkingDir"ffmpeg.combine.txt
 
 
 if [[ "$FormatText" == "Yes" ]] ;
   then
 
-  # Preformat "$TTSFILE" for better encoding results
+  # Preformat "$ttsfile" for better encoding results
 
   # Change char ' to char ’ when between letters a-z
-  perl -C -Mutf8 -0777 -p -i -e 's/([a-z])('\'')([a-z])/$1’$3/igm' "$TTSFILE"
+  perl -C -Mutf8 -0777 -p -i -e 's/([a-z])('\'')([a-z])/$1’$3/igm' "$ttsfile"
 
-  # Remove all characters not matching 0-9!’a-z \?\n\.,- and replace with a space.
-  perl -C -Mutf8 -0777 -p -i -e 's/[^0-9!’a-z \?\n\.,-]/ /igm' "$TTSFILE"
+  # Remove all characters not matching 0-9!’a-z \?\n\.,-: and replace with a space.
+  perl -C -Mutf8 -0777 -p -i -e 's/[^0-9!’a-z \?\n\.,-:]/ /igm' "$ttsfile"
 
   # Insert newline after char "." and "?"
-  perl -C -Mutf8 -0777 -p -i -e 's/(?:\.|\?)\K\n*/\n/igm' "$TTSFILE"
+  perl -C -Mutf8 -0777 -p -i -e 's/(?:\.|\?)\K\n*/\n/igm' "$ttsfile"
 
   # Remove leading and trailing spaces on each line
-  perl -C -Mutf8 -0777 -p -i -e 's/^ *(.*) */$1/igm' "$TTSFILE"
+  perl -C -Mutf8 -0777 -p -i -e 's/^ *(.*) */$1/igm' "$ttsfile"
 
 fi
 
 
 
-# Split TTSFILE based on number of lines set in var $SplitTextAtLines (--lines=<num>)
-split --suffix-length=6 -d --additional-suffix=.temp.txt --lines="$SplitTextAtLines" "$TTSFILE" "$WORKINGDIR"
+# Split ttsfile based on number of lines set in var $SplitTextAtLines (--lines=<num>)
+split --suffix-length=6 -d --additional-suffix=.temp.txt --lines="$SplitTextAtLines" "$ttsfile" "$WorkingDir"
 
 
 # Run rest of script utilizing either Ripgrep or Find
@@ -144,37 +153,37 @@ if [[ "$RipgrepOrFind" == "Find" ]] ;
     printf "\nUsing Find to cue files.\n"
     
     # Make working dir path into regex pattern for Find
-    regexpath="$(echo "$WORKINGDIR" | perl -pe 's/\//\\\//gm')"
+    regexpath="$(echo "$WorkingDir" | perl -pe 's/\//\\\//gm')"
     
     # Find / Generate playlist ahead of file generation
-    printf "#EXTM3U\n" >"$WORKINGDIR"temp.playlist.m3u; find "$WORKINGDIR" -name "*" -type f -regextype posix-egrep -iregex "^"$regexpath"[0-9]{6}\.temp\.txt$" -exec ls {} \; | sort -g | perl -C -Mutf8 -0777 -pe 's/^(.+\/)(.*)$/#EXTINF:0, - $2.wav\n$1$2.wav/igm' >>"$WORKINGDIR"temp.playlist.m3u
+    printf "#EXTM3U\n" >"$WorkingDir"temp.playlist.m3u; find "$WorkingDir" -name "*" -type f -regextype posix-egrep -iregex "^"$regexpath"[0-9]{6}\.temp\.txt$" -exec ls {} \; | sort -g | perl -C -Mutf8 -0777 -pe 's/^(.+\/)(.*)(\.txt)$/#EXTINF:0, - $2.wav\n$1$2.wav/igm' >>"$WorkingDir"temp.playlist.m3u
   
     # Get number of files represented in temp.playlist.m3u
-    LinesInPlaylist="$(wc -l < "$WORKINGDIR"temp.playlist.m3u)"
+    LinesInPlaylist="$(wc -l < "$WorkingDir"temp.playlist.m3u)"
     q=$(bc <<< "scale=2; ($LinesInPlaylist-1)/2")
     FilesInPlaylist=${q%%.00}
 
     printf "\nNumber of files in playlist is $FilesInPlaylist\n"
 
     # Run tts on first temp text files.
-    tts --text "$(cat "$WORKINGDIR"000000.temp.txt)" --model_name "$UseModel" --out_path "$WORKINGDIR"000000.temp.txt.wav
+    tts --text "$(cat "$WorkingDir"000000.temp.txt)" --model_name "$UseModel" --out_path "$WorkingDir"000000.temp.wav
 
     # Determine if there are more than one file and proccess each split file if needed
     if [[ "$FilesInPlaylist" -gt "1" ]] ;
       then
 
         # Open playlist file to begin playing the first encoded file as the others are being encoded
-        nohup xdg-open "$WORKINGDIR"temp.playlist.m3u < /dev/null > /dev/null &
+        nohup xdg-open "$WorkingDir"temp.playlist.m3u < /dev/null > /dev/null &
 
         # Run tts on all the other temp text files. Excluding the first file that is already processed
-        find "$WORKINGDIR" -name "*" -type f -regextype posix-egrep -iregex "^"$regexpath"[0-9]{6}\.temp\.txt$" -exec ls {} \; | sort -g | tail --lines=+2 | while read line; do tts --text "$(cat "$line")" --model_name "$UseModel" --out_path "$line".wav; done
+        find "$WorkingDir" -name "*" -type f -regextype posix-egrep -iregex "^"$regexpath"[0-9]{6}\.temp\.txt$" | sort -g | tail --lines=+2 | parallel -j $ttsinstances --eta --bar ' tts --text "$(cat {})" --model_name "$UseModel" --out_path "$WorkingDir"{/.}.wav '
 
         # Make ffmpeg combine list needed by ffmpeg for merging all wav files into one
-        find "$WORKINGDIR" -name "*" -type f -regextype posix-egrep -iregex "^"$regexpath"[0-9]{6}\.temp\.txt\.wav$" -exec ls {} \; | sort -g | perl -pe 's/^(.*)$/file '\''$1'\''/igm' > "$WORKINGDIR"ffmpeg.combine.txt
+        find "$WorkingDir" -name "*" -type f -regextype posix-egrep -iregex "^"$regexpath"[0-9]{6}\.temp\.wav$" -exec ls {} \; | sort -g | perl -pe 's/^(.*)$/file '\''$1'\''/igm' > "$WorkingDir"ffmpeg.combine.txt
 
         # Combine all wav files from ffmpeg.combine.txt
-        ffmpeg -f concat -safe 0 -i "$WORKINGDIR"ffmpeg.combine.txt -c copy -f segment -strftime 1 -segment_time 9999:00:00 "$WORKINGDIR"tts.combined-%Y-%m-%d_%H-%M-%S.wav
-        printf "\nFFmpeg combined "$FilesInPlaylist" files into "$WORKINGDIR"tts.combined-$(date +%Y-%m-%d_%H-%M-%S).wav\n"
+        ffmpeg -f concat -safe 0 -i "$WorkingDir"ffmpeg.combine.txt -c copy -f segment -strftime 1 -segment_time 9999:00:00 "$WorkingDir"tts.combined-%Y-%m-%d_%H-%M-%S.wav
+        printf "\nFFmpeg combined "$FilesInPlaylist" files into "$WorkingDir"tts.combined-$(date +%Y-%m-%d_%H-%M-%S).wav\n"
 
         printf "\n"
 
@@ -182,11 +191,11 @@ if [[ "$RipgrepOrFind" == "Find" ]] ;
         # Rename and open the one file that was encoded since there were no split files
         RenameFileTo="tts.combined-$(date +%Y-%m-%d_%H-%M-%S).wav"
         printf "\nFFmpeg combine not needed.\nRenaming file to $RenameFileTo\n"
-        mv "$WORKINGDIR"000000.temp.txt.wav "$WORKINGDIR""$RenameFileTo"
+        mv "$WorkingDir"000000.temp.txt.wav "$WorkingDir""$RenameFileTo"
         
         # Create and open playlist file with just the one encoded file
-        printf "#EXTM3U\n#EXTINF:0, - "$RenameFileTo"\n"$WORKINGDIR""$RenameFileTo"" > "$WORKINGDIR"temp.playlist.m3u
-        nohup xdg-open "$WORKINGDIR"temp.playlist.m3u < /dev/null > /dev/null && printf "\n"
+        printf "#EXTM3U\n#EXTINF:0, - "$RenameFileTo"\n"$WorkingDir""$RenameFileTo"" > "$WorkingDir"temp.playlist.m3u
+        nohup xdg-open "$WorkingDir"temp.playlist.m3u < /dev/null > /dev/null && printf "\n"
     fi
 
   else
@@ -202,10 +211,10 @@ if [[ "$RipgrepOrFind" == "Find" ]] ;
       printf "\nUsing Ripgrep to cue files.\n"
       
       # Ripgrep / Generate playlist ahead of file generation
-      printf "#EXTM3U\n" >"$WORKINGDIR"temp.playlist.m3u | rg "$WORKINGDIR" --files 2>/dev/null | rg "^"$WORKINGDIR"\d{6}\.temp\.txt$" | sort -g | perl -C -Mutf8 -0777 -pe 's/^(.+\/)(.*)$/#EXTINF:0, - $2.wav\n$1$2.wav/igm' >>"$WORKINGDIR"temp.playlist.m3u
+      printf "#EXTM3U\n" >"$WorkingDir"temp.playlist.m3u | rg "$WorkingDir" --files 2>/dev/null | rg "^"$WorkingDir"\d{6}\.temp\.txt$" | sort -g | perl -C -Mutf8 -0777 -pe 's/^(.+\/)(.*)$/#EXTINF:0, - $2.wav\n$1$2.wav/igm' >>"$WorkingDir"temp.playlist.m3u
   
       # Get number of files represented in temp.playlist.m3u
-      LinesInPlaylist="$(wc -l < "$WORKINGDIR"temp.playlist.m3u)"
+      LinesInPlaylist="$(wc -l < "$WorkingDir"temp.playlist.m3u)"
       q=$(bc <<< "scale=2; ($LinesInPlaylist-1)/2")
       FilesInPlaylist=${q%%.00}
 
@@ -213,7 +222,7 @@ if [[ "$RipgrepOrFind" == "Find" ]] ;
       printf "\nNumber of files in playlist is $FilesInPlaylist\n"
 
       # Run tts on first temp text files.
-      tts --text "$(cat "$WORKINGDIR"000000.temp.txt)" --model_name "$UseModel" --out_path "$WORKINGDIR"000000.temp.txt.wav
+      tts --text "$(cat "$WorkingDir"000000.temp.txt)" --model_name "$UseModel" --out_path "$WorkingDir"000000.temp.txt.wav
 
 
       # Determine if there are more than one file and proccess each split file if needed
@@ -221,17 +230,17 @@ if [[ "$RipgrepOrFind" == "Find" ]] ;
         then
 
           # Open playlist file to begin playing the first encoded file as the others are being encoded
-          nohup xdg-open "$WORKINGDIR"temp.playlist.m3u < /dev/null > /dev/null &
+          nohup xdg-open "$WorkingDir"temp.playlist.m3u < /dev/null > /dev/null &
 
           # Run tts on all the other temp text files. Excluding the first file that is already processed
-          rg "$WORKINGDIR" --files 2>/dev/null | rg "^"$WORKINGDIR"\d{6}\.temp\.txt$" | sort -g | tail --lines=+2 | while read line; do tts --text "$(cat "$line")" --model_name "$UseModel" --out_path "$line".wav; done
+          rg "$WorkingDir" --files 2>/dev/null | rg "^"$WorkingDir"\d{6}\.temp\.txt$" | sort -g | tail --lines=+2 | while read line; do tts --text "$(cat "$line")" --model_name "$UseModel" --out_path "$line".wav; done
 
           # Make ffmpeg combine list needed by ffmpeg for merging all wav files into one
-          rg "$WORKINGDIR" --files 2>/dev/null | rg "^"$WORKINGDIR"\d{6}\.temp\.txt\.wav$" | sort -g | perl -pe 's/^(.*)$/file '\''$1'\''/igm' > "$WORKINGDIR"ffmpeg.combine.txt
+          rg "$WorkingDir" --files 2>/dev/null | rg "^"$WorkingDir"\d{6}\.temp\.txt\.wav$" | sort -g | perl -pe 's/^(.*)$/file '\''$1'\''/igm' > "$WorkingDir"ffmpeg.combine.txt
 
           # Combine all wav files from ffmpeg.combine.txt
-          ffmpeg -f concat -safe 0 -i "$WORKINGDIR"ffmpeg.combine.txt -c copy -f segment -strftime 1 -segment_time 9999:00:00 "$WORKINGDIR"tts.combined-%Y-%m-%d_%H-%M-%S.wav
-          printf "\nFFmpeg combined "$FilesInPlaylist" files into "$WORKINGDIR"tts.combined-$(date +%Y-%m-%d_%H-%M-%S).wav\n"
+          ffmpeg -f concat -safe 0 -i "$WorkingDir"ffmpeg.combine.txt -c copy -f segment -strftime 1 -segment_time 9999:00:00 "$WorkingDir"tts.combined-%Y-%m-%d_%H-%M-%S.wav
+          printf "\nFFmpeg combined "$FilesInPlaylist" files into "$WorkingDir"tts.combined-$(date +%Y-%m-%d_%H-%M-%S).wav\n"
 
           printf "\n"
 
@@ -239,11 +248,11 @@ if [[ "$RipgrepOrFind" == "Find" ]] ;
           # Rename and open the one file that was encoded since there were no split files
           RenameFileTo="tts.combined-$(date +%Y-%m-%d_%H-%M-%S).wav"
           printf "\nFFmpeg combine not needed.\nRenaming file to $RenameFileTo\n"
-          mv "$WORKINGDIR"000000.temp.txt.wav "$WORKINGDIR""$RenameFileTo"
+          mv "$WorkingDir"000000.temp.txt.wav "$WorkingDir""$RenameFileTo"
 
           # Create and open playlist file with just the one encoded file
-          printf "#EXTM3U\n#EXTINF:0, - "$RenameFileTo"\n"$WORKINGDIR""$RenameFileTo"" > "$WORKINGDIR"temp.playlist.m3u
-          nohup xdg-open "$WORKINGDIR"temp.playlist.m3u < /dev/null > /dev/null && printf "\n"
+          printf "#EXTM3U\n#EXTINF:0, - "$RenameFileTo"\n"$WorkingDir""$RenameFileTo"" > "$WorkingDir"temp.playlist.m3u
+          nohup xdg-open "$WorkingDir"temp.playlist.m3u < /dev/null > /dev/null && printf "\n"
       fi
 
     else
@@ -253,6 +262,10 @@ if [[ "$RipgrepOrFind" == "Find" ]] ;
     fi
 fi
 
+# Timer in thousands of a second calculate
+end=$(($(date +%s%N)/1000000)) ; seconds="$(bc -l <<< "scale=3; ($end-$start)/1000")" ; printf "$seconds seconds total processing time\n\n"
+
+unset end
 unset FilesInPlaylist
 unset FormatText
 unset line
@@ -261,7 +274,10 @@ unset q
 unset regexpath
 unset RenameFileTo
 unset RipgrepOrFind
+unset seconds
 unset SplitTextAtLines
-unset TTSFILE
+unset start
+unset ttsfile
+unset ttsinstances
 unset UseModel
-unset WORKINGDIR
+unset WorkingDir
