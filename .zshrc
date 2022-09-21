@@ -110,7 +110,9 @@ vared -p '' -c mystring
 echo "$(cat <<< $mystring)" \
 | perl -pe 's/(\(|\)|\[|\]|:| |!|\.|\/| )+/./gm' \
 | perl -pe 's/[^A-Za-z0-9.-_]//gm' \
-| perl -pe 's/^(.*)(\.)(.*)\.$/$1-$3\n/gm'
+| perl -pe 's/^(.*)(\.)(.*)\.$/$1-$3\n/gm' \
+| perl -pe 's/\.+/./gm'
+unset mystring
 }
 
 
@@ -254,8 +256,16 @@ alias sortfast='sort -S$(($(sed '\''/MemF/!d;s/[^0-9]*//g'\'' /proc/meminfo)/204
 
 # aria2c compiled with limits removed https://github.com/JJenkx/aria2 . ffmpeg fixed builds https://github.com/yt-dlp/FFmpeg-Builds#ffmpeg-static-auto-builds https://github.com/yt-dlp/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linux64-gpl.tar.xz
 
+
+
+alias yd='noglob yt-dlp --output '\''$HOME/Videos/yt-dlp/%(title)s_%(channel)s_%(upload_date>%Y-%m-%d)s_%(duration>%H-%M-%S)s_%(resolution)s.%(ext)s'\'' --ffmpeg-location /home/jjenkx/.local/bin.notpath/ --restrict-filenames --external-downloader aria2c --downloader-args "aria2c: --split=8 --max-connection-per-server=8 --max-concurrent-downloads=1 --continue=true --min-split-size=128K --piece-length=1M --lowest-speed-limit=10K --retry-wait=2 --continue=true --download-result=full --console-log-level=notice --check-certificate=false --realtime-chunk-checksum=false --no-want-digest-header=true --user-agent='\''Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.55 Safari/537.36'\'' " --prefer-free-formats --remux-video mkv --download-archive $HOME/Videos/yt-dlp/.yt-dlp-archived-done.txt '
+
+
+
 # Download youtube
-alias yt='noglob yt-dlp --output '\''$HOME/Videos/yt-dlp/%(channel)s/%(upload_date>%Y-%m-%d)s_%(title)s/%(title)s_%(duration>%H-%M-%S)s_%(upload_date>%Y-%m-%d)s_%(resolution)s_Channel_(%(channel_id)s)_URL_(%(id)s).%(ext)s'\'' --ffmpeg-location /home/jjenkx/.local/bin.notpath/ --restrict-filenames --external-downloader aria2c --downloader-args "aria2c: -s 32 -x 32 -j 8 -c -k 8K --piece-length=128K --lowest-speed-limit=10K --retry-wait=2 --continue=true " --write-description --write-info-json --write-thumbnail --prefer-free-formats --remux-video mkv --embed-chapters --sponsorblock-remove "sponsor,selfpromo,interaction,intro,outro,preview " --download-archive $HOME/Videos/yt-dlp/.yt-dlp-archived-done.txt '
+alias yt='noglob yt-dlp --output '\''$HOME/Videos/yt-dlp/%(channel)s/%(upload_date>%Y-%m-%d)s_%(title)s/%(title)s_%(duration>%H-%M-%S)s_%(upload_date>%Y-%m-%d)s_%(resolution)s_Channel_(%(channel_id)s)_URL_(%(id)s).%(ext)s'\'' --ffmpeg-location /home/jjenkx/.local/bin.notpath/ --restrict-filenames --external-downloader aria2c --downloader-args "aria2c: --split=32 --max-connection-per-server=32 --max-concurrent-downloads=8 --continue=true --min-split-size=8K --piece-length=128K --lowest-speed-limit=10K --retry-wait=2 --continue=true --download-result=full --console-log-level=notice --check-certificate=false --realtime-chunk-checksum=false --no-want-digest-header=true --user-agent='\''Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.55 Safari/537.36'\'' " --write-description --write-info-json --write-thumbnail --prefer-free-formats --remux-video mkv --embed-chapters --sponsorblock-remove "sponsor,selfpromo,interaction,intro,outro,preview " --download-archive $HOME/Videos/yt-dlp/.yt-dlp-archived-done.txt '
+
+
 
 # Download youtube and open in mpv
 alias yp='noglob yt-dlp --exec '\''nohup mpv '\''%(filepath)q'\'' &>/dev/null & '\'' --output '\''$HOME/Videos/yt-dlp/%(channel)s/%(upload_date>%Y-%m-%d)s_%(title)s/%(title)s_%(duration>%H-%M-%S)s_%(upload_date>%Y-%m-%d)s_%(resolution)s_Channel_(%(channel_id)s)_URL_(%(id)s).%(ext)s'\'' --ffmpeg-location /home/jjenkx/.local/bin.notpath/ --restrict-filenames --external-downloader aria2c --downloader-args "aria2c: -s 64 -x 64 -j 8 -c -k 8K --piece-length=256K --lowest-speed-limit=150K --retry-wait=2 --continue=true  --download-result=full " --write-description --write-info-json --write-thumbnail --prefer-free-formats --remux-video mkv --embed-chapters --sponsorblock-remove "sponsor,selfpromo,interaction,intro,outro,preview " --download-archive $HOME/Videos/yt-dlp/.yt-dlp-archived-done.txt '
@@ -275,14 +285,16 @@ printf '\n\n\n\nRunning:\n         yay -Syu\n\n\n\n'
 yay -Syu
 printf '\n\n\n\nRunning:\n         rustup update stable\n\n\n\n'
 rustup update stable
+printf '\n\n\n\nRunning:\n         rustup update nightly\n\n\n\n'
+rustup update nightly
 printf '\n\n\n\nRunning:\n         cargo install cargo-update\n\n\n\n'
 cargo install cargo-update
 printf '\n\n\n\nRunning:\n         cargo install-update -a\n\n\n\n'
 cargo install-update -a
-printf '\n\n\n\nRunning:\n         /usr/bin/python3 -m pip install --upgrade pip\n\n\n\n'
-/usr/bin/python3 -m pip install --upgrade pip
-printf '\n\n\n\nRunning:\n         pip3 list --outdated --format=freeze | grep -v "\^\\-e" | cut -d = -f 1 | xargs -n1 pip3 install -U\n\n\n\n'
-pip3 list --outdated --format=freeze | grep -v '^\-e' | cut -d = -f 1 | xargs -n1 pip3 install -U
+#printf '\n\n\n\nRunning:\n         /usr/bin/python3 -m pip install --upgrade pip\n\n\n\n'
+#/usr/bin/python3 -m pip install --upgrade pip
+#printf '\n\n\n\nRunning:\n         pip3 list --outdated --format=freeze | grep -v "\^\\-e" | cut -d = -f 1 | xargs -n1 pip3 install -U\n\n\n\n'
+#pip3 list --outdated --format=freeze | grep -v '^\-e' | cut -d = -f 1 | xargs -n1 pip3 install -U
 }
 
 alias paci='sudo pacman -S --needed'
@@ -292,6 +304,7 @@ alias parsua='paru -Sua'                         # update only AUR pkgs (paru)
 alias parsyu='paru -Syu'                         # update standard pkgs and AUR pkgs (paru)
 alias yaysua='yay -Sua'                          # update only AUR pkgs (yay)
 alias yaysyu='yay -Syu'                          # update standard pkgs and AUR pkgs (yay)
+alias pacspace='exa --no-permissions --level=1 --bytes --no-user --no-time -lah --group-directories-first --icons -s size /var/cache/pacman/pkg/ && du -h /var/cache/pacman/pkg/ && echo "\nTo do non dry run, do:\npaccache --remove --keep 1 " && paccache -d -k 1'
 #alias unlock='sudo rm /var/lib/pacman/db.lck'    # remove pacman lock
 #alias cleanup='sudo pacman -Rns $(pacman -Qtdq)' # remove orphaned packages
 
