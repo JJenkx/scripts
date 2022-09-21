@@ -54,6 +54,20 @@ unset -f append_path
 
 
 
+# Print reminder on how to do my timer
+function timer {
+echo '# Timer in thousands of a second
+start=$(($(date +%s%N)/1000000))
+echo "do stuff"
+echo "and things"
+sleep 1s
+end=$(($(date +%s%N)/1000000)) ; bc -l <<< "scale=3 ; ($end-$start)/1000"'
+}
+
+
+
+
+
 # Restart buggy plasma
 function rplasma {
 timeout 5 kquitapp5 plasmashell
