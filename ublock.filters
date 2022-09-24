@@ -243,3 +243,4 @@ www.reddit.com##:xpath(/html/body/div[2]/div/div[2]/div[2]/div/div[contains(stri
 www.reddit.com##:xpath(/html/body//div/video/parent::*/parent::*/parent::*/parent::*/parent::*/parent::*):remove()
 www.reddit.com##:xpath(/html/body/div//div/div/div/div/div/div/div/div/div[contains(string(),'Moderators') and contains(string(),'About Community')]):remove()
 www.reddit.com##:xpath(/html/body/div[2]/div/div[2]/div[2]/div/div/div/div[2]/div[4]/div):style(margin-right: 0px !important;)
+discord.com##:xpath(/html/body/div[2]/div[2]/div/div[3]/div/div/div[contains(string(),'Connect Xbox to Discord') or contains(string(),'Hang out with Discord friends')]):remove()
