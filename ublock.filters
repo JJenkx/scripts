@@ -1,18 +1,3 @@
-
-!*##html,body:style(overflow: visible !important;)
-!twitter.com##html,body:style(overflow: visible !important;)
-!www.amazon.com##.a-spacing-double-large.a-section
-!www.amazon.com##.a-text-normal.s-desktop-toolbar.a-size-base
-!www.amazon.com##.nav-sprite-v1.navLeftFooter
-!www.amazon.com##.rhf-frame
-!www.amazon.com##.s-image
-!www.amazon.com##.s-shopping-adviser.a-spacing-none.a-section
-!www.amazon.com##.sg-col-4-of-20.sg-col.sg-col-4-of-16.s-matching-dir.sg-col-4-of-12
-!www.amazon.com##.sg-col-4-of-20.sg-col.sg-col-4-of-16.s-matching-dir.sg-col-4-of-12 > .sg-col-inner
-!www.amazon.com##.widgetId\=feedback.template\=FEEDBACK.slot\=MAIN.celwidget > .a-spacing-top-medium.a-spacing-medium.a-section > .sg-row
-!www.amazon.com###navbar-main
-!www.amazon.com##div.s-widget.s-flex-full-width.s-result-item.a-spacing-none.a-section:nth-of-type(31)
-!www.amazon.com##div.sg-col-12-of-16.sg-col.s-widget.sg-col-16-of-20.sg-col-0-of-12.s-result-item
 *##+js(aopr, AudioBuffer.prototype.getChannelData)
 *##+js(aopr, BaseAudioContext.prototype.createOscillator)
 *##+js(aopr, HTMLCanvasElement.prototype.toDataURL)
@@ -22,10 +7,10 @@
 *##+js(set, navigator.hardwareConcurrency, 4)
 *##+js(set, navigator.maxTouchPoints, 0)
 *##+js(set, navigator.plugins, undefined)
+*##html,body:style(overflow: visible !important;)
 ||b.thumbs.redditmedia.com/egOaVtRGQV_soQtPCgvoT0r7NhDNiLtLBEUvmh2CpNs.png$image
 ||buy.tinypass.com/checkout/template/cacheableShow$subdocument
 ||ichef.bbci.co.uk/news/*/cpsprodpb/179AB/production/_125838669_index_promo_macron_kroes-nc.png$image
-||img2.zamunda.se/pic/test.jpg$image
 abcnews.go.com##.Article__Column--sidebar.Article__Column
 abcnews.go.com##.Article__Footer--news.Article__Footer
 abcnews.go.com##.Article__Header__Share.flex-no-wrap.flex.Share
@@ -45,13 +30,9 @@ chrome.google.com##.yD5gtd
 community.chocolatey.org##.show.fade.modal-backdrop
 community.chocolatey.org###package-disclaimer
 covid19.ncdhhs.gov##.message
-discord.com##:xpath(/html/body/div[2]/div[2]/div/div[1]/div/div[2]/div/div[1]/div/div[*][contains(string(),'Want to take full advantage')])
-discord.com##:xpath(/html/body/div[2]/div[2]/div/div[3]/div/div/div/div[*][contains(string(),'Boost this server to add')])
 getpocket.com##* > svg
 gfycat.com##.type3.pro-cta
 githubmemory.com##svg
-hackingfather.com##.a6116dd4715611699746304.g6116dd47155f4740256305
-hackingfather.com##.m6116dd614d215014459429.l6116dd614d1f8996964468
 health.clevelandclinic.org##svg
 ihealthlabs.com##svg
 indyweek.com###pico_prompt
@@ -61,17 +42,6 @@ news.sky.com##svg
 odysee.com##.claim-preview--premium-plus
 odysee.com##.menu__list--notifications-list > [href]
 odysee.com##li.claim-preview--premium-plus.claim-preview--tile.card > [href="/$/membership"]
-old.reddit.com##.happening-now
-old.reddit.com##.listingsignupbar.infobar
-old.reddit.com##.premium-banner
-old.reddit.com##.titlebox
-old.reddit.com##polygon
-outlook.live.com##:xpath(/html/body/div[3]/div/div[1]/div/div[1]/div[2]/div/div/div/div/div[2]/div[*]//*[ contains(@title,'Skype') or contains(@title,'Qr Connect') or contains(@title,'Help') or contains(@title,'OneNote feed') or contains(@title,'What' ) or contains(string(),'Meet Now') ])
-outlook.live.com##:xpath(/html/body/div[3]/div/div[2]/div[2]/div[2]/div[1]/div/div/div[*][contains(string(),'It looks like')])
-outlook.live.com##:xpath(/html/body/div[3]/div/div[2]/div[2]/div[2]/div[1]/div/div/div[1]/div/div/div[2]/button[contains(string(),'Upgrade to Microsoft 365 with premium')])
-outlook.live.com##._1fti_QgAzqGWPGlqh_FSvI
-outlook.live.com##div:has(>div>div>span:has-text(It looks like you're using an ad blocker.))
-outlook.live.com##div>button>div>span:has-text(Upgrade to Microsoft 365 with premium Outlook features)
 simplywall.st###modal-container
 stackoverflow.com##.is-visible.s-popover
 techcrunch.com##.article__content-outer > .newsletter-signup-block
@@ -118,7 +88,6 @@ www.etsy.com##svg
 www.healthtap.com###lightboxContainer
 www.healthtap.com###lightboxOverlay
 www.iflscience.com##svg
-www.instagram.com###mount_0_0_zI > div > div > .du4w35lb.l9j0dhe7.rq0escxv > div > div
 www.latimes.com##.met-flyout
 www.latimes.com##.ncm-container
 www.latimes.com##.wrapclicker
@@ -129,10 +98,7 @@ www.ndtv.com##.noti_bgstyle
 www.ndtv.com##.noti_wrap
 www.ndtv.com###firework1
 www.newyorker.com##.stacked-navigation__grid.grid-items-0.grid
-www.nrk.no##.article-header-sidebar.sl18.sl12.sl9.sl6.s4.fl.col.g22 > .sl18.sl12.sl9.sl6.s2.fl.col.g11 > .container-widget-content > .article-share > .nrkno-no-print.nrkno-share > a.nrk-button--o.nrk-button > svg
 www.nrk.no##svg
-www.nytimes.com##.e1x0szx60.css-17nqy7q.expanded-dock.shown.MAG_web_regi_us_sale_apple-pay-dock-ecd-test
-www.nytimes.com##.efw9frv0.css-3fbowa.expanded-dock.expanded.shown.MAG_web_all_Monthly-Sale-dock
 www.pcgamer.com##.exit-intent__wrapper
 www.pcgamer.com##.exitIntent
 www.reuters.com##footer
@@ -155,16 +121,6 @@ www.theverge.com##.c-tab-bar
 www.theverge.com##.l-header
 www.theverge.com##.link-skip.sr-only
 www.theverge.com##svg
-www.torrentleech.org##.centerTopBar.col-md-3 > .col-md-9
-www.torrentleech.org##.col-xs-4.col-md-1.foreign.category
-www.torrentleech.org##.text-center.highlight-address.message
-www.torrentleech.org##.text-center.highlight-news-bar.message
-www.torrentleech.org##.text-center.info.message
-www.torrentleech.org##.xxx.single.col-xs-4.col-md-1.category
-www.torrentleech.org##span.topMenuAds.div-menu-item.centerTopBar:nth-of-type(1)
-www.tweaking4all.com##.t4a_helpus
-www.tweaking4all.com###amazing > div > .t4a_helpus
-www.tweaking4all.com###post-7028 > .t4a_post_content > .t4a_helpus
 www.urbandictionary.com##svg
 www.verdict.co.uk##.c-newsletter-signup
 www.verdict.co.uk##.c-post-single__header-meta-before
@@ -174,51 +130,107 @@ www.verdict.co.uk##.newsletter-modal
 www.verdict.co.uk##.sections
 www.verdict.co.uk###siteHeader
 www.verdict.co.uk##svg
-www.vox.com###mByqXs
-www.vox.com###uP9FTl > div
 www.vox.com##svg
 www.wired.com##.site-navigation.standard-navigation--mobile-option-cm.standard-navigation--mobile-logo-align-undefined.standard-navigation--logo-align-left.standard-navigation--palette-standard.standard-navigation--decoration-border-thin--standard.standard-navigation
 www.wired.com##.standard-navigation__primary-links
 www.yalemedicine.org##svg
-www.youtube.com##.autocomplete-suggestions
-www.youtube.com##.sbdd_a.gstl_50 > div
-www.youtube.com##.sbdd_b
-www.youtube.com##.sbsb_a
-www.youtube.com##.style-scope.ytd-thumbnail-overlay-loading-preview-renderer
-www.youtube.com##.watch > .ytd-emergency-onebox-renderer.style-scope
-www.youtube.com##.ytd-donation-shelf-renderer.style-scope
-www.youtube.com##.ytd-feed-nudge-renderer.style-scope
-www.youtube.com##.ytd-info-panel-container-renderer.style-scope
-www.youtube.com##.ytd-mealbar-promo-renderer
-www.youtube.com##.yt-mealbar-promo-renderer.style-scope
-www.youtube.com##.ytd-primetime-promo-renderer.style-scope
-www.youtube.com##.ytd-rich-section-renderer.style-scope
-www.youtube.com###clarify-box > .ytd-watch-flexy.style-scope
-www.youtube.com###dismissible > .ytd-feed-nudge-renderer.style-scope
-www.youtube.com###dismissible > .ytd-statement-banner-renderer.style-scope
-www.youtube.com###offer-module
-www.youtube.com###shelf-container
-www.youtube.com##inline-preview-player
-www.youtube.com##tp-yt-paper-dialog.ytd-popup-container.style-scope
-www.youtube.com##ytd-clarification-renderer.ytd-item-section-renderer.style-scope
-www.youtube.com##ytd-horizontal-card-list-renderer.ytd-item-section-renderer.style-scope
-www.youtube.com##ytd-rich-section-renderer.ytd-rich-grid-renderer.style-scope > .ytd-rich-section-renderer.style-scope
-www.youtube.com##ytd-video-preview
 www.zdnet.com##svg
 zaiste.net##.border-b.border-gray-500.bg-gray-700
 zaiste.net##footer
-zamunda.se##.blocker-form
-zamunda.se##.magla
 
-! For browsing with ImageMax
+
+! Reddit with ImageMax
 !www.reddit.com##:xpath(/html/body/div[2]/div/div[2]/div[2]/div/div/div/div[2]/div[4]/div[2]/div[contains(string(),'Moderators') and contains(string(),'About Community')]):remove()
-www.reddit.com##:xpath(/html/body/div[2]/div/div[2]/div[2]/div/div[contains(string(),'Create an account') or contains(string(),'Create Community')]):remove()
-www.reddit.com##:xpath(/html/body//div/video/parent::*/parent::*/parent::*/parent::*/parent::*/parent::*):remove()
-www.reddit.com##:xpath(/html/body/div//div/div/div/div/div/div/div/div/div[contains(string(),'Moderators') and contains(string(),'About Community')]):remove()
-www.reddit.com##:xpath(/html/body/div[2]/div/div[2]/div[2]/div/div/div/div[2]/div[4]/div):style(margin-right: 0px !important;)
-discord.com##:xpath(/html/body/div[2]/div[2]/div/div[3]/div/div/div[contains(string(),'Connect Xbox to Discord') or contains(string(),'Hang out with Discord friends')]):remove()
-discord.com##:xpath(/html/body/div[2]/div[2]/div/div[1]/div/div[2]/div/div[1]/div/div[1][contains(string(),'Get the desktop app!')]):remove()
+!www.reddit.com##:xpath(/html/body/div[2]/div/div[2]/div[2]/div/div[contains(string(),'Create an account') or contains(string(),'Create Community')]):remove()
+!www.reddit.com##:xpath(/html/body//div/video/parent::*/parent::*/parent::*/parent::*/parent::*/parent::*):remove()
+!www.reddit.com##:xpath(/html/body/div//div/div/div/div/div/div/div/div/div[contains(string(),'Moderators') and contains(string(),'About Community')]):remove()
+!www.reddit.com##:xpath(/html/body/div[2]/div/div[2]/div[2]/div/div/div/div[2]/div[4]/div):style(margin-right: 0px !important;)
 
-! 2022-09-25 https://outlook.live.com
+
+! old.reddit.com
+old.reddit.com##.happening-now
+old.reddit.com##.listingsignupbar.infobar
+old.reddit.com##.premium-banner
+old.reddit.com##.titlebox
+old.reddit.com##polygon
+
+
+! The Guardian
+www.theguardian.com##:xpath(/html/body/aside[2]/gu-island/div/div/div/section)
+
+
+! Outlook
 outlook.live.com##:xpath(/html/body/div[3]/div/div[2]/div[2]/div[2]/div[1]/div/div/div[*][contains(string(),'It looks like you') and contains(string(),'re using an ad blocker. To maximize the space in your inbox, sign up for Ad-Free Outlook.')]):remove()
 outlook.live.com##:xpath(/html/body/div[3]/div/div[2]/div[2]/div[2]/div[1]/div/div/div[1]/div/div/div[contains(string(),'Upgrade to Microsoft 365 with premium Outlook features') or contains(string(),'OneDrive cloud storage for as low as')]):remove()
+outlook.live.com##:xpath(/html/body/div[3]/div/div[1]/div/div[1]/div[2]/div/div/div/div/div[2]/div[*]//*[ contains(@title,'Skype') or contains(@title,'Qr Connect') or contains(@title,'Help') or contains(@title,'OneNote feed') or contains(@title,'What' ) or contains(string(),'Meet Now') ])
+
+
+! Discord
+discord.com##:xpath(/html/body/div[2]/div[2]/div/div[1]/div/div[2]/div/div[1]/div/div[*][contains(string(),'Get the desktop app!') or contains(string(),'Want to take full advantage')]):remove()
+discord.com##:xpath(/html/body/div[2]/div[2]/div/div[3]/div[contains(string(),'Personalize your server invites') or contains(string(),'Connect Xbox to Discord') or contains(string(),'Hang out with Discord friends') or contains(string(),'Boost this server to add') ])
+
+
+! Youtube
+!www.youtube.com##.autocomplete-suggestions
+!www.youtube.com##.sbdd_a.gstl_50 > div
+!www.youtube.com##.sbdd_b
+!www.youtube.com##.sbsb_a
+!www.youtube.com##.style-scope.ytd-thumbnail-overlay-loading-preview-renderer
+!www.youtube.com##.watch > .ytd-emergency-onebox-renderer.style-scope
+!www.youtube.com##.yt-mealbar-promo-renderer.style-scope
+!www.youtube.com##.ytd-donation-shelf-renderer.style-scope
+!www.youtube.com##.ytd-feed-nudge-renderer.style-scope
+!www.youtube.com##.ytd-info-panel-container-renderer.style-scope
+!www.youtube.com##.ytd-mealbar-promo-renderer
+!www.youtube.com##.ytd-primetime-promo-renderer.style-scope
+!www.youtube.com##.ytd-rich-section-renderer.style-scope
+!www.youtube.com###clarify-box > .ytd-watch-flexy.style-scope
+!www.youtube.com###dismissible > .ytd-feed-nudge-renderer.style-scope
+!www.youtube.com###dismissible > .ytd-statement-banner-renderer.style-scope
+!www.youtube.com###offer-module
+!www.youtube.com###shelf-container
+!www.youtube.com##inline-preview-player
+!www.youtube.com##tp-yt-paper-dialog.ytd-popup-container.style-scope
+!www.youtube.com##ytd-clarification-renderer.ytd-item-section-renderer.style-scope
+!www.youtube.com##ytd-horizontal-card-list-renderer.ytd-item-section-renderer.style-scope
+!www.youtube.com##ytd-rich-section-renderer.ytd-rich-grid-renderer.style-scope > .ytd-rich-section-renderer.style-scope
+!www.youtube.com##ytd-video-preview
+
+! YT Search - just videos
+youtube.com##ytd-search ytd-item-section-renderer>#contents>:not(ytd-video-renderer),ytd-secondary-search-container-renderer
+
+! YT Search - just videos + channels
+youtube.com##ytd-search ytd-item-section-renderer>#contents>:not(ytd-video-renderer,ytd-channel-renderer),ytd-secondary-search-container-renderer
+
+! Recommend after pause
+youtube-nocookie.com,youtube.com##.ytp-pause-overlay, .show-video-thumbnail-button
+~youtube-nocookie.com,~youtube.com##iframe ~ #topvbar > #rvid
+
+! Block once for all the scripts responsible for annotations:
+/annotations_module.js$script,important,domain=youtube.com
+
+! and/or the end screen / auto play next:
+/endscreen.js$script,important,domain=youtube.com
+
+! "i" button in the corner:
+youtube.com##.ytp-button.ytp-cards-button
+
+! Brand image in the corner:
+youtube.com##.ytp-button.branding-img-container
+
+! Removes Mixes from the Main Page
+youtube.com##ytd-rich-item-renderer #video-title-link[title*="Mix"][href$="start_radio=1"]:upward(ytd-rich-item-renderer)
+
+! Removes Mixes from the right side panel
+youtube.com##ytd-compact-radio-renderer
+
+! Removes Mixes from search results
+youtube.com##ytd-radio-renderer
+
+! Removes "YouTube" (Music) playlists from the right side panel
+youtube.com##ytd-compact-playlist-renderer .ytd-channel-name:has-text(/^YouTube/):upward(ytd-compact-playlist-renderer)
+
+! Suggested channels by name. Home Page
+! youtube.com##ytd-rich-item-renderer:has(#byline-container:has-text(/BBC|CNN|FOX|NBC/))
+
+
