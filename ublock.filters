@@ -1,32 +1,5 @@
 
 !*##html,body:style(overflow: visible !important;)
-!outlook.live.com##div:has(>div>div>span:has-text(It looks like you're using an ad blocker.))
-!outlook.live.com##div[aria-label][data-max-width] > div[class^="_"] >div[class] > div.ms-FocusZone.disableTextSelection + div[class]:not([data-focuszone-id]):not([role]) > button
-!outlook.live.com##div[autoid].hiddenOverflow > div[autoid] a.o365button[href*="_Upgrade"]
-!outlook.live.com##div[class][style] > div[data-focuszone-id*="FocusZone"] + div[class] > div[class] > button[class]
-!outlook.live.com##div>button>div>span:has-text(Upgrade to Microsoft 365 with premium Outlook features)
-!twitter.com##:xpath(/html/body/div[1]/div/div/div[1]/div[2]/div/div/div/div/div/div[2]/div[1])
-!twitter.com##:xpath(/html/body/div[1]/div/div/div[1]/div/div[1]/div/div)
-!twitter.com##:xpath(/html/body/div[1]/div/div/div[1]/div/div[1]/div/div/div/div[2])
-!twitter.com##:xpath(/html/body/div[1]/div/div/div[1]/div/div[1]/div/div/div/div/div/div/div/div)
-!twitter.com##:xpath(/html/body/div[1]/div/div/div[2]/div[3])
-!twitter.com##:xpath(/html/body/div[1]/div/div/div[2]/header)
-!twitter.com##:xpath(/html/body/div[1]/div/div/div[2]/header/div/div/div)
-!twitter.com##:xpath(/html/body/div[1]/div/div/div[2]/main/div/div/div/div[2]/div/div[2]/div/div/div)
-!twitter.com##:xpath(/html/body/div[1]/div/div/div[2]/main/div/div/div/div[2]/div/div[2]/div/div/div/div[3]/section)
-!twitter.com##:xpath(/html/body/div[1]/div/div/div[2]/main/div/div/div/div[2]/div/div[2]/div/div/div/div[7]/nav)
-!twitter.com##:xpath(/html/body/div[1]/div/div/div[2]/main/div/div/div/div/div/div[2]/div/div/section/div/div/div[8]/div/div/section/div)
-!twitter.com##:xpath(/html/body/div[1]/div/div/div[2]/main/div/div/div/div/div/div[2]/div/div/section/div/div/div[contains(string(),'Topics to follow')])
-!twitter.com##:xpath(/html/body/div[2]/div/div/div[1]/div[1]/div[2]/div/div/div)
-!twitter.com##:xpath(/html/body/div[2]/div/div/div[1]/div[2]/div/div/div/div/div/*)
-!twitter.com##:xpath(/html/body/div[2]/div/div/div[1]/div/div[1]/div/div/div)
-!twitter.com##:xpath(/html/body/div[2]/div/div/div[2]/div[3])
-!twitter.com##:xpath(/html/body/div[2]/div/div/div[2]/header/div/div/div)
-!twitter.com##:xpath(/html/body/div[2]/div/div/div[2]/main/div/div/div/div[1]/div/div[2]/div/div/section/div/div/div[7]/div/div/div[contains(string(),'Topics to follow')])
-!twitter.com##:xpath(/html/body/div[2]/div/div/div[2]/main/div/div/div/div[1]/div/div[2]/div/div/section/div/div/div[8]/div/div/section/div)
-!twitter.com##:xpath(/html/body/div[2]/div/div/div[2]/main/div/div/div/div[2]/div/div[2]/div/div/div/div[3]/section)
-!twitter.com##:xpath(/html/body/div[2]/div/div/div[2]/main/div/div/div/div/div/div[2]/div/div/section/div/div/div[5]/div/div/div[contains(string(),'Topics to follow')])
-!twitter.com##:xpath(/html/body/div[2]/div/div/div[2]/main/div/div/div/div/div/div[2]/div/div/section/div/div/div[6]/div/div/section/div)
 !twitter.com##html,body:style(overflow: visible !important;)
 !www.amazon.com##.a-spacing-double-large.a-section
 !www.amazon.com##.a-text-normal.s-desktop-toolbar.a-size-base
@@ -246,3 +219,6 @@ www.reddit.com##:xpath(/html/body/div[2]/div/div[2]/div[2]/div/div/div/div[2]/di
 discord.com##:xpath(/html/body/div[2]/div[2]/div/div[3]/div/div/div[contains(string(),'Connect Xbox to Discord') or contains(string(),'Hang out with Discord friends')]):remove()
 discord.com##:xpath(/html/body/div[2]/div[2]/div/div[1]/div/div[2]/div/div[1]/div/div[1][contains(string(),'Get the desktop app!')]):remove()
 
+! 2022-09-25 https://outlook.live.com
+outlook.live.com##:xpath(/html/body/div[3]/div/div[2]/div[2]/div[2]/div[1]/div/div/div[*][contains(string(),'It looks like you') and contains(string(),'re using an ad blocker. To maximize the space in your inbox, sign up for Ad-Free Outlook.')]):remove()
+outlook.live.com##:xpath(/html/body/div[3]/div/div[2]/div[2]/div[2]/div[1]/div/div/div[1]/div/div/div[contains(string(),'Upgrade to Microsoft 365 with premium Outlook features') or contains(string(),'OneDrive cloud storage for as low as')]):remove()
