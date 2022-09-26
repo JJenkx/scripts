@@ -23,17 +23,6 @@ fi
 
 
 
-function yc {
-yt-dlp  --exec 'mv /data/data/com.termux/files/home/*mkv /storage/emulated/0/Download/yt-dlp/ ' --output '/storage/emulated/0/Download/yt-dlp/%(section_title)s_%(channel)s_%(title)s_%(duration>%H-%M-%S)s_%(upload_date>%Y-%m-%d)s_%(resolution)s_Channel_(%(channel_id)s)_URL_(%(id)s).%(ext)s' --restrict-filenames --external-downloader /data/data/com.termux/files/home/.local/bin/aria2c --downloader-args "aria2c: -s 32 -x 32 -j 8 -c -k 8K --piece-length=128K --lowest-speed-limit=10K --retry-wait=2 --continue=true --check-certificate=false --realtime-chunk-checksum=false --no-want-digest-header=true --user-agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.55 Safari/537.36' " --split-chapters --prefer-free-formats --remux-video mkv --embed-chapters --sponsorblock-remove "sponsor,selfpromo,interaction,intro,outro,preview " --download-archive /storage/emulated/0/Download/yt-dlp/.yt-dlp-archived-done.txt $@
-}
-
-
-function yc {
-yt-dlp  --exec 'mv /data/data/com.termux/files/home/*mkv /storage/emulated/0/Download/yt-dlp/ ' --output '/storage/emulated/0/Download/yt-dlp/%(section_title)s_%(channel)s_%(title)s_%(duration>%H-%M-%S)s_%(upload_date>%Y-%m-%d)s_%(resolution)s_Channel_(%(channel_id)s)_URL_(%(id)s).%(ext)s' --restrict-filenames --external-downloader /data/data/com.termux/files/home/.local/bin/aria2c --downloader-args "aria2c: -s 32 -x 32 -j 8 -c -k 8K --piece-length=128K --lowest-speed-limit=10K --retry-wait=2 --continue=true --check-certificate=false --realtime-chunk-checksum=false --no-want-digest-header=true --user-agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.55 Safari/537.36' " --split-chapters --prefer-free-formats --remux-video mkv --embed-chapters --sponsorblock-remove "sponsor,selfpromo,interaction,intro,outro,preview " --download-archive /storage/emulated/0/Download/yt-dlp/.yt-dlp-archived-done.txt $@ &>/dev/null
-echo "main ran"
-mv /data/data/com.termux/files/home/*mkv /storage/emulated/0/Download/yt-dlp/
-echo "mv ran"
-}
 
 
 # Set custom paths
