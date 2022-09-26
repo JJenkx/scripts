@@ -8,9 +8,6 @@
 *##+js(set, navigator.maxTouchPoints, 0)
 *##+js(set, navigator.plugins, undefined)
 *##html,body:style(overflow: visible !important;)
-||b.thumbs.redditmedia.com/egOaVtRGQV_soQtPCgvoT0r7NhDNiLtLBEUvmh2CpNs.png$image
-||buy.tinypass.com/checkout/template/cacheableShow$subdocument
-||ichef.bbci.co.uk/news/*/cpsprodpb/179AB/production/_125838669_index_promo_macron_kroes-nc.png$image
 abcnews.go.com##.Article__Column--sidebar.Article__Column
 abcnews.go.com##.Article__Footer--news.Article__Footer
 abcnews.go.com##.Article__Header__Share.flex-no-wrap.flex.Share
@@ -42,6 +39,7 @@ news.sky.com##svg
 odysee.com##.claim-preview--premium-plus
 odysee.com##.menu__list--notifications-list > [href]
 odysee.com##li.claim-preview--premium-plus.claim-preview--tile.card > [href="/$/membership"]
+scrolller.com##.bottom-nav-bar__show.bottom-nav-bar
 simplywall.st###modal-container
 stackoverflow.com##.is-visible.s-popover
 techcrunch.com##.article__content-outer > .newsletter-signup-block
@@ -153,6 +151,10 @@ old.reddit.com##.listingsignupbar.infobar
 old.reddit.com##.premium-banner
 old.reddit.com##.titlebox
 old.reddit.com##polygon
+old.reddit.com##.row.top-matter
+
+
+
 
 
 ! The Guardian
@@ -171,67 +173,64 @@ discord.com##:xpath(/html/body/div[2]/div[2]/div/div[3]/div[contains(string(),'P
 
 
 ! Youtube
-!www.youtube.com##.autocomplete-suggestions
-!www.youtube.com##.sbdd_a.gstl_50 > div
-!www.youtube.com##.sbdd_b
-!www.youtube.com##.sbsb_a
-!www.youtube.com##.style-scope.ytd-thumbnail-overlay-loading-preview-renderer
-!www.youtube.com##.watch > .ytd-emergency-onebox-renderer.style-scope
-!www.youtube.com##.yt-mealbar-promo-renderer.style-scope
-!www.youtube.com##.ytd-donation-shelf-renderer.style-scope
-!www.youtube.com##.ytd-feed-nudge-renderer.style-scope
-!www.youtube.com##.ytd-info-panel-container-renderer.style-scope
-!www.youtube.com##.ytd-mealbar-promo-renderer
-!www.youtube.com##.ytd-primetime-promo-renderer.style-scope
-!www.youtube.com##.ytd-rich-section-renderer.style-scope
-!www.youtube.com###clarify-box > .ytd-watch-flexy.style-scope
-!www.youtube.com###dismissible > .ytd-feed-nudge-renderer.style-scope
-!www.youtube.com###dismissible > .ytd-statement-banner-renderer.style-scope
-!www.youtube.com###offer-module
-!www.youtube.com###shelf-container
-!www.youtube.com##inline-preview-player
-!www.youtube.com##tp-yt-paper-dialog.ytd-popup-container.style-scope
-!www.youtube.com##ytd-clarification-renderer.ytd-item-section-renderer.style-scope
-!www.youtube.com##ytd-horizontal-card-list-renderer.ytd-item-section-renderer.style-scope
-!www.youtube.com##ytd-rich-section-renderer.ytd-rich-grid-renderer.style-scope > .ytd-rich-section-renderer.style-scope
-!www.youtube.com##ytd-video-preview
+www.youtube.com##.autocomplete-suggestions
+www.youtube.com##.style-scope.ytd-thumbnail-overlay-loading-preview-renderer
+www.youtube.com##.watch > .ytd-emergency-onebox-renderer.style-scope
+www.youtube.com##.yt-mealbar-promo-renderer.style-scope
+www.youtube.com##.ytd-donation-shelf-renderer.style-scope
+www.youtube.com##.ytd-feed-nudge-renderer.style-scope
+www.youtube.com##.ytd-info-panel-container-renderer.style-scope
+www.youtube.com##.ytd-mealbar-promo-renderer
+www.youtube.com##.ytd-primetime-promo-renderer.style-scope
+www.youtube.com##.ytd-rich-section-renderer.style-scope
+www.youtube.com###clarify-box > .ytd-watch-flexy.style-scope
+www.youtube.com###dismissible > .ytd-feed-nudge-renderer.style-scope
+www.youtube.com###dismissible > .ytd-statement-banner-renderer.style-scope
+www.youtube.com###offer-module
+www.youtube.com###shelf-container
+www.youtube.com##inline-preview-player
+www.youtube.com##tp-yt-paper-dialog.ytd-popup-container.style-scope
+www.youtube.com##ytd-clarification-renderer.ytd-item-section-renderer.style-scope
+www.youtube.com##ytd-horizontal-card-list-renderer.ytd-item-section-renderer.style-scope
+www.youtube.com##ytd-rich-section-renderer.ytd-rich-grid-renderer.style-scope > .ytd-rich-section-renderer.style-scope
+www.youtube.com##ytd-video-preview
 
-! YT Search - just videos
-youtube.com##ytd-search ytd-item-section-renderer>#contents>:not(ytd-video-renderer),ytd-secondary-search-container-renderer
-
-! YT Search - just videos + channels
-youtube.com##ytd-search ytd-item-section-renderer>#contents>:not(ytd-video-renderer,ytd-channel-renderer),ytd-secondary-search-container-renderer
-
-! Recommend after pause
-youtube-nocookie.com,youtube.com##.ytp-pause-overlay, .show-video-thumbnail-button
-~youtube-nocookie.com,~youtube.com##iframe ~ #topvbar > #rvid
-
-! Block once for all the scripts responsible for annotations:
-/annotations_module.js$script,important,domain=youtube.com
-
-! and/or the end screen / auto play next:
-/endscreen.js$script,important,domain=youtube.com
-
-! "i" button in the corner:
-youtube.com##.ytp-button.ytp-cards-button
-
-! Brand image in the corner:
-youtube.com##.ytp-button.branding-img-container
-
-! Removes Mixes from the Main Page
-youtube.com##ytd-rich-item-renderer #video-title-link[title*="Mix"][href$="start_radio=1"]:upward(ytd-rich-item-renderer)
-
-! Removes Mixes from the right side panel
-youtube.com##ytd-compact-radio-renderer
-
-! Removes Mixes from search results
-youtube.com##ytd-radio-renderer
-
-! Removes "YouTube" (Music) playlists from the right side panel
-youtube.com##ytd-compact-playlist-renderer .ytd-channel-name:has-text(/^YouTube/):upward(ytd-compact-playlist-renderer)
-
-! Suggested channels by name. Home Page
-! youtube.com##ytd-rich-item-renderer:has(#byline-container:has-text(/BBC|CNN|FOX|NBC/))
+!! YT Search - just videos
+!youtube.com##ytd-search ytd-item-section-renderer>#contents>:not(ytd-video-renderer),ytd-secondary-search-container-renderer
+!
+!! YT Search - just videos + channels
+!youtube.com##ytd-search ytd-item-section-renderer>#contents>:not(ytd-video-renderer,ytd-channel-renderer),ytd-secondary-search-container-renderer
+!
+!! Recommend after pause
+!youtube-nocookie.com,youtube.com##.ytp-pause-overlay, .show-video-thumbnail-button
+!~youtube-nocookie.com,~youtube.com##iframe ~ #topvbar > #rvid
+!
+!! Block once for all the scripts responsible for annotations:
+!/annotations_module.js$script,important,domain=youtube.com
+!
+!! and/or the end screen / auto play next:
+!/endscreen.js$script,important,domain=youtube.com
+!
+!! "i" button in the corner:
+!youtube.com##.ytp-button.ytp-cards-button
+!
+!! Brand image in the corner:
+!youtube.com##.ytp-button.branding-img-container
+!
+!! Removes Mixes from the Main Page
+!youtube.com##ytd-rich-item-renderer #video-title-link[title*="Mix"][href$="start_radio=1"]:upward(ytd-rich-item-renderer)
+!
+!! Removes Mixes from the right side panel
+!youtube.com##ytd-compact-radio-renderer
+!
+!! Removes Mixes from search results
+!youtube.com##ytd-radio-renderer
+!
+!! Removes "YouTube" (Music) playlists from the right side panel
+!youtube.com##ytd-compact-playlist-renderer .ytd-channel-name:has-text(/^YouTube/):upward(ytd-compact-playlist-renderer)
+!
+!! Suggested channels by name. Home Page
+!! youtube.com##ytd-rich-item-renderer:has(#byline-container:has-text(/BBC|CNN|FOX|NBC/))
 
 
 
@@ -242,3 +241,5 @@ forum.torrminatorr.com##:xpath(/html/body/div[2]/div[4]/div[4]/div[*]/div/div/di
 forum.torrminatorr.com##:xpath(/html/body/div[2]/div[4]/div[*]/div/div[1]/div/div[1]/div/div[2]/span[1]/strong/parent::*[contains(string(),'Support my work if you like it:')]):remove()
 forum.torrminatorr.com##:xpath(/html/body/div[2]/div[4]/div[*]/div/div/div/div/div[2]/div[1][contains(string(),'BTC:')]):remove()
 forum.torrminatorr.com##:xpath(/html/body/div[2]/div[4]/div[*]/div/div/div/div/div[2]/span[1]/strong/parent::*[contains(string(),'Support my work if you like it:')]):remove()
+
+
