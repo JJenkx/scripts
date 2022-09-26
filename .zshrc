@@ -23,6 +23,17 @@ fi
 
 
 
+function yc {
+yt-dlp  --exec 'mv /data/data/com.termux/files/home/*mkv /storage/emulated/0/Download/yt-dlp/ ' --output '/storage/emulated/0/Download/yt-dlp/%(section_title)s_%(channel)s_%(title)s_%(duration>%H-%M-%S)s_%(upload_date>%Y-%m-%d)s_%(resolution)s_Channel_(%(channel_id)s)_URL_(%(id)s).%(ext)s' --restrict-filenames --external-downloader /data/data/com.termux/files/home/.local/bin/aria2c --downloader-args "aria2c: -s 32 -x 32 -j 8 -c -k 8K --piece-length=128K --lowest-speed-limit=10K --retry-wait=2 --continue=true --check-certificate=false --realtime-chunk-checksum=false --no-want-digest-header=true --user-agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.55 Safari/537.36' " --split-chapters --prefer-free-formats --remux-video mkv --embed-chapters --sponsorblock-remove "sponsor,selfpromo,interaction,intro,outro,preview " --download-archive /storage/emulated/0/Download/yt-dlp/.yt-dlp-archived-done.txt $@
+}
+
+
+function yc {
+yt-dlp  --exec 'mv /data/data/com.termux/files/home/*mkv /storage/emulated/0/Download/yt-dlp/ ' --output '/storage/emulated/0/Download/yt-dlp/%(section_title)s_%(channel)s_%(title)s_%(duration>%H-%M-%S)s_%(upload_date>%Y-%m-%d)s_%(resolution)s_Channel_(%(channel_id)s)_URL_(%(id)s).%(ext)s' --restrict-filenames --external-downloader /data/data/com.termux/files/home/.local/bin/aria2c --downloader-args "aria2c: -s 32 -x 32 -j 8 -c -k 8K --piece-length=128K --lowest-speed-limit=10K --retry-wait=2 --continue=true --check-certificate=false --realtime-chunk-checksum=false --no-want-digest-header=true --user-agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.55 Safari/537.36' " --split-chapters --prefer-free-formats --remux-video mkv --embed-chapters --sponsorblock-remove "sponsor,selfpromo,interaction,intro,outro,preview " --download-archive /storage/emulated/0/Download/yt-dlp/.yt-dlp-archived-done.txt $@ &>/dev/null
+echo "main ran"
+mv /data/data/com.termux/files/home/*mkv /storage/emulated/0/Download/yt-dlp/
+echo "mv ran"
+}
 
 
 # Set custom paths
@@ -229,13 +240,21 @@ cat $(find "$WATCH_LATER_DIR" -type f -printf "%T@ %p\n" | sort | cut -c23- | ta
 unset WATCH_LATER_DIR
 }
 
+
 # Open MPV without binding to terminal
 function .mpv {
 setsid >/dev/null 2>&1 </dev/null mpv "$@" 2>&1 >/dev/null & 
 }
 
+
+# Open MPV without binding to terminal and load 2nd config profile
+function ..mpv {
+setsid >/dev/null 2>&1 </dev/null mpv --config-dir="/home/jjenkx/.config/mpv2/" "$@" 2>&1 >/dev/null & 
+}
+
+
 # Open the newest file recorded in $WATCH_LATER_DIR. Need line "write-filename-in-watch-later-config=yes" in mpv.conf
-function .mpvlast {
+function mpvlast {
 WATCH_LATER_DIR='/home/jjenkx/.config/mpv/watch_later/'
 .mpv "$(cat $(echo /home/jjenkx/.config/mpv/watch_later/$(exa --reverse -s modified /home/jjenkx/.config/mpv/watch_later/ | head -1)) | head -1 | cut -c3-)"
 unset WATCH_LATER_DIR
