@@ -234,3 +234,11 @@ youtube.com##ytd-compact-playlist-renderer .ytd-channel-name:has-text(/^YouTube/
 ! youtube.com##ytd-rich-item-renderer:has(#byline-container:has-text(/BBC|CNN|FOX|NBC/))
 
 
+
+! forum.torrminatorr.com
+forum.torrminatorr.com##:xpath(/html/body/div[2]/div[4]/div[4]/div[*]/div/div/div[1]/div/div[1]/div/div[2]/div[1]/div[2]/parent::*[contains(string(),'BTC:') or contains(string(),'Want to take full advantage')]):remove()
+forum.torrminatorr.com##:xpath(/html/body/div[2]/div[4]/div[*]/div/div[1]/div/div[1]/div/div[2]/div[1][contains(string(),'BTC:') and contains(string(),'ETH:')]):remove()
+forum.torrminatorr.com##:xpath(/html/body/div[2]/div[4]/div[4]/div[*]/div/div/div[1]/div/div[1]/div/div[2]/span[1]/strong/parent::*[contains(string(),'Support my work if you like it:')]):remove()
+forum.torrminatorr.com##:xpath(/html/body/div[2]/div[4]/div[*]/div/div[1]/div/div[1]/div/div[2]/span[1]/strong/parent::*[contains(string(),'Support my work if you like it:')]):remove()
+forum.torrminatorr.com##:xpath(/html/body/div[2]/div[4]/div[*]/div/div/div/div/div[2]/div[1][contains(string(),'BTC:')]):remove()
+forum.torrminatorr.com##:xpath(/html/body/div[2]/div[4]/div[*]/div/div/div/div/div[2]/span[1]/strong/parent::*[contains(string(),'Support my work if you like it:')]):remove()
