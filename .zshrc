@@ -265,6 +265,9 @@ usps () {
 printf "https://tools.usps.com/go/TrackConfirmAction_input?strOrigTrackNum=$@\n"
 }
 
+fedex () {
+printf "https://www.fedex.com/apps/fedextrack/?action=track&trackingnumber=$@\n"
+}
 
 
 
@@ -275,12 +278,11 @@ alias sortfast='sort -S$(($(sed '\''/MemF/!d;s/[^0-9]*//g'\'' /proc/meminfo)/204
 
 
 
-
 # aria2c compiled with limits removed https://github.com/JJenkx/aria2 . ffmpeg fixed builds https://github.com/yt-dlp/FFmpeg-Builds#ffmpeg-static-auto-builds https://github.com/yt-dlp/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linux64-gpl.tar.xz
 
 
 
-alias yd='noglob yt-dlp --output '\''$HOME/Videos/yt-dlp/%(title)s_%(channel)s_%(upload_date>%Y-%m-%d)s_%(duration>%H-%M-%S)s_%(resolution)s.%(ext)s'\'' --ffmpeg-location /home/jjenkx/.local/bin.notpath/ --restrict-filenames --external-downloader aria2c --downloader-args "aria2c: --split=8 --max-connection-per-server=8 --max-concurrent-downloads=1 --continue=true --min-split-size=128K --piece-length=1M --lowest-speed-limit=10K --retry-wait=2 --continue=true --download-result=full --console-log-level=notice --check-certificate=false --realtime-chunk-checksum=false --no-want-digest-header=true --user-agent='\''Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.55 Safari/537.36'\'' " --prefer-free-formats --remux-video mkv --download-archive $HOME/Videos/yt-dlp/.yt-dlp-archived-done.txt '
+alias yd='noglob yt-dlp --output '\''$HOME/Videos/yt-dlp/%(title)s_%(channel)s_%(upload_date>%Y-%m-%d)s_%(duration>%H-%M-%S)s_%(resolution)s.%(ext)s'\'' --ffmpeg-location /home/jjenkx/.local/bin.notpath/ --restrict-filenames --external-downloader aria2c --downloader-args "aria2c: --split=32 --max-connection-per-server=32 --max-concurrent-downloads=1 --continue=true --min-split-size=1K --piece-length=256k --lowest-speed-limit=10K --retry-wait=2 --continue=true --download-result=full --console-log-level=notice --check-certificate=false --realtime-chunk-checksum=false --no-want-digest-header=true --user-agent='\''Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.55 Safari/537.36'\'' " --prefer-free-formats --remux-video mkv --download-archive $HOME/Videos/yt-dlp/.yt-dlp-archived-done.txt '
 
 
 
@@ -290,9 +292,9 @@ alias yt='noglob yt-dlp --output '\''$HOME/Videos/yt-dlp/%(channel)s/%(upload_da
 
 
 # Download youtube and open in mpv
-alias yp='noglob yt-dlp --exec '\''nohup mpv '\''%(filepath)q'\'' &>/dev/null & '\'' --output '\''$HOME/Videos/yt-dlp/%(channel)s/%(upload_date>%Y-%m-%d)s_%(title)s/%(title)s_%(duration>%H-%M-%S)s_%(upload_date>%Y-%m-%d)s_%(resolution)s_Channel_(%(channel_id)s)_URL_(%(id)s).%(ext)s'\'' --ffmpeg-location /home/jjenkx/.local/bin.notpath/ --restrict-filenames --external-downloader aria2c --downloader-args "aria2c: -s 64 -x 64 -j 8 -c -k 8K --piece-length=256K --lowest-speed-limit=150K --retry-wait=2 --continue=true  --download-result=full " --write-description --write-info-json --write-thumbnail --prefer-free-formats --remux-video mkv --embed-chapters --sponsorblock-remove "sponsor,selfpromo,interaction,intro,outro,preview " --download-archive $HOME/Videos/yt-dlp/.yt-dlp-archived-done.txt '
+#alias yp='noglob yt-dlp --exec '\''nohup mpv '\''%(filepath)q'\'' &>/dev/null & '\'' --output '\''$HOME/Videos/yt-dlp/%(channel)s/%(upload_date>%Y-%m-%d)s_%(title)s/%(title)s_%(duration>%H-%M-%S)s_%(upload_date>%Y-%m-%d)s_%(resolution)s_Channel_(%(channel_id)s)_URL_(%(id)s).%(ext)s'\'' --ffmpeg-location /home/jjenkx/.local/bin.notpath/ --restrict-filenames --external-downloader aria2c --downloader-args "aria2c: -s 64 -x 64 -j 8 -c -k 8K --piece-length=256K --lowest-speed-limit=150K --retry-wait=2 --continue=true  --download-result=full " --write-description --write-info-json --write-thumbnail --prefer-free-formats --remux-video mkv --embed-chapters --sponsorblock-remove "sponsor,selfpromo,interaction,intro,outro,preview " --download-archive $HOME/Videos/yt-dlp/.yt-dlp-archived-done.txt '
 
-
+alias yp="noglob yp"
 
 
 
@@ -712,3 +714,9 @@ fi
 
 
 
+
+PATH="/home/jjenkx/perl5/bin${PATH:+:${PATH}}"; export PATH;
+PERL5LIB="/home/jjenkx/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"; export PERL5LIB;
+PERL_LOCAL_LIB_ROOT="/home/jjenkx/perl5${PERL_LOCAL_LIB_ROOT:+:${PERL_LOCAL_LIB_ROOT}}"; export PERL_LOCAL_LIB_ROOT;
+PERL_MB_OPT="--install_base \"/home/jjenkx/perl5\""; export PERL_MB_OPT;
+PERL_MM_OPT="INSTALL_BASE=/home/jjenkx/perl5"; export PERL_MM_OPT;
