@@ -258,3 +258,18 @@ www.techradar.com##.exit-intent__wrapper
 www.techradar.com##.exit-intent__background.exit-intent
 
 finance.yahoo.com###monalixa-finance-desktop-web-qsp-stickyfooter-seqmsg
+
+! 2022-10-11 https://www.youtube.com
+www.youtube.com##ytd-button-renderer.size-default.style-default.force-icon-button.ytd-menu-renderer.style-scope > .ytd-button-renderer.style-scope.yt-simple-endpoint
+
+! 2022-10-14 https://www.independent.co.uk
+www.independent.co.uk##:xpath(/html/body/div[3]/div[2]/article/div[5]/div/div[1]/div[1][contains(string(), 'Sign up for the daily')])
+
+! 2022-10-24 https://securityboulevard.com
+securityboulevard.com##div#sgpb-popup-dialog-main-div-wrapper.sgpb-popup-dialog-main-div-wrapper
+
+! 2022-10-24 https://www.softwaretestinghelp.com
+www.softwaretestinghelp.com##.tl-anim-zoom_in.tl-states-root
+
+! 2022-10-25 https://www.bloomberg.com
+www.bloomberg.com###fortress-verification-container-root
