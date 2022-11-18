@@ -156,9 +156,11 @@ old.reddit.com##.row.top-matter
 www.theguardian.com##:xpath(/html/body/aside[2]/gu-island/div/div/div/section)
 
 ! Outlook
-outlook.live.com##:xpath(/html/body/div[3]/div/div[2]/div[2]/div[2]/div[1]/div/div/div[*][contains(string(),'It looks like you') and contains(string(),'re using an ad blocker. To maximize the space in your inbox, sign up for Ad-Free Outlook.')]):remove()
-outlook.live.com##:xpath(/html/body/div[3]/div/div[2]/div[2]/div[2]/div[1]/div/div/div[1]/div/div/div[contains(string(),'Upgrade to Microsoft 365 with premium Outlook features') or contains(string(),'OneDrive cloud storage for as low as')]):remove()
-outlook.live.com##:xpath(/html/body/div[3]/div/div[1]/div/div[1]/div[2]/div/div/div/div/div[2]/div[*]//*[ contains(@title,'Skype') or contains(@title,'Qr Connect') or contains(@title,'Help') or contains(@title,'OneNote feed') or contains(@title,'What' ) or contains(string(),'Meet Now') ])
+outlook.live.com##:xpath(/html/body/div[*]/div/div[1]/div/div[1]/div[2]/div/div/div/div/div[2]/div[*]/div/button[ contains(@title,'My Day') or contains(@title,'OneNote feed') or contains(@title,'Help') or contains(@title,'What' ) or contains(string(),'Meet Now') ]):remove()
+outlook.live.com##:xpath(/html/body/div[*]/div/div[2]/div[2]/div[2]/div[1]/div/div/div[3]/div/div[3]/div[1]/div[2]/div/div/div/div/div/div[*][contains(string(),'Upgrade Your Account') or contains(string(),'Get the latest premium Outlook features')]):remove()
+outlook.live.com##:xpath(/html/body/div[*]/div/div[2]/div[2]/div[2]/div[1]/div/div/div[1]/div/div/div[contains(string(),'Upgrade to Microsoft 365 with premium Outlook features') or contains(string(),'OneDrive cloud storage for as low as')]):remove()
+outlook.live.com##:xpath(/html/body/div[*]/div/div[2]/div[2]/div[2]/div[1]/div/div/div[*][contains(string(),'It looks like you') and contains(string(),'re using an ad blocker. To maximize the space in your inbox, sign up for Ad-Free Outlook.')]):remove()
+outlook.live.com##:xpath(/html/body/div[*]/div/div[1]/div/div[1]/div[2]/div/div/div/div/div[2]/div[2]/div/div/div/button[ contains(@title,'Skype') ]):remove()
 
 ! Discord
 discord.com##:xpath(/html/body/div[2]/div[2]/div/div[1]/div/div[2]/div/div[1]/div/div[*][contains(string(),'Get the desktop app!') or contains(string(),'Want to take full advantage')]):remove()
