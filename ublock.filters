@@ -135,7 +135,27 @@ www.yalemedicine.org##svg
 www.zdnet.com##svg
 zaiste.net##.border-b.border-gray-500.bg-gray-700
 zaiste.net##footer
+voice.google.com##:xpath(/html/body/div[2]/div[2]/div[1]/gv-app-banner/div/div/gv-tel-registration-banner-ng2/section):remove()
+www.onlinehacking.in##.ndcyidc
+www.onlinehacking.in###adblock_abdoutech
+www.cbsnews.com##:xpath(/html/body/footer):remove()
+www.cbsnews.com##.newsletter_signup
+www.telecompaper.com##.is-radiusless.card-content
+www.telecompaper.com###app
+www.techradar.com##.newsletter-form__wrapper--exitIntent.newsletter-form__wrapper
+www.techradar.com##.exit-intent__wrapper
+www.techradar.com##.exit-intent__background.exit-intent
+finance.yahoo.com###monalixa-finance-desktop-web-qsp-stickyfooter-seqmsg
+www.independent.co.uk##:xpath(/html/body/div[3]/div[2]/article/div[5]/div/div[1]/div[1][contains(string(), 'Sign up for the daily')])
+securityboulevard.com##div#sgpb-popup-dialog-main-div-wrapper.sgpb-popup-dialog-main-div-wrapper
+www.softwaretestinghelp.com##.tl-anim-zoom_in.tl-states-root
+www.bloomberg.com###fortress-verification-container-root
+www.startpage.com##.block-display
+www.theguardian.com##:xpath(/html/body/aside[2]/gu-island/div/div/div/section)
 
+! Discord
+discord.com##:xpath(/html/body/div[2]/div[2]/div/div[1]/div/div[2]/div/div[1]/div/div[*][contains(string(),'Get the desktop app!') or contains(string(),'Want to take full advantage')]):remove()
+discord.com##:xpath(/html/body/div[2]/div[2]/div/div[3]/div[contains(string(),'Personalize your server invites') or contains(string(),'Connect Xbox to Discord') or contains(string(),'Hang out with Discord friends') or contains(string(),'Boost this server to add') ])
 
 ! Reddit with ImageMax
 !www.reddit.com##:xpath(/html/body/div[2]/div/div[2]/div[2]/div/div/div/div[2]/div[4]/div[2]/div[contains(string(),'Moderators') and contains(string(),'About Community')]):remove()
@@ -148,12 +168,10 @@ zaiste.net##footer
 old.reddit.com##.happening-now
 old.reddit.com##.listingsignupbar.infobar
 old.reddit.com##.premium-banner
+old.reddit.com##.redditname.pagename.hover
 old.reddit.com##.titlebox
 old.reddit.com##polygon
 old.reddit.com##.row.top-matter
-
-! The Guardian
-www.theguardian.com##:xpath(/html/body/aside[2]/gu-island/div/div/div/section)
 
 ! Outlook
 outlook.live.com##:xpath(/html/body/div[*]/div/div[1]/div/div[1]/div[2]/div/div/div/div/div[2]/div[*]/div/button[ contains(@title,'My Day') or contains(@title,'OneNote feed') or contains(@title,'Help') or contains(@title,'What' ) or contains(string(),'Meet Now') ]):remove()
@@ -163,9 +181,17 @@ outlook.live.com##:xpath(/html/body/div[*]/div/div[2]/div[2]/div[2]/div[1]/div/d
 outlook.live.com##:xpath(/html/body/div[*]/div/div[1]/div/div[1]/div[2]/div/div/div/div/div[2]/div[2]/div/div/div/button[ contains(@title,'Skype') ]):remove()
 outlook.live.com##:xpath(/html/body/div[*]/div/div[1]/div/div[1]/div[2]/div/div/div/div/div[2]/div[*]/div/div/div/div[*][ contains(string(),'Meet Now') ]):remove()
 
-! Discord
-discord.com##:xpath(/html/body/div[2]/div[2]/div/div[1]/div/div[2]/div/div[1]/div/div[*][contains(string(),'Get the desktop app!') or contains(string(),'Want to take full advantage')]):remove()
-discord.com##:xpath(/html/body/div[2]/div[2]/div/div[3]/div[contains(string(),'Personalize your server invites') or contains(string(),'Connect Xbox to Discord') or contains(string(),'Hang out with Discord friends') or contains(string(),'Boost this server to add') ])
+! twitter.com
+twitter.com##:xpath(/html/body/div[2]/div/div/div[1]/div[2]/div/div/div/div/div/div[2]):remove()
+twitter.com##:xpath(/html/body/div[2]/div/div/div[1]/div[2]/div/div/div/div/div/div[2]/div[1]):remove()
+twitter.com##:xpath(/html/body/div[2]/div/div/div[1]/div[2]/div/div/div/div/div/div[2]/div[2]/div[contains(string(),'Sign in with Apple')]):remove()
+twitter.com##:xpath(/html/body/div[2]/div/div/div[1]/div/div[1]/div/div[contains(string(),'Don’t miss what’s happening')])
+twitter.com##:xpath(/html/body/div[2]/div/div/div[2]/div[3]):remove()
+twitter.com##:xpath(/html/body/div[2]/div/div/div[2]/header):remove()
+twitter.com##:xpath(/html/body/div[2]/div/div/div[2]/main/div):style(padding: 150px !important;width: 1550px !important)
+twitter.com##:xpath(/html/body/div[2]/div/div/div[2]/main/div/div/div/div[1]):style(max-width: 1500px !important)
+twitter.com##:xpath(/html/body/div[2]/div/div/div[2]/main/div/div/div/div[2]/div):style(padding: 75px !important)
+twitter.com##:xpath(/html/body/div[2]/div/div/div[2]/main/div/div/div/div[2]/div/div[2]/div/div/div/div[3]/section[contains(string(),'New to Twitter?')])
 
 ! Youtube
 www.youtube.com##.autocomplete-suggestions
@@ -186,94 +212,9 @@ www.youtube.com###offer-module
 www.youtube.com###shelf-container
 www.youtube.com##inline-preview-player
 www.youtube.com##tp-yt-paper-dialog.ytd-popup-container.style-scope
+www.youtube.com##ytd-button-renderer.size-default.style-default.force-icon-button.ytd-menu-renderer.style-scope > .ytd-button-renderer.style-scope.yt-simple-endpoint
 www.youtube.com##ytd-clarification-renderer.ytd-item-section-renderer.style-scope
 www.youtube.com##ytd-horizontal-card-list-renderer.ytd-item-section-renderer.style-scope
 www.youtube.com##ytd-rich-section-renderer.ytd-rich-grid-renderer.style-scope > .ytd-rich-section-renderer.style-scope
 www.youtube.com##ytd-video-preview
 
-!! YT Search - just videos
-!youtube.com##ytd-search ytd-item-section-renderer>#contents>:not(ytd-video-renderer),ytd-secondary-search-container-renderer
-!
-!! YT Search - just videos + channels
-!youtube.com##ytd-search ytd-item-section-renderer>#contents>:not(ytd-video-renderer,ytd-channel-renderer),ytd-secondary-search-container-renderer
-!
-!! Recommend after pause
-!youtube-nocookie.com,youtube.com##.ytp-pause-overlay, .show-video-thumbnail-button
-!~youtube-nocookie.com,~youtube.com##iframe ~ #topvbar > #rvid
-!
-!! Block once for all the scripts responsible for annotations:
-!/annotations_module.js$script,important,domain=youtube.com
-!
-!! and/or the end screen / auto play next:
-!/endscreen.js$script,important,domain=youtube.com
-!
-!! "i" button in the corner:
-!youtube.com##.ytp-button.ytp-cards-button
-!
-!! Brand image in the corner:
-!youtube.com##.ytp-button.branding-img-container
-!
-!! Removes Mixes from the Main Page
-!youtube.com##ytd-rich-item-renderer #video-title-link[title*="Mix"][href$="start_radio=1"]:upward(ytd-rich-item-renderer)
-!
-!! Removes Mixes from the right side panel
-!youtube.com##ytd-compact-radio-renderer
-!
-!! Removes Mixes from search results
-!youtube.com##ytd-radio-renderer
-!
-!! Removes "YouTube" (Music) playlists from the right side panel
-!youtube.com##ytd-compact-playlist-renderer .ytd-channel-name:has-text(/^YouTube/):upward(ytd-compact-playlist-renderer)
-!
-!! Suggested channels by name. Home Page
-!! youtube.com##ytd-rich-item-renderer:has(#byline-container:has-text(/BBC|CNN|FOX|NBC/))
-
-! forum.torrminatorr.com
-forum.torrminatorr.com##:xpath(/html/body/div[2]/div[4]/div[4]/div[*]/div/div/div[1]/div/div[1]/div/div[2]/div[1]/div[2]/parent::*[contains(string(),'BTC:') or contains(string(),'Want to take full advantage')]):remove()
-forum.torrminatorr.com##:xpath(/html/body/div[2]/div[4]/div[*]/div/div[1]/div/div[1]/div/div[2]/div[1][contains(string(),'BTC:') and contains(string(),'ETH:')]):remove()
-forum.torrminatorr.com##:xpath(/html/body/div[2]/div[4]/div[4]/div[*]/div/div/div[1]/div/div[1]/div/div[2]/span[1]/strong/parent::*[contains(string(),'Support my work if you like it:')]):remove()
-forum.torrminatorr.com##:xpath(/html/body/div[2]/div[4]/div[*]/div/div[1]/div/div[1]/div/div[2]/span[1]/strong/parent::*[contains(string(),'Support my work if you like it:')]):remove()
-forum.torrminatorr.com##:xpath(/html/body/div[2]/div[4]/div[*]/div/div/div/div/div[2]/div[1][contains(string(),'BTC:')]):remove()
-forum.torrminatorr.com##:xpath(/html/body/div[2]/div[4]/div[*]/div/div/div/div/div[2]/span[1]/strong/parent::*[contains(string(),'Support my work if you like it:')]):remove()
-
-! twitter.com
-twitter.com##:xpath(/html/body/div[2]/div/div/div[1]/div[2]/div/div/div/div/div/div[2]):remove()
-twitter.com##:xpath(/html/body/div[2]/div/div/div[1]/div[2]/div/div/div/div/div/div[2]/div[1]):remove()
-twitter.com##:xpath(/html/body/div[2]/div/div/div[1]/div[2]/div/div/div/div/div/div[2]/div[2]/div[contains(string(),'Sign in with Apple')]):remove()
-twitter.com##:xpath(/html/body/div[2]/div/div/div[1]/div/div[1]/div/div[contains(string(),'Don’t miss what’s happening')])
-twitter.com##:xpath(/html/body/div[2]/div/div/div[2]/div[3]):remove()
-twitter.com##:xpath(/html/body/div[2]/div/div/div[2]/header):remove()
-twitter.com##:xpath(/html/body/div[2]/div/div/div[2]/main/div):style(padding: 150px !important;width: 1550px !important)
-twitter.com##:xpath(/html/body/div[2]/div/div/div[2]/main/div/div/div/div[1]):style(max-width: 1500px !important)
-twitter.com##:xpath(/html/body/div[2]/div/div/div[2]/main/div/div/div/div[2]/div):style(padding: 75px !important)
-twitter.com##:xpath(/html/body/div[2]/div/div/div[2]/main/div/div/div/div[2]/div/div[2]/div/div/div/div[3]/section[contains(string(),'New to Twitter?')])
-
-www.onlinehacking.in##.ndcyidc
-www.onlinehacking.in###adblock_abdoutech
-
-www.cbsnews.com##:xpath(/html/body/footer):remove()
-www.cbsnews.com##.newsletter_signup
-
-www.telecompaper.com##.is-radiusless.card-content
-www.telecompaper.com###app
-
-www.techradar.com##.newsletter-form__wrapper--exitIntent.newsletter-form__wrapper
-www.techradar.com##.exit-intent__wrapper
-www.techradar.com##.exit-intent__background.exit-intent
-
-finance.yahoo.com###monalixa-finance-desktop-web-qsp-stickyfooter-seqmsg
-
-! 2022-10-11 https://www.youtube.com
-www.youtube.com##ytd-button-renderer.size-default.style-default.force-icon-button.ytd-menu-renderer.style-scope > .ytd-button-renderer.style-scope.yt-simple-endpoint
-
-! 2022-10-14 https://www.independent.co.uk
-www.independent.co.uk##:xpath(/html/body/div[3]/div[2]/article/div[5]/div/div[1]/div[1][contains(string(), 'Sign up for the daily')])
-
-! 2022-10-24 https://securityboulevard.com
-securityboulevard.com##div#sgpb-popup-dialog-main-div-wrapper.sgpb-popup-dialog-main-div-wrapper
-
-! 2022-10-24 https://www.softwaretestinghelp.com
-www.softwaretestinghelp.com##.tl-anim-zoom_in.tl-states-root
-
-! 2022-10-25 https://www.bloomberg.com
-www.bloomberg.com###fortress-verification-container-root
