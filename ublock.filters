@@ -178,6 +178,7 @@ www.youtube.com##.ytd-info-panel-container-renderer.style-scope
 www.youtube.com##.ytd-mealbar-promo-renderer
 www.youtube.com##.ytd-primetime-promo-renderer.style-scope
 www.youtube.com##.ytd-rich-section-renderer.style-scope
+www.youtube.com##.ytp-suggested-action-badge-with-controls.ytp-suggested-action-badge-expanded.ytp-suggested-action-badge.ytp-button
 www.youtube.com###clarify-box > .ytd-watch-flexy.style-scope
 www.youtube.com###dismissible > .ytd-feed-nudge-renderer.style-scope
 www.youtube.com###dismissible > .ytd-statement-banner-renderer.style-scope
