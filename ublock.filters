@@ -27,6 +27,7 @@ chrome.google.com##.yD5gtd
 community.chocolatey.org##.show.fade.modal-backdrop
 community.chocolatey.org###package-disclaimer
 covid19.ncdhhs.gov##.message
+finance.yahoo.com###monalixa-finance-desktop-web-qsp-stickyfooter-seqmsg
 getpocket.com##* > svg
 gfycat.com##.type3.pro-cta
 githubmemory.com##svg
@@ -40,6 +41,7 @@ odysee.com##.claim-preview--premium-plus
 odysee.com##.menu__list--notifications-list > [href]
 odysee.com##li.claim-preview--premium-plus.claim-preview--tile.card > [href="/$/membership"]
 scrolller.com##.bottom-nav-bar__show.bottom-nav-bar
+securityboulevard.com##div#sgpb-popup-dialog-main-div-wrapper.sgpb-popup-dialog-main-div-wrapper
 simplywall.st###modal-container
 stackoverflow.com##.is-visible.s-popover
 techcrunch.com##.article__content-outer > .newsletter-signup-block
@@ -64,6 +66,7 @@ techxplore.com##.w-75.text-center.my-4
 techxplore.com###feedback-to-editors > .modal-dialog > .modal-content
 techxplore.com###js-news-related-slider
 techxplore.com###js-soc-panel
+voice.google.com##:xpath(/html/body/div[2]/div[2]/div[1]/gv-app-banner/div/div/gv-tel-registration-banner-ng2/section):remove()
 www.aljazeera.com##svg
 www.amazon.com##.sg-col-4-of-20.sg-col.sg-col-4-of-16.s-matching-dir.sg-col-4-of-12
 www.amazon.com##.widgetId\=feedback.template\=FEEDBACK.slot\=MAIN.celwidget.s-widget-container-height-medium.s-spacing-medium.s-widget-container
@@ -76,16 +79,23 @@ www.bbc.com##.tp-modal
 www.bleepingcomputer.com##header
 www.bloomberg.com###fortress-paywall-container-root
 www.bloomberg.com###fortress-preblocked-container-root
+www.bloomberg.com###fortress-verification-container-root
 www.cargurus.com##svg
+www.cbsnews.com##:xpath(/html/body/footer):remove()
+www.cbsnews.com##.lazyloaded.push-notifications-primer.smart-banner.lazypreload
+www.cbsnews.com##.newsletter_signup
 www.cityam.com##svg
 www.cnet.com##svg
 www.costco.com###header-top > div
 www.crutchfield.com##svg
 www.eater.com##.c-toaster-stuck.c-toaster-active.c-toaster
 www.etsy.com##svg
+www.facebook.com##:xpath(/html/body/div[7]):remove()
+www.facebook.com##:xpath(/html/body/div[9]/div[1]/div/div[2]/div):remove()
 www.healthtap.com###lightboxContainer
 www.healthtap.com###lightboxOverlay
 www.iflscience.com##svg
+www.independent.co.uk##:xpath(/html/body/div[3]/div[2]/article/div[5]/div/div[1]/div[1][contains(string(), 'Sign up for the daily')])
 www.latimes.com##.met-flyout
 www.latimes.com##.ncm-container
 www.latimes.com##.wrapclicker
@@ -97,14 +107,23 @@ www.ndtv.com##.noti_wrap
 www.ndtv.com###firework1
 www.newyorker.com##.stacked-navigation__grid.grid-items-0.grid
 www.nrk.no##svg
+www.onlinehacking.in##.ndcyidc
+www.onlinehacking.in###adblock_abdoutech
 www.pcgamer.com##.exit-intent__wrapper
 www.pcgamer.com##.exitIntent
 www.reuters.com##footer
 www.reuters.com##svg
 www.rollingstone.com##svg
+www.softwaretestinghelp.com##.tl-anim-zoom_in.tl-states-root
 www.ssga.com##.ssmp-global-modal.ssmp-mobile-header.ssmp-header
+www.startpage.com##.block-display
 www.tampabay.com##svg
+www.techradar.com##.exit-intent__background.exit-intent
+www.techradar.com##.exit-intent__wrapper
+www.techradar.com##.newsletter-form__wrapper--exitIntent.newsletter-form__wrapper
 www.techrepublic.com##svg
+www.telecompaper.com##.is-radiusless.card-content
+www.telecompaper.com###app
 www.theatlantic.com###paywall
 www.theatlantic.com##svg
 www.thecybersecuritytimes.com##.wp-block-image
@@ -135,34 +154,17 @@ www.yalemedicine.org##svg
 www.zdnet.com##svg
 zaiste.net##.border-b.border-gray-500.bg-gray-700
 zaiste.net##footer
-voice.google.com##:xpath(/html/body/div[2]/div[2]/div[1]/gv-app-banner/div/div/gv-tel-registration-banner-ng2/section):remove()
-www.onlinehacking.in##.ndcyidc
-www.onlinehacking.in###adblock_abdoutech
-www.cbsnews.com##:xpath(/html/body/footer):remove()
-www.cbsnews.com##.newsletter_signup
-www.telecompaper.com##.is-radiusless.card-content
-www.telecompaper.com###app
-www.techradar.com##.newsletter-form__wrapper--exitIntent.newsletter-form__wrapper
-www.techradar.com##.exit-intent__wrapper
-www.techradar.com##.exit-intent__background.exit-intent
-finance.yahoo.com###monalixa-finance-desktop-web-qsp-stickyfooter-seqmsg
-www.independent.co.uk##:xpath(/html/body/div[3]/div[2]/article/div[5]/div/div[1]/div[1][contains(string(), 'Sign up for the daily')])
-securityboulevard.com##div#sgpb-popup-dialog-main-div-wrapper.sgpb-popup-dialog-main-div-wrapper
-www.softwaretestinghelp.com##.tl-anim-zoom_in.tl-states-root
-www.bloomberg.com###fortress-verification-container-root
-www.startpage.com##.block-display
-www.theguardian.com##:xpath(/html/body/aside[2]/gu-island/div/div/div/section)
 
 ! Discord
 discord.com##:xpath(/html/body/div[2]/div[2]/div/div[1]/div/div[2]/div/div[1]/div/div[*][contains(string(),'Get the desktop app!') or contains(string(),'Want to take full advantage')]):remove()
 discord.com##:xpath(/html/body/div[2]/div[2]/div/div[3]/div[contains(string(),'Personalize your server invites') or contains(string(),'Connect Xbox to Discord') or contains(string(),'Hang out with Discord friends') or contains(string(),'Boost this server to add') ])
 
 ! Reddit with ImageMax
-!www.reddit.com##:xpath(/html/body/div[2]/div/div[2]/div[2]/div/div/div/div[2]/div[4]/div[2]/div[contains(string(),'Moderators') and contains(string(),'About Community')]):remove()
-!www.reddit.com##:xpath(/html/body/div[2]/div/div[2]/div[2]/div/div[contains(string(),'Create an account') or contains(string(),'Create Community')]):remove()
 !www.reddit.com##:xpath(/html/body//div/video/parent::*/parent::*/parent::*/parent::*/parent::*/parent::*):remove()
-!www.reddit.com##:xpath(/html/body/div//div/div/div/div/div/div/div/div/div[contains(string(),'Moderators') and contains(string(),'About Community')]):remove()
+!www.reddit.com##:xpath(/html/body/div[2]/div/div[2]/div[2]/div/div[contains(string(),'Create an account') or contains(string(),'Create Community')]):remove()
 !www.reddit.com##:xpath(/html/body/div[2]/div/div[2]/div[2]/div/div/div/div[2]/div[4]/div):style(margin-right: 0px !important;)
+!www.reddit.com##:xpath(/html/body/div[2]/div/div[2]/div[2]/div/div/div/div[2]/div[4]/div[2]/div[contains(string(),'Moderators') and contains(string(),'About Community')]):remove()
+!www.reddit.com##:xpath(/html/body/div//div/div/div/div/div/div/div/div/div[contains(string(),'Moderators') and contains(string(),'About Community')]):remove()
 
 ! old.reddit.com
 old.reddit.com##.default-header
@@ -170,17 +172,17 @@ old.reddit.com##.happening-now
 old.reddit.com##.listingsignupbar.infobar
 old.reddit.com##.premium-banner
 old.reddit.com##.redditname.pagename.hover
+old.reddit.com##.row.top-matter
 old.reddit.com##.titlebox
 old.reddit.com##polygon
-old.reddit.com##.row.top-matter
 
 ! Outlook
 outlook.live.com##:xpath(/html/body/div[*]/div/div[1]/div/div[1]/div[2]/div/div/div/div/div[2]/div[*]/div/button[ contains(@title,'My Day') or contains(@title,'OneNote feed') or contains(@title,'Help') or contains(@title,'What' ) or contains(string(),'Meet Now') ]):remove()
-outlook.live.com##:xpath(/html/body/div[*]/div/div[2]/div[2]/div[2]/div[1]/div/div/div[3]/div/div[3]/div[1]/div[2]/div/div/div/div/div/div[*][contains(string(),'Upgrade Your Account') or contains(string(),'Get the latest premium Outlook features')]):remove()
-outlook.live.com##:xpath(/html/body/div[*]/div/div[2]/div[2]/div[2]/div[1]/div/div/div[1]/div/div/div[contains(string(),'Upgrade to Microsoft 365 with premium Outlook features') or contains(string(),'OneDrive cloud storage for as low as')]):remove()
-outlook.live.com##:xpath(/html/body/div[*]/div/div[2]/div[2]/div[2]/div[1]/div/div/div[*][contains(string(),'It looks like you') and contains(string(),'re using an ad blocker. To maximize the space in your inbox, sign up for Ad-Free Outlook.')]):remove()
-outlook.live.com##:xpath(/html/body/div[*]/div/div[1]/div/div[1]/div[2]/div/div/div/div/div[2]/div[2]/div/div/div/button[ contains(@title,'Skype') ]):remove()
 outlook.live.com##:xpath(/html/body/div[*]/div/div[1]/div/div[1]/div[2]/div/div/div/div/div[2]/div[*]/div/div/div/div[*][ contains(string(),'Meet Now') ]):remove()
+outlook.live.com##:xpath(/html/body/div[*]/div/div[1]/div/div[1]/div[2]/div/div/div/div/div[2]/div[2]/div/div/div/button[ contains(@title,'Skype') ]):remove()
+outlook.live.com##:xpath(/html/body/div[*]/div/div[2]/div[2]/div[2]/div[1]/div/div/div[*][contains(string(),'It looks like you') and contains(string(),'re using an ad blocker. To maximize the space in your inbox, sign up for Ad-Free Outlook.')]):remove()
+outlook.live.com##:xpath(/html/body/div[*]/div/div[2]/div[2]/div[2]/div[1]/div/div/div[1]/div/div/div[contains(string(),'Upgrade to Microsoft 365 with premium Outlook features') or contains(string(),'OneDrive cloud storage for as low as')]):remove()
+outlook.live.com##:xpath(/html/body/div[*]/div/div[2]/div[2]/div[2]/div[1]/div/div/div[3]/div/div[3]/div[1]/div[2]/div/div/div/div/div/div[*][contains(string(),'Upgrade Your Account') or contains(string(),'Get the latest premium Outlook features')]):remove()
 
 ! twitter.com
 twitter.com##:xpath(/html/body/div[2]/div/div/div[1]/div[2]/div/div/div/div/div/div[2]):remove()
@@ -205,6 +207,7 @@ www.youtube.com##.ytd-info-panel-container-renderer.style-scope
 www.youtube.com##.ytd-mealbar-promo-renderer
 www.youtube.com##.ytd-primetime-promo-renderer.style-scope
 www.youtube.com##.ytd-rich-section-renderer.style-scope
+www.youtube.com##.ytp-iv-player-content.ytp-player-content
 www.youtube.com##.ytp-suggested-action-badge-with-controls.ytp-suggested-action-badge-expanded.ytp-suggested-action-badge.ytp-button
 www.youtube.com###clarify-box > .ytd-watch-flexy.style-scope
 www.youtube.com###dismissible > .ytd-feed-nudge-renderer.style-scope
@@ -218,4 +221,3 @@ www.youtube.com##ytd-clarification-renderer.ytd-item-section-renderer.style-scop
 www.youtube.com##ytd-horizontal-card-list-renderer.ytd-item-section-renderer.style-scope
 www.youtube.com##ytd-rich-section-renderer.ytd-rich-grid-renderer.style-scope > .ytd-rich-section-renderer.style-scope
 www.youtube.com##ytd-video-preview
-
