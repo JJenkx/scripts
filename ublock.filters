@@ -154,6 +154,8 @@ www.yalemedicine.org##svg
 www.zdnet.com##svg
 zaiste.net##.border-b.border-gray-500.bg-gray-700
 zaiste.net##footer
+www.tomshardware.com###slice-container-exitIntent
+www.ebay.com##:xpath(/html/body/div[9]/div[4]/div[2]/div[1]/div[2]/ul/li[*][ contains(string(),'Chromebook') or contains(string(),'Celeron') or contains(string(),'Pentium') or contains(string(),'4GB Ram') or contains(string(),'4 GB Ram') or contains(string(),'BAD BATTERY') or contains(string(),'for Parts') or contains(string(),'Parts Repair') or contains(string(),'FOR PARTS') ]):remove()
 
 ! Discord
 discord.com##:xpath(/html/body/div[2]/div[2]/div/div[1]/div/div[2]/div/div[1]/div/div[*][contains(string(),'Get the desktop app!') or contains(string(),'Want to take full advantage')]):remove()
@@ -212,6 +214,7 @@ www.youtube.com##.ytp-suggested-action-badge-with-controls.ytp-suggested-action-
 www.youtube.com###clarify-box > .ytd-watch-flexy.style-scope
 www.youtube.com###dismissible > .ytd-feed-nudge-renderer.style-scope
 www.youtube.com###dismissible > .ytd-statement-banner-renderer.style-scope
+www.youtube.com###logo
 www.youtube.com###offer-module
 www.youtube.com###shelf-container
 www.youtube.com##inline-preview-player
