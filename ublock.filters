@@ -201,6 +201,7 @@ twitter.com##:xpath(/html/body/div[2]/div/div/div[2]/main/div/div/div/div[2]/div
 
 ! Youtube
 www.youtube.com##.autocomplete-suggestions
+www.youtube.com##.iv-branding.annotation-type-custom.annotation
 www.youtube.com##.style-scope.ytd-thumbnail-overlay-loading-preview-renderer
 www.youtube.com##.watch > .ytd-emergency-onebox-renderer.style-scope
 www.youtube.com##.yt-mealbar-promo-renderer.style-scope
@@ -218,6 +219,7 @@ www.youtube.com###dismissible > .ytd-statement-banner-renderer.style-scope
 www.youtube.com###logo
 www.youtube.com###offer-module
 www.youtube.com###shelf-container
+www.youtube.com###sponsor-button
 www.youtube.com##inline-preview-player
 www.youtube.com##tp-yt-paper-dialog.ytd-popup-container.style-scope
 www.youtube.com##ytd-button-renderer.size-default.style-default.force-icon-button.ytd-menu-renderer.style-scope > .ytd-button-renderer.style-scope.yt-simple-endpoint
@@ -225,4 +227,3 @@ www.youtube.com##ytd-clarification-renderer.ytd-item-section-renderer.style-scop
 www.youtube.com##ytd-horizontal-card-list-renderer.ytd-item-section-renderer.style-scope
 www.youtube.com##ytd-rich-section-renderer.ytd-rich-grid-renderer.style-scope > .ytd-rich-section-renderer.style-scope
 www.youtube.com##ytd-video-preview
-www.youtube.com##.iv-branding.annotation-type-custom.annotation
