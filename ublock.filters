@@ -156,6 +156,7 @@ zaiste.net##.border-b.border-gray-500.bg-gray-700
 zaiste.net##footer
 www.tomshardware.com###slice-container-exitIntent
 www.ebay.com##:xpath(/html/body/div[9]/div[4]/div[2]/div[1]/div[2]/ul/li[*][ contains(string(),'Chromebook') or contains(string(),'Celeron') or contains(string(),'Pentium') or contains(string(),'4GB Ram') or contains(string(),'4 GB Ram') or contains(string(),'BAD BATTERY') or contains(string(),'for Parts') or contains(string(),'Parts Repair') or contains(string(),'FOR PARTS') ]):remove()
+voice.google.com##:xpath(/html/body/div[2]/div[2]/div[1]/gv-app-banner/div/div/gv-tel-registration-banner-ng2/section):remove()
 
 ! Discord
 discord.com##:xpath(/html/body/div[2]/div[2]/div/div[1]/div/div[2]/div/div[1]/div/div[*][contains(string(),'Get the desktop app!') or contains(string(),'Want to take full advantage')]):remove()
@@ -224,3 +225,4 @@ www.youtube.com##ytd-clarification-renderer.ytd-item-section-renderer.style-scop
 www.youtube.com##ytd-horizontal-card-list-renderer.ytd-item-section-renderer.style-scope
 www.youtube.com##ytd-rich-section-renderer.ytd-rich-grid-renderer.style-scope > .ytd-rich-section-renderer.style-scope
 www.youtube.com##ytd-video-preview
+www.youtube.com##.iv-branding.annotation-type-custom.annotation
