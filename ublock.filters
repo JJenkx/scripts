@@ -67,7 +67,6 @@ techxplore.com###feedback-to-editors > .modal-dialog > .modal-content
 techxplore.com###js-news-related-slider
 techxplore.com###js-soc-panel
 voice.google.com##:xpath(/html/body/div[2]/div[2]/div[1]/gv-app-banner/div/div/gv-tel-registration-banner-ng2/section):remove()
-voice.google.com##:xpath(/html/body/div[2]/div[2]/div[1]/gv-app-banner/div/div/gv-tel-registration-banner-ng2/section):remove()
 www.aljazeera.com##svg
 www.amazon.com##.sg-col-4-of-20.sg-col.sg-col-4-of-16.s-matching-dir.sg-col-4-of-12
 www.amazon.com##.widgetId\=feedback.template\=FEEDBACK.slot\=MAIN.celwidget.s-widget-container-height-medium.s-spacing-medium.s-widget-container
