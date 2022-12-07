@@ -188,6 +188,10 @@ outlook.live.com##:xpath(/html/body/div[*]/div/div[2]/div[2]/div[2]/div[1]/div/d
 outlook.live.com##:xpath(/html/body/div[*]/div/div[2]/div[2]/div[2]/div[1]/div/div/div[1]/div/div/div[contains(string(),'Upgrade to Microsoft 365 with premium Outlook features') or contains(string(),'OneDrive cloud storage for as low as')]):remove()
 outlook.live.com##:xpath(/html/body/div[*]/div/div[2]/div[2]/div[2]/div[1]/div/div/div[3]/div/div[3]/div[1]/div[2]/div/div/div/div/div/div[*][contains(string(),'Upgrade Your Account') or contains(string(),'Get the latest premium Outlook features')]):remove()
 
+outlook.live.com##:xpath(/html/body/div[3]/div/div[2]/div[2]/div[2]/div[1]/div/div/div[4]/div/div[2]/span/parent::*/parent::*/parent::*[contains(string(),'Ad Choices')]):remove()
+outlook.live.com##:xpath(/html/body/div[3]/div/div[2]/div[2]/div[2]/div[1]/div/div/div[3]/div/div[3]/div[3]/div/div/div/div/div[2]/div/div[1]/div/div/div/div/div[3]/div[1]/span/parent::*/parent::*/parent::*/parent::*/parent::*/parent::*/parent::*[contains(string(),'Popular coupons')]):remove()
+outlook.live.com##:xpath(/html/body/div[3]/div/div[2]/div[2]/div[2]/div[1]/div/div/div[3]/div/div[3]/div[3]/div/div/div/div/div[2]/div/div[1]/div/div/div/div[3]/div/button/parent::*/parent::*/parent::*/parent::*/parent::*/parent::*[contains(string(),'Visit site')]):remove()
+
 ! twitter.com
 twitter.com##:xpath(/html/body/div[2]/div/div/div[1]/div[2]/div/div/div/div/div/div[2]):remove()
 twitter.com##:xpath(/html/body/div[2]/div/div/div[1]/div[2]/div/div/div/div/div/div[2]/div[1]):remove()
