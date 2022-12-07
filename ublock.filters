@@ -67,6 +67,7 @@ techxplore.com###feedback-to-editors > .modal-dialog > .modal-content
 techxplore.com###js-news-related-slider
 techxplore.com###js-soc-panel
 voice.google.com##:xpath(/html/body/div[2]/div[2]/div[1]/gv-app-banner/div/div/gv-tel-registration-banner-ng2/section):remove()
+voice.google.com##:xpath(/html/body/div[2]/div[2]/div[1]/gv-app-banner/div/div/gv-tel-registration-banner-ng2/section):remove()
 www.aljazeera.com##svg
 www.amazon.com##.sg-col-4-of-20.sg-col.sg-col-4-of-16.s-matching-dir.sg-col-4-of-12
 www.amazon.com##.widgetId\=feedback.template\=FEEDBACK.slot\=MAIN.celwidget.s-widget-container-height-medium.s-spacing-medium.s-widget-container
@@ -89,6 +90,7 @@ www.cnet.com##svg
 www.costco.com###header-top > div
 www.crutchfield.com##svg
 www.eater.com##.c-toaster-stuck.c-toaster-active.c-toaster
+www.ebay.com##:xpath(/html/body/div[9]/div[4]/div[2]/div[1]/div[2]/ul/li[*][ contains(string(),'Chromebook') or contains(string(),'Celeron') or contains(string(),'Pentium') or contains(string(),'4GB Ram') or contains(string(),'4 GB Ram') or contains(string(),'BAD BATTERY') or contains(string(),'for Parts') or contains(string(),'Parts Repair') or contains(string(),'FOR PARTS') ]):remove()
 www.etsy.com##svg
 www.facebook.com##:xpath(/html/body/div[7]):remove()
 www.facebook.com##:xpath(/html/body/div[9]/div[1]/div/div[2]/div):remove()
@@ -138,6 +140,7 @@ www.theverge.com##.c-tab-bar
 www.theverge.com##.l-header
 www.theverge.com##.link-skip.sr-only
 www.theverge.com##svg
+www.tomshardware.com###slice-container-exitIntent
 www.urbandictionary.com##svg
 www.verdict.co.uk##.c-newsletter-signup
 www.verdict.co.uk##.c-post-single__header-meta-before
@@ -154,13 +157,12 @@ www.yalemedicine.org##svg
 www.zdnet.com##svg
 zaiste.net##.border-b.border-gray-500.bg-gray-700
 zaiste.net##footer
-www.tomshardware.com###slice-container-exitIntent
-www.ebay.com##:xpath(/html/body/div[9]/div[4]/div[2]/div[1]/div[2]/ul/li[*][ contains(string(),'Chromebook') or contains(string(),'Celeron') or contains(string(),'Pentium') or contains(string(),'4GB Ram') or contains(string(),'4 GB Ram') or contains(string(),'BAD BATTERY') or contains(string(),'for Parts') or contains(string(),'Parts Repair') or contains(string(),'FOR PARTS') ]):remove()
-voice.google.com##:xpath(/html/body/div[2]/div[2]/div[1]/gv-app-banner/div/div/gv-tel-registration-banner-ng2/section):remove()
 
 ! Discord
+! discord.com##:xpath(/html/body/div[2]/div[2]/div/div[3]/div[contains(string(),'Personalize your server invites') or contains(string(),'Connect Xbox to Discord') or contains(string(),'Hang out with Discord friends') or contains(string(),'Boost this server to add') ])
 discord.com##:xpath(/html/body/div[2]/div[2]/div/div[1]/div/div[2]/div/div[1]/div/div[*][contains(string(),'Get the desktop app!') or contains(string(),'Want to take full advantage')]):remove()
-discord.com##:xpath(/html/body/div[2]/div[2]/div/div[3]/div[contains(string(),'Personalize your server invites') or contains(string(),'Connect Xbox to Discord') or contains(string(),'Hang out with Discord friends') or contains(string(),'Boost this server to add') ])
+discord.com##:xpath(/html/body/div[2]/div[2]/div/div[3]/div/div/div/div[2]/button[1]/div/parent::*/parent::*/parent::*/parent::*/parent::*[contains(string(), 'Dismiss')])
+
 
 ! Reddit with ImageMax
 !www.reddit.com##:xpath(/html/body//div/video/parent::*/parent::*/parent::*/parent::*/parent::*/parent::*):remove()
@@ -200,6 +202,7 @@ twitter.com##:xpath(/html/body/div[2]/div/div/div[2]/main/div/div/div/div[2]/div
 twitter.com##:xpath(/html/body/div[2]/div/div/div[2]/main/div/div/div/div[2]/div/div[2]/div/div/div/div[3]/section[contains(string(),'New to Twitter?')])
 
 ! Youtube
+www.youtube.com##:xpath(/html/body/ytd-app/div[1]/ytd-page-manager/ytd-watch-flexy/div[5]/div[1]/div/div[2]/ytd-watch-metadata/div/div[2]/div[2]/div/div/ytd-menu-renderer/div[2]/ytd-button-renderer[1]/yt-button-shape/button[contains(string(),'Thanks')]):remove()
 www.youtube.com##.autocomplete-suggestions
 www.youtube.com##.iv-branding.annotation-type-custom.annotation
 www.youtube.com##.style-scope.ytd-thumbnail-overlay-loading-preview-renderer
