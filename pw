@@ -85,7 +85,7 @@ while test $# -gt 0; do
       if [[ $1 -gt 0 ]] && [[ -z $pw_line_count_target ]] 2> /dev/null; then
         urandom_bytes_user=$1
         urandom_bytes_default=0
-        pw_line_count_target=-1
+        pw_line_count_target=0
       else
           printf "error: \"-b NUM\" needs numeral greater that 0. Value > 1000 recommended\n"
           exit 1
@@ -98,7 +98,7 @@ while test $# -gt 0; do
       if [[ "${1/*"="/}" -gt 0 ]] && [[ $pw_line_count_target -le 0 ]] 2> /dev/null; then
         urandom_bytes_user="${1/*"="/}"
         urandom_bytes_default=0
-        pw_line_count_target=-1
+        pw_line_count_target=0
       else
         if [[ ! $pw_line_count_target -le 0 ]] 2> /dev/null; then
           printf "\nflag -n, --ncount not compatible with flag -b, --bytes\n"
