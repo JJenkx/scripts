@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-pw_len=40                                         # Password length
+num_passwords=40                                  # Default number of passwords to return
+pw_len=40                                         # Default password length
 urandom_bytes_default=20000                       # Set default, More data = longer password list
 urandom_bytes_user=0                              # Leave at 0 for use with logic of -b , --bytes=
 urandom_bytes_calculated=0                        # Leave at 0 for use with end logic
@@ -208,6 +209,9 @@ else
 fi
 
 
+if [[ $pw_line_count_target -eq 0 ]]; then
+  pw_line_count_target=$num_passwords
+fi
 
 
 # PW generation bits
