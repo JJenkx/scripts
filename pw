@@ -216,8 +216,7 @@ fi
 
 # PW generation bits
 urandom_bytes=$(( ($urandom_bytes_default) + ($urandom_bytes_user) + ($urandom_bytes_calculated) )) 
-Perl_FindAndReplace="s/.{$pw_len}\K/\n/g"
 head -c     "$urandom_bytes"      < /dev/urandom |
 tr   -dc    "$characters"                        |
-perl -pe    "$Perl_FindAndReplace"               |
+fold -s     -w$pw_len                            |
 head -n     "$pw_line_count_target"
