@@ -1,39 +1,70 @@
 #!/usr/bin/env bash
 
 pw_len=40                                         # Password length
-urandom_bytes=20000                               # More data = longer password list
+urandom_bytes_default=20000                       # Set default, More data = longer password list
+urandom_bytes_user=0                              # Leave at 0 for use with logic of -b , --bytes=
+urandom_bytes_calculated=0                        # Leave at 0 for use with end logic
 letters='A-HJ-KM-NP-Za-km-z'                      # Default characters to include in passwords: letters, numbers, symbols
 numbers='1-9'                                     # Default is designed not to include characters Il0O
 symbols='!?*^_@#%^&*()=+<>}{][;:",./|~\\'\''`-'   # If dash "-" is needed, put it at the end
 characters="$letters$numbers$symbols"             #
 regex_match_flags="^-(b|-bytes=|c|-characters=|l|-length=)$"
 
+
+
 while test $# -gt 0; do
   case "$1" in
+
+
     -h|--help)
       echo "pw - generate passwords"
       echo " "
       echo "pw [options]"
       echo " "
       echo "options:"
-      echo "-h       ,  --help               Show brief help"
-      echo "-b NUM   ,  --bytes=NUM          Specify bytes to read from /dev/urandom. Defaults to $urandom_bytes bytes"
+      echo "-b NUM   ,  --bytes=NUM          Specify bytes to read from /dev/urandom. Not compatible with flag -n, --ncount. Defaults to $urandom_bytes_default bytes"
       echo "-c 'CHAR',  --characters='CHAR'  Specify allowed password characters. Defaults to '$characters'"
+      echo "-h       ,  --help               Show brief help"
       echo "-l NUM   ,  --length=NUM         Specify password length. Defaults to length of $pw_len"
+      echo "-n NUM   ,  --ncount=NUM         Specify number of passwords to return. Not compatible with flag -b, --bytes"
       echo " "
-      echo "example: 20 character alphanumeric with symbols "'!?"*#-'" passwords list"
+      echo "examples:"
       echo " "
+      echo "# 20 character alphanumeric with symbols "'!?"*#-'" using 20000 bytes of data from /dev/urandom"
       echo "pw --bytes=20000 --characters='a-zA-Z0-9"'!?"*#-'"' --length=20"
-      echo " or"
+      echo "IjLVomO*LZIvBWhmITtS"
+      echo " "
+      echo "# 200 passwords using default values"
+      echo "pw --ncount=200"
+      echo '!=[8x|d`dHdVA-:xn8t>G=~tkgbg}T#~2(/r?9N&'
+      echo " "
+      echo " "
+      echo " "
+      echo " "
+      echo " "
+      echo " "
+      echo "pw -c '0-4' --length=80 --ncount=10"
+      echo "10132440443120133034412013333104142320411133221101130324111200442311420044122312"
+      echo " "
+      echo "pw -c 'zplaeiou' --length=80 --ncount=1"
+      echo "uuzzzalilepauzuepaazoizoeiiaazupupalolzliluuoazluzuepzlozepapaioipupapleuzaolpuu"
+      echo " "
+      echo " "
+      echo " "
       echo "pw -b 20000 -c 'a-zA-Z0-9"'!?"*#-'"' -l 20"
       echo " "
       exit 0
       ;;
+
+
     -b)
       shift
-      # Test that -b value (previously shifted $1) is gt 0 before setting var urandom_bytes
-      if [ $1 -gt 0 ] 2> /dev/null; then
-        urandom_bytes=$1
+      # Test that -b value (previously shifted $1) is gt 0 before setting var urandom_bytes_user
+      # And test that $pw_line_count_target has not been set
+      if [[ $1 -gt 0 ]] && [[ -z $pw_line_count_target ]] 2> /dev/null; then
+        urandom_bytes_user=$1
+        urandom_bytes_default=0
+        pw_line_count_target=-1
       else
           printf "error: \"-b NUM\" needs numeral greater that 0. Value > 1000 recommended\n"
           exit 1
@@ -41,36 +72,25 @@ while test $# -gt 0; do
       shift
       ;;
     --bytes*)
-      # Test that --bytes value "${1/*"="/}" is gt 0 before setting var urandom_bytes
-      if [[ "${1/*"="/}" -gt 0 ]] 2> /dev/null; then
-        urandom_bytes="${1/*"="/}"
+      # Test that --bytes value "${1/*"="/}" is gt 0 before setting var urandom_bytes_user
+      # And test that pw_line_count_target is not set
+      if [[ "${1/*"="/}" -gt 0 ]] && [[ $pw_line_count_target -le 0 ]] 2> /dev/null; then
+        urandom_bytes_user="${1/*"="/}"
+        urandom_bytes_default=0
+        pw_line_count_target=-1
       else
-        printf "error: usage \"--bytes=NUM\" needs numeral greater that 0. Value > 1000 recommended\n"
-        exit 1
+        if [[ ! $pw_line_count_target -le 0 ]] 2> /dev/null; then
+          printf "\nflag -n, --ncount not compatible with flag -b, --bytes\n"
+          exit 1
+        else
+          printf "error: usage \"--bytes=NUM\" needs numeral greater that 0. Value > 1000 recommended\n"
+          exit 1
+        fi
       fi
       shift
       ;;
-    -l)
-      shift
-      # Test that -l value (previously shifted $1) is gt 0 before setting var pw_len
-      if [ $1 -gt 0 ] 2> /dev/null; then
-        pw_len=$1
-      else
-        printf "error: usage \"-l NUM\" (password length) needs numeral greater that 0\n"
-        exit 1
-      fi
-      shift
-      ;;
-    --length*)
-      # Test that --length value "${1/*"="/}" is gt 0 before setting var pw_len
-      if [[ "${1/*"="/}" -gt 0 ]] 2> /dev/null; then
-        pw_len="${1/*"="/}"
-      else
-        printf "error: usage \"--length=NUM\" (password length) needs numeral greater that 0\n"
-        exit 1
-      fi
-      shift
-      ;;
+
+
     -c)
       shift
       # Before set var characters, test for -c value (previously shifted $1) being blank,
@@ -96,15 +116,84 @@ while test $# -gt 0; do
       fi
       shift
       ;;
+
+
+    -l)
+      shift
+      # Test that -l value (previously shifted $1) is gt 0 before setting var pw_len
+      if [ $1 -gt 0 ] 2> /dev/null; then
+        pw_len=$1
+      else
+        printf "error: usage \"-l NUM\" (password length) needs numeral greater that 0\n"
+        exit 1
+      fi
+      shift
+      ;;
+    --length*)
+      # Test that --length value "${1/*"="/}" is gt 0 before setting var pw_len
+      if [[ "${1/*"="/}" -gt 0 ]] 2> /dev/null; then
+        pw_len="${1/*"="/}"
+      else
+        printf "error: usage \"--length=NUM\" (password length) needs numeral greater that 0\n"
+        exit 1
+      fi
+      shift
+      ;;
+
+
+    -n)
+      shift
+      # Test that -b value (previously shifted $1) is gt 0 before setting var pw_line_count_target
+      if [ $1 -gt 0 ] ; then
+        pw_line_count_target=$1
+        urandom_bytes_default=0
+      else
+          printf "error: \"-n NUM\" needs numeral greater that 0\n"
+          exit 1
+      fi
+      shift
+      ;;
+    --ncount*)
+      # Test that --bytes value "${1/*"="/}" is gt 0 before setting var pw_line_count_target
+      if [[ "${1/*"="/}" -gt 0 ]] ; then
+        pw_line_count_target="${1/*"="/}"
+        urandom_bytes_default=0
+      else
+        printf "error: usage \"--ncount=NUM\" needs numeral greater that 0\n"
+        exit 1
+      fi
+      shift
+      ;;
+
+
     *)
       break
       ;;
   esac
 done
 
-                                # PW Generation
+
+
+
+# Test that urandom_bytes_user has not been changed from 0
+# And test that pw_line_count_target gt 0
+if [[ $pw_line_count_target -gt 0 ]] && [[ $urandom_bytes_user -eq 0 ]] ; then
+  count_out_of_10000="$(head -c 10000 < /dev/urandom | tr -dc "$characters" | wc -c)"
+  urandom_bytes_calculated=$(( (13000/$count_out_of_10000) * ($pw_len * $pw_line_count_target)))
+else
+  if [[ $pw_line_count_target -gt 0 ]] && [[ $urandom_bytes_user -ne 0 ]] ; then
+    printf "\nflag \" -n|--ncount \" not compatible with flag \" -b|--bytes \"\n"
+    exit 1
+  fi
+fi
+
+
+
+
+# PW generation bits
+urandom_bytes=$(( ($urandom_bytes_default) + ($urandom_bytes_user) + ($urandom_bytes_calculated) )) 
 Perl_FindAndReplace="s/.{$pw_len}\K/\n/g"
 head -c     "$urandom_bytes"      < /dev/urandom |
 tr   -dc    "$characters"                        |
 perl -pe    "$Perl_FindAndReplace"               |
-head -n  -1
+head -n     "$pw_line_count_target"
