@@ -4,7 +4,7 @@ pw_len=40                                         # Password length
 urandom_bytes=20000                               # More data = longer password list
 letters='A-HJ-KM-NP-Za-km-z'                      # Default characters to include in passwords: letters, numbers, symbols
 numbers='1-9'                                     # Default is designed not to include characters Il0O
-symbols='!?*^_@#%^&*()=+-<>}{][;:",./|~\\'\''`-'  # If dash "-" is needed, put it at the end
+symbols='!?*^_@#%^&*()=+<>}{][;:",./|~\\'\''`-'  # If dash "-" is needed, put it at the end
 characters="$letters$numbers$symbols"             #
 regex_match_flags="^-(b|-bytes=|c|-characters=|l|-length=)$"
 
