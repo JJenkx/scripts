@@ -1,0 +1,62 @@
+#!/bin/bash
+
+ps_search_results="$( ps ax -o'pid,comm,ruser,args' | grep "$@" | grep -v "$BASH_SOURCE" | grep -v "[ ][0-9]\+[ ]grep " )" 
+pid_list="$(awk '{print $1}' <<<"$ps_search_results")"
+pretty_fied="$(perl -pe 's/^\s*\d+ [^\s].*?   \K(\/.*)/\n       $1\n/gm' <<<"$ps_search_results")"
+
+echo " "
+echo " "
+echo "$pretty_fied"
+echo " "
+
+SAVEIFS=$IFS          # Save current IFS (Internal Field Separator)
+IFS=$'\n'             # Change IFS to newline char
+pid_list=($pid_list)  # split the `pid_list` string into an array by the same name
+IFS=$SAVEIFS          # Restore original IFS
+
+echo " "
+echo ${pid_list[*]}
+echo " "
+
+read -p "Do you wish to kill any of the above PIDs? [y/N/all] " yn
+case $yn in
+    
+    [Yy] )         echo " "               ;;
+    [Nn] )         exit                   ;;
+    [Yy][Ee][Ss] ) echo " "               ;;
+    [Nn][Oo] )     exit                   ;;
+    [Aa][Ll][Ll] ) echo " "
+                   do_kill_all="YES"      ;;
+    * )            echo " "
+                   echo "Canceled"
+                   echo " "
+                   exit                   ;;
+esac
+
+if [ "$do_kill_all" == "YES" ]; then
+    for (( i=0; i<${#pid_list[@]}; i++ )) do
+        echo "Killing ""${pid_list[$i]}"
+        kill -SIGTERM "${pid_list[$i]}"
+    done
+    echo " "
+    echo "all done"
+    echo " "
+else
+    for (( i=0; i<${#pid_list[@]}; i++ )) do
+        read -p "Kill PID? "${pid_list[$i]}" [y/N] " yn
+            case $yn in
+                [Yy] )         echo "Killing ""${pid_list[$i]}"
+                               kill -SIGTERM "${pid_list[$i]}"       ;;
+                [Nn] )         echo "${pid_list[$i]}"" Not Killed"   ;;
+                [Yy][Ee][Ss] ) echo "Killing ""${pid_list[$i]}"
+                               kill -SIGTERM "${pid_list[$i]}"       ;;
+                [Nn][Oo] )     echo "${pid_list[$i]}"" Not Killed"   ;;
+                * )            echo " "
+                               echo "${pid_list[$i]}"" Not Killed"
+                               echo " "                              ;;
+            esac
+    done
+    echo " "
+    echo "all done"
+    echo " "
+fi
