@@ -1,21 +1,23 @@
 #!/usr/bin/env bash
+#set -x
 
-num_passwords=40                                  # Default number of passwords to return
-pw_len=40                                         # Default password length
-urandom_bytes_default=20000                       # Set default, More data = longer password list
-urandom_bytes_user=0                              # Leave at 0 for use with logic of -b , --bytes=
-urandom_bytes_calculated=0                        # Leave at 0 for use with end logic
-letters='A-HJ-KM-NP-Za-km-z'                      # Default characters to include in passwords: letters, numbers, symbols
-numbers='1-9'                                     # Default is designed not to include characters Il0O
-symbols='!?*^_@#%^&*()=+<>}{][;:",./|~\\'\''`-'   # If dash "-" is needed, put it at the end
-characters="$letters$numbers$symbols"             #
-regex_match_flags="^-(b|-bytes=|c|-characters=|l|-length=)$"
+num_passwords=20                                  # Default number of passwords to return.
+pw_len=40                                         # Default password length.
+random_data='/dev/urandom'                        # Random data
+urandom_bytes_default=300000                      # Default random bytes to read.
 
+letters='A-HJ-KM-NP-Za-km-z'                      # Default letters set.
+numbers='1-9'                                     # Default numbers set.
+symbols='!?*^_@#%^&*()=+<>}{][;:",./|~\\'\''`-'   # Default symbols set. If dash "-" is needed, put it at the end
+characters="$letters$numbers$symbols"             # All default sets combined
 
+min_calculated_urandom_bytes=20000                # Minimum bytes when calculated. Fix issue when not enough data for simple character sets 
+urandom_bytes_user=0                              # Leave at 0, for use with logic of -b , --bytes=
+urandom_bytes_calculated=0                        # Leave at 0, for use with end logic
+regex_match_flags="^-(b|-bytes=|c|-characters=|l|-length=)$" # Pattern to check against a flag being blank and reading next flag as arguemnt
 
 while test $# -gt 0; do
   case "$1" in
-
 
     -h|--help)
       echo " "
@@ -26,7 +28,7 @@ while test $# -gt 0; do
       echo "pw [options]"
       echo " "
       echo "options:"
-      echo "-b NUM   ,  --bytes=NUM          Specify bytes to read from /dev/urandom. Not compatible with flag -n, --ncount. Defaults to $urandom_bytes_default bytes"
+      echo "-b NUM   ,  --bytes=NUM          Specify bytes to read from "$random_data". Not compatible with flag -n, --ncount. Defaults to $urandom_bytes_default bytes"
       echo "-c 'CHAR',  --characters='CHAR'  Specify allowed password characters. Defaults to '$characters'"
       echo "-h       ,  --help               Show brief help"
       echo "-l NUM   ,  --length=NUM         Specify password length. Defaults to length of $pw_len"
@@ -38,7 +40,7 @@ while test $# -gt 0; do
       echo "examples:"
       echo " "
       echo " "
-      echo "# 20 character alphanumeric with symbols "'!?"*#-'" using 20000 bytes of data from /dev/urandom"
+      echo "# 20 character alphanumeric with symbols "'!?"*#-'" using 20000 bytes of data from "$random_data""
       echo "pw --bytes=20000 --characters='a-zA-Z0-9"'!?"*#-'"' --length=20"
       echo "   IjLVomO*LZIvBWhmITtS"
       echo "pw -b 20000 -c 'a-zA-Z0-9"'!?"*#-'"' -l 20"
@@ -199,8 +201,11 @@ done
 # Test that urandom_bytes_user has not been changed from 0
 # And test that pw_line_count_target gt 0
 if [[ $pw_line_count_target -gt 0 ]] && [[ $urandom_bytes_user -eq 0 ]] ; then
-  count_out_of_10000="$(head -c 10000 < /dev/urandom | tr -dc "$characters" | wc -c)"
-  urandom_bytes_calculated=$(( (13000/$count_out_of_10000) * ($pw_len * $pw_line_count_target)))
+  count_out_of_10000="$(head -c 10000 < "$random_data" | tr -dc "$characters" | wc -c)"
+  urandom_bytes_calculated=$(( (13000/$count_out_of_10000) * ($pw_len * $pw_line_count_target) ))
+  if [[ $urandom_bytes_calculated -lt $min_calculated_urandom_bytes ]] ; then
+    urandom_bytes_calculated=20000
+  fi
 else
   if [[ $pw_line_count_target -gt 0 ]] && [[ $urandom_bytes_user -ne 0 ]] ; then
     printf "\nflag \" -n|--ncount \" not compatible with flag \" -b|--bytes \"\n"
@@ -216,7 +221,7 @@ fi
 
 # PW generation bits
 urandom_bytes=$(( ($urandom_bytes_default) + ($urandom_bytes_user) + ($urandom_bytes_calculated) )) 
-head -c     "$urandom_bytes"      < /dev/urandom |
+head -c     "$urandom_bytes"      < "$random_data" |
 tr   -dc    "$characters"                        |
 fold -s     -w$pw_len                            |
 head -n     "$pw_line_count_target"
