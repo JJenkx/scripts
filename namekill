@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 ps_search_results="$( ps ax -o'pid,comm,ruser,args' | grep "$@" | grep -v "$BASH_SOURCE" | grep -v "[ ][0-9]\+[ ]grep " )" 
 pid_list="$(awk '{print $1}' <<<"$ps_search_results")"
