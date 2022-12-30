@@ -6,9 +6,9 @@ sudo chmod 400 $HOME/.config/plasma-org.kde.plasma.desktop-appletsrc $HOME/.conf
 timeout 5 kquitapp5 plasmashell
 pgrep -U $USER -x plasmashell &>/dev/null && sudo pkill -U $USER -x plasmashell
 sleep 1s
-pgrep -U $USER -x plasmashell &>/dev/null && sudo pkill -U $USER -x -9 plasmashell # here the process does not get to clean-up.
+pgrep -U $USER -x plasmashell &>/dev/null && sudo pkill -U $USER -x -9 plasmashell &>/dev/null # here the process does not get to clean-up.
 sleep 1s
-sudo killall -9 plasmashell #sends a signal to all processes running any of the specified commands
+sudo killall -9 plasmashell &>/dev/null #sends a signal to all processes running any of the specified commands
 sleep 1s
 pgrep -U $USER -x plasmashell &>/dev/null && echo "ERROR: cannot kill plasmashell"
 sudo chmod 600 $HOME/.config/plasma-org.kde.plasma.desktop-appletsrc $HOME/.config/plasmashellrc
