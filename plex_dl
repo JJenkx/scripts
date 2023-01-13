@@ -1,0 +1,45 @@
+#!/usr/bin/env zsh
+printf "Paste url\n"
+vared -p '' -c encoded_url
+printf -v decoded_url "%b" "${encoded_url//\%/\\x}"
+filename_extract_format="$(perl -pe 's/^https:.*[\/](.*\.mkv).*$/$1/igm' <<<$decoded_url |\
+tr -d "\(\)[]" |\
+perl -pe 's/( -? ?)/./igm')"
+echo "Downloading: ""$encoded_url"" with aria2c"
+echo "Filename:    ""$filename_extract_format"
+aria2c \
+  --allow-piece-length-change=true \
+  --check-certificate=false \
+  --console-log-level=notice \
+  --content-disposition-default-utf8=true \
+  --continue=true \
+  --disk-cache=8192 \
+  --download-result=full \
+  --enable-mmap \
+  --lowest-speed-limit=4M \
+  --max-concurrent-downloads=1 \
+  --max-connection-per-server=1 \
+  --max-mmap-limit=8192M \
+  --max-resume-failure-tries=64 \
+  --max-file-not-found=64 \
+  --max-tries=64 \
+  --min-split-size=5M \
+  --no-file-allocation-limit=8192M \
+  --no-want-digest-header=true \
+  --out="$filename_extract_format" \
+  --piece-length=5M \
+  --realtime-chunk-checksum=true \
+  --retry-on-400=true \
+  --retry-on-403=true \
+  --retry-on-406=true \
+  --retry-on-unknown=true \
+  --retry-wait=120 \
+  --split=1 \
+  --summary-interval=180 \
+  --stream-piece-selector=geom \
+  --timeout=10 \
+  --user-agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.#55 Safari/537.36' \
+  "$encoded_url"
+unset encoded_url
+
+#  --file-allocation=falloc \
