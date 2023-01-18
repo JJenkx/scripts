@@ -1,0 +1,65 @@
+#!/usr/bin/env bash
+
+# https://stackoverflow.com/questions/6250698/how-to-decode-url-encoded-string-in-shell
+function urldecode() { : "${*//+/ }"; echo -e "${_//%/\\x}"; }
+
+# Urls obtained manually with bookmarklet "PlexDwnld-7" https://sharedriches.com/plex-scripts/piplongrun/
+url_list="$( cat /home/jjenkx/.local/input_files/plex_dl.txt )" 
+
+SAVEIFS=$IFS          # Save current IFS (Internal Field Separator)
+IFS=$'\n'             # Change IFS to newline char
+url_list=($url_list)  # split the `url_list` string into an array by the same name
+IFS=$SAVEIFS          # Restore original IFS
+
+# Download Plex URLs one at a time
+for (( i=0; i<${#url_list[@]}; i++ ))
+do
+
+  echo "Url:    ""${url_list[$i]}"
+  
+  # Format filenames to linux friendly filenames
+  decoded_url="$(urldecode "${url_list[$i]}")"
+  filename_extract_format="$(
+    perl -pe 's/^https:.*[\/](.*\.mkv).*$/$1/igm' <<<$decoded_url |\
+    tr -d "\(\)[]"                                                |\
+    perl -pe 's/( -? ?)/./igm'                                    |\
+    perl -pe 's/(-)(\d{3,4}(?:i|p))/.$2/igm'                      |\
+    perl -pe 's/(\.)(?=[^\.]+\.mkv)/-/igm'                        )"
+  echo "SaveAs: ""$filename_extract_format"
+
+  # Download files with aria2c (These flags are for a custom compiled version. Not compatible with official version)
+  aria2c \
+    --allow-piece-length-change=true \
+    --check-certificate=false \
+    --console-log-level=notice \
+    --content-disposition-default-utf8=true \
+    --continue=true \
+    --disk-cache=8192 \
+    --download-result=full \
+    --enable-mmap \
+    --max-concurrent-downloads=1 \
+    --max-connection-per-server=1 \
+    --max-mmap-limit=8192M \
+    --max-resume-failure-tries=64 \
+    --max-file-not-found=64 \
+    --max-tries=64 \
+    --min-split-size=5M \
+    --no-file-allocation-limit=8192M \
+    --no-want-digest-header=true \
+    --out="$filename_extract_format" \
+    --piece-length=5M \
+    --realtime-chunk-checksum=true \
+    --retry-on-400=true \
+    --retry-on-403=true \
+    --retry-on-406=true \
+    --retry-on-unknown=true \
+    --retry-wait=120 \
+    --split=1 \
+    --summary-interval=180 \
+    --stream-piece-selector=geom \
+    --timeout=10 \
+    --user-agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.#55 Safari/537.36' \
+  "${url_list[$i]}"
+done
+
+#--lowest-speed-limit=4M \
