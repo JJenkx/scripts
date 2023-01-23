@@ -34,17 +34,14 @@ do
     --console-log-level=notice \
     --content-disposition-default-utf8=true \
     --continue=true \
-    --disk-cache=8192 \
     --download-result=full \
-    --enable-mmap \
+    --file-allocation=none \
     --max-concurrent-downloads=1 \
     --max-connection-per-server=1 \
-    --max-mmap-limit=8192M \
     --max-resume-failure-tries=64 \
     --max-file-not-found=64 \
     --max-tries=64 \
     --min-split-size=5M \
-    --no-file-allocation-limit=8192M \
     --no-want-digest-header=true \
     --out="$filename_extract_format" \
     --piece-length=5M \
@@ -63,3 +60,8 @@ do
 done
 
 #--lowest-speed-limit=4M \
+#--file-allocation=falloc \
+#--disk-cache=8192 \
+#--no-file-allocation-limit=8192M \
+#--enable-mmap \
+#--max-mmap-limit=8192M \
