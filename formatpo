@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+
+dir_po="/mnt/c/POPRINT/"
+printdir="/mnt/c/print/"
+mkdir -p "$printdir"
+mkdir -p "$dir_po"
+cd "$printdir"
+
+files="$(find "$printdir" -maxdepth 1 -type f -regextype posix-extended -not -iregex '.*(ps2ascii|copy).*$' -iregex '^.*\/0[4-5][0-9]{4}\.prn$')"
+echo "$files"
+
+SAVEIFS=$IFS    # Save current IFS (Internal Field Separator)
+IFS=$'\n'       # Change IFS to newline char
+files=($files)  # split the `files` string into an array by the same name
+IFS=$SAVEIFS    # Restore original IFS
+
+for (( i=0; i<${#files[@]}; i++ ))
+do
+ps2ascii "${files[$i]}" "${files[$i]}".txt
+enscript --margins=5:10:20:10 --media=letter --font=Courier10 --no-header --no-job-header --baselineskip=0 --output="${files[$i]}.ps" "${files[$i]}".txt > /dev/null 2>&1
+ps2pdf "${files[$i]}.ps" "${files[$i]}.pdf"
+mv "${files[$i]}.txt" "${files[$i]}.pdf" "$dir_po"
+rm -f "${files[$i]}" "${files[$i]}.ps"
+done
+
+cd "$OLDPWD"
