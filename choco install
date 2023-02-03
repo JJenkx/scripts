@@ -1,3 +1,7 @@
+
+
+choco feature enable -n allowGlobalConfirmation
+
 choco install 7-taskbar-tweaker 7zip attributechanger audacity calibre choco-cleaner chocolatey-core.extension classic-shell everything ffmpeg fileshredder firefox foobar2000 imagemagick.app infekt Inkscape libreoffice-fresh linkshellextension mediainfo mpv notepadplusplus nvidia-display-driver obs-studio.install office365business opencodecs pandoc path-copy-copy pip powershell-core powershellhere powershellhere-elevated python qbittorrent rufus sharex signal spotify sumatrapdf ungoogled-chromium volumouse.install vscode vscode-powershell wget winaero-tweaker windirstat
 
 
