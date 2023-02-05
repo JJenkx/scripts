@@ -20,11 +20,11 @@ do
   # Format filenames to linux friendly filenames
   decoded_url="$(urldecode "${url_list[$i]}")"
   filename_extract_format="$(
-    perl -pe 's/^https:.*[\/](.*\.mkv).*$/$1/igm' <<<$decoded_url |\
-    tr -d "\(\)[]"                                                |\
-    perl -pe 's/( -? ?)/./igm'                                    |\
-    perl -pe 's/(-)(\d{3,4}(?:i|p))/.$2/igm'                      |\
-    perl -pe 's/(\.)(?=[^\.]+\.mkv)/-/igm'                        )"
+    perl -pe 's/^https:.*[\/](.*\.(?:asf|avi|mov|mp4|mpeg|mpegts|mkv|wmv)).*$/$1/igm' <<<$decoded_url |\
+    tr -d "\(\)[]"                              |\
+    perl -pe 's/( -? ?)/./igm'                  |\
+    perl -pe 's/(-)(\d{3,4}(?:i|p))/.$2/igm'    |\
+    perl -pe 's/(\.)(?=[^\.]+\.mkv)/-/igm'      )"
   echo "SaveAs: ""$filename_extract_format"
 
   # Download files with aria2c (These flags are for a custom compiled version. Not compatible with official version)
@@ -34,6 +34,7 @@ do
     --console-log-level=notice \
     --content-disposition-default-utf8=true \
     --continue=true \
+    --disk-cache=8192 \
     --download-result=full \
     --file-allocation=none \
     --max-concurrent-downloads=1 \
@@ -60,8 +61,6 @@ do
 done
 
 #--lowest-speed-limit=4M \
-#--file-allocation=falloc \
-#--disk-cache=8192 \
-#--no-file-allocation-limit=8192M \
-#--enable-mmap \
+#--enable-mmap=true \
 #--max-mmap-limit=8192M \
+#--no-file-allocation-limit=8192M \
