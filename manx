@@ -17,12 +17,16 @@
 # sudo pacman -S --needed gs pandoc gzip
 
 
+Man_Filepath="$(man --path "$1")"
+[ -f "$Man_Filepath" ] || exit 1
+
+
 # User defined variables
-File_Browser=dolphin                # Comment or remove value to disable opening output dir
-Open_Text_File_Output_With=codium   # Comment or remove value to disable opening text file
-Open_PDF_File_Output_With=chromium  # Comment or remove value to disable opening pdf files
-Open_Html_File_Output_With=chromium # Comment or remove value to disable opening html files
-Open_PS_File_Output_With=okular     # Comment or remove value to disable opening ps files
+File_Browser=dolphin        # Comment or remove value to disable opening output dir
+Open_Text=codium            # Comment or remove value to disable opening text file
+#Open_PDF=chromium          # Comment or remove value to disable opening pdf files
+Open_Html=chromium          # Comment or remove value to disable opening html files
+#Open_PS=okular             # Comment or remove value to disable opening ps files
 Text_File_Output_Lines_Length=3000
 ManualToRetrieve="$1"
 SaveDir="$HOME/Documents/Manuals/"
@@ -31,64 +35,52 @@ FilenamesPrefix="man."
 
 # rest of script
 mkdir -p "$SaveDir/$1/"
-SaveDir="$SaveDir/$1/"
-Man_Filepath="$(man --path "$1")"
-[ -f "$Man_Filepath" ] || exit 1
-
-savedir=$savedir/$1/
-output_text_file="$SaveDir$FilenamesPrefix$ManualToRetrieve.txt"
+SaveDir="$SaveDir$1/"
+out="$SaveDir""$FilenamesPrefix""$1"
 
 
-MANWIDTH=$Text_File_Output_Lines_Length man $ManualToRetrieve | col -bx > "$output_text_file" && [ -f $Open_Text_File_Output_With ] || $Open_Text_File_Output_With "$output_text_file"
+echo "$out".txt
+MANWIDTH=$Text_File_Output_Lines_Length man $ManualToRetrieve | col -bx > "$out".txt && [ -f $Open_Text ] || $Open_Text "$out".txt
 
 
-echo "generating: "$FilenamesPrefix""$1".pandoc.html5.html"
-pandoc --from man --to html5 <<< "$(zcat "$Man_Filepath")" > "$SaveDir""$FilenamesPrefix""$1".pandoc.html5.html
-[ -d "$Open_Html_File_Output_With" ] || setsid >/dev/null 2>&1 </dev/null $Open_Html_File_Output_With "$SaveDir""$FilenamesPrefix""$1".pandoc.html5.html 2>&1 >/dev/null & 
+#echo "$out".pandoc.html5.html
+#pandoc --from man --to html5 <<< "$(zcat "$Man_Filepath")" > "$out".pandoc.html5.html
+#[ -d "$Open_Html" ] || setsid >/dev/null 2>&1 </dev/null $Open_Html "$out".pandoc.html5.html 2>&1 >/dev/null & 
 
 
-echo "generating: "$FilenamesPrefix""$1".pandoc.html.html"
-pandoc --from man --to html <<< "$(zcat "$Man_Filepath")" > "$SaveDir""$FilenamesPrefix""$1".pandoc.html.html
-[ -d "$Open_Html_File_Output_With" ] || setsid >/dev/null 2>&1 </dev/null $Open_Html_File_Output_With "$SaveDir""$FilenamesPrefix""$1".pandoc.html.html 2>&1 >/dev/null & 
+echo "$out".pandoc.html.html
+pandoc --from man --to html <<< "$(zcat "$Man_Filepath")" > "$out".pandoc.html.html
+[ -d "$Open_Html" ] || setsid >/dev/null 2>&1 </dev/null $Open_Html "$out".pandoc.html.html 2>&1 >/dev/null & 
 
 
-echo "generating: "$FilenamesPrefix""$1".groff.html"
-zcat "$Man_Filepath"  | groff -mandoc -Thtml >"$SaveDir""$FilenamesPrefix""$1".groff.html 2>/dev/null
-[ -d "$Open_Html_File_Output_With" ] || setsid >/dev/null 2>&1 </dev/null $Open_Html_File_Output_With "$SaveDir""$FilenamesPrefix""$1".groff.html 2>&1 >/dev/null & 
+echo "$out".groff.html
+zcat "$Man_Filepath"  | groff -mandoc -Thtml >"$out".groff.html 2>/dev/null
+[ -d "$Open_Html" ] || setsid >/dev/null 2>&1 </dev/null $Open_Html "$out".groff.html 2>&1 >/dev/null & 
 
 
-echo "generating: "$FilenamesPrefix""$1".manly.html"
-zcat "$Man_Filepath" | manly >"$SaveDir""$FilenamesPrefix""$1".manly.html 2>/dev/null
-[ -d "$Open_Html_File_Output_With" ] || setsid >/dev/null 2>&1 </dev/null $Open_Html_File_Output_With "$SaveDir""$FilenamesPrefix""$1".manly.html 2>&1 >/dev/null & 
+echo "$out".manly.html
+zcat "$Man_Filepath" | manly >"$out".manly.html 2>/dev/null
+[ -d "$Open_Html" ] || setsid >/dev/null 2>&1 </dev/null $Open_Html "$out".manly.html 2>&1 >/dev/null & 
 
 
-echo "generating: "$FilenamesPrefix""$1".man.troff.ps"
-man --troff "$1" >"$SaveDir""$FilenamesPrefix""$1".man.troff.ps
-[ -d "$Open_PS_File_Output_With" ] || setsid >/dev/null 2>&1 </dev/null $Open_PS_File_Output_With "$SaveDir""$FilenamesPrefix""$1".man.troff.ps 2>&1 >/dev/null & 
+echo "$out".man.troff.ps
+man --troff "$1" >"$out".man.troff.ps
+[ -d "$Open_PS" ] || setsid >/dev/null 2>&1 </dev/null $Open_PS "$out".man.troff.ps 2>&1 >/dev/null & 
 
 
-echo "generating: "$FilenamesPrefix""$1".gs.pdf"
-gs -q -o "$SaveDir""$FilenamesPrefix""$1".gs.pdf -sDEVICE=pdfwrite -f "$SaveDir""$FilenamesPrefix""$1".man.troff.ps
-[ -d "$Open_PDF_File_Output_With" ] || setsid >/dev/null 2>&1 </dev/null $Open_PDF_File_Output_With "$SaveDir""$FilenamesPrefix""$1".gs.pdf 2>&1 >/dev/null & 
+echo "$out".gs.pdf
+gs -q -o "$out".gs.pdf -sDEVICE=pdfwrite -f "$out".man.troff.ps
+[ -d "$Open_PDF" ] || setsid >/dev/null 2>&1 </dev/null $Open_PDF "$out".gs.pdf 2>&1 >/dev/null & 
 
 
-perl -pe 's/%!PS-Adobe-3.0 Resource-ProcSet\K/\n\{1 exch sub\} settransfer/gm' <"$SaveDir""$FilenamesPrefix""$1".man.troff.ps >"$SaveDir""$FilenamesPrefix""$1".man.troff.inverted.ps
-[ -d "$Open_PS_File_Output_With" ] || setsid >/dev/null 2>&1 </dev/null $Open_PS_File_Output_With "$SaveDir""$FilenamesPrefix""$1".man.troff.inverted.ps 2>&1 >/dev/null & 
+echo "$out".man.troff.inverted.ps
+perl -pe 's/%!PS-Adobe-3.0 Resource-ProcSet\K/\n\{1 exch sub\} settransfer/gm' <"$out".man.troff.ps >"$out".man.troff.inverted.ps
+[ -d "$Open_PS" ] || setsid >/dev/null 2>&1 </dev/null $Open_PS "$out".man.troff.inverted.ps 2>&1 >/dev/null & 
 
 
-echo "generating: "$FilenamesPrefix""$1".gs.inverted.pdf"
-gs -q -o "$SaveDir""$FilenamesPrefix""$1".gs.inverted.pdf -sDEVICE=pdfwrite -f "$SaveDir""$FilenamesPrefix""$1".man.troff.inverted.ps 2>/dev/null
-[ -d "$Open_PDF_File_Output_With" ] || setsid >/dev/null 2>&1 </dev/null $Open_PDF_File_Output_With "$SaveDir""$FilenamesPrefix""$1".gs.inverted.pdf 2>&1 >/dev/null & 
+echo "$out".gs.inverted.pdf
+gs -q -o "$out".gs.inverted.pdf -sDEVICE=pdfwrite -f "$out".man.troff.inverted.ps 2>/dev/null
+[ -d "$Open_PDF" ] || setsid >/dev/null 2>&1 </dev/null $Open_PDF "$out".gs.inverted.pdf 2>&1 >/dev/null & 
 
 
 [ -d "$File_Browser" ] || setsid >/dev/null 2>&1 </dev/null $File_Browser "$SaveDir" 2>&1 >/dev/null & 
-
-
-echo "$output_text_file"
-echo "$SaveDir""$FilenamesPrefix""$1".pandoc.html5.html
-echo "$SaveDir""$FilenamesPrefix""$1".pandoc.html.html
-echo "$SaveDir""$FilenamesPrefix""$1".groff.html
-echo "$SaveDir""$FilenamesPrefix""$1".manly.html
-echo "$SaveDir""$FilenamesPrefix""$1".man.troff.ps
-echo "$SaveDir""$FilenamesPrefix""$1".gs.pdf
-echo "$SaveDir""$FilenamesPrefix""$1".gs.inverted.pdf
