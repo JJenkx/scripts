@@ -39,48 +39,55 @@ SaveDir="$SaveDir$1/"
 out="$SaveDir""$FilenamesPrefix""$1"
 
 
+File_Browser=$(which $File_Browser 2>/dev/null)
+Open_Text=$(which $Open_Text 2>/dev/null)
+Open_PDF=$(which $Open_PDF 2>/dev/null)
+Open_Html="$(which $Open_Html 2>/dev/null)"
+Open_PS=$(which $Open_PS 2>/dev/null)
+
+
 echo "$out".txt
 MANWIDTH=$Text_File_Output_Lines_Length man $ManualToRetrieve | col -bx > "$out".txt && [ -f $Open_Text ] || $Open_Text "$out".txt
 
 
 #echo "$out".pandoc.html5.html
 #pandoc --from man --to html5 <<< "$(zcat "$Man_Filepath")" > "$out".pandoc.html5.html
-#[ -d "$Open_Html" ] || setsid >/dev/null 2>&1 </dev/null $Open_Html "$out".pandoc.html5.html 2>&1 >/dev/null & 
+#[ -x "$Open_Html" ] || setsid >/dev/null 2>&1 </dev/null $Open_Html "$out".pandoc.html5.html 2>&1 >/dev/null & 
 
 
-echo "$out".pandoc.html.html
-pandoc --from man --to html <<< "$(zcat "$Man_Filepath")" > "$out".pandoc.html.html
-[ -d "$Open_Html" ] || setsid >/dev/null 2>&1 </dev/null $Open_Html "$out".pandoc.html.html 2>&1 >/dev/null & 
+echo "$out".pandoc.html
+pandoc --from man --to html <<< "$(zcat "$Man_Filepath")" > "$out".pandoc.html
+[ ! -x "$Open_Html" ] || setsid >/dev/null 2>&1 </dev/null $Open_Html "$out".pandoc.html 2>&1 >/dev/null & 
 
 
 echo "$out".groff.html
 zcat "$Man_Filepath"  | groff -mandoc -Thtml >"$out".groff.html 2>/dev/null
-[ -d "$Open_Html" ] || setsid >/dev/null 2>&1 </dev/null $Open_Html "$out".groff.html 2>&1 >/dev/null & 
+[ ! -x "$Open_Html" ] || setsid >/dev/null 2>&1 </dev/null $Open_Html "$out".groff.html 2>&1 >/dev/null & 
 
 
 echo "$out".manly.html
 zcat "$Man_Filepath" | manly >"$out".manly.html 2>/dev/null
-[ -d "$Open_Html" ] || setsid >/dev/null 2>&1 </dev/null $Open_Html "$out".manly.html 2>&1 >/dev/null & 
+[ ! -x "$Open_Html" ] || setsid >/dev/null 2>&1 </dev/null $Open_Html "$out".manly.html 2>&1 >/dev/null & 
 
 
 echo "$out".man.troff.ps
 man --troff "$1" >"$out".man.troff.ps
-[ -d "$Open_PS" ] || setsid >/dev/null 2>&1 </dev/null $Open_PS "$out".man.troff.ps 2>&1 >/dev/null & 
+[ ! -x "$Open_PS" ] || setsid >/dev/null 2>&1 </dev/null $Open_PS "$out".man.troff.ps 2>&1 >/dev/null & 
 
 
 echo "$out".gs.pdf
 gs -q -o "$out".gs.pdf -sDEVICE=pdfwrite -f "$out".man.troff.ps
-[ -d "$Open_PDF" ] || setsid >/dev/null 2>&1 </dev/null $Open_PDF "$out".gs.pdf 2>&1 >/dev/null & 
+[ ! -x "$Open_PDF" ] || setsid >/dev/null 2>&1 </dev/null $Open_PDF "$out".gs.pdf 2>&1 >/dev/null & 
 
 
 echo "$out".man.troff.inverted.ps
 perl -pe 's/%!PS-Adobe-3.0 Resource-ProcSet\K/\n\{1 exch sub\} settransfer/gm' <"$out".man.troff.ps >"$out".man.troff.inverted.ps
-[ -d "$Open_PS" ] || setsid >/dev/null 2>&1 </dev/null $Open_PS "$out".man.troff.inverted.ps 2>&1 >/dev/null & 
+[ ! -x "$Open_PS" ] || setsid >/dev/null 2>&1 </dev/null $Open_PS "$out".man.troff.inverted.ps 2>&1 >/dev/null & 
 
 
 echo "$out".gs.inverted.pdf
 gs -q -o "$out".gs.inverted.pdf -sDEVICE=pdfwrite -f "$out".man.troff.inverted.ps 2>/dev/null
-[ -d "$Open_PDF" ] || setsid >/dev/null 2>&1 </dev/null $Open_PDF "$out".gs.inverted.pdf 2>&1 >/dev/null & 
+[ ! -x "$Open_PDF" ] || setsid >/dev/null 2>&1 </dev/null $Open_PDF "$out".gs.inverted.pdf 2>&1 >/dev/null & 
 
 
-[ -d "$File_Browser" ] || setsid >/dev/null 2>&1 </dev/null $File_Browser "$SaveDir" 2>&1 >/dev/null & 
+[ ! -x "$File_Browser" ] || setsid >/dev/null 2>&1 </dev/null $File_Browser "$SaveDir" 2>&1 >/dev/null & 
