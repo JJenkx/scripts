@@ -204,7 +204,7 @@ if [[ $pw_line_count_target -gt 0 ]] && [[ $urandom_bytes_user -eq 0 ]] ; then
   count_out_of_10000="$(head -c 10000 < "$random_data" | tr -dc "$characters" | wc -c)"
   urandom_bytes_calculated=$(( (13000/$count_out_of_10000) * ($pw_len * $pw_line_count_target) ))
   if [[ $urandom_bytes_calculated -lt $min_calculated_urandom_bytes ]] ; then
-    urandom_bytes_calculated=20000
+    urandom_bytes_calculated=$min_calculated_urandom_bytes
   fi
 else
   if [[ $pw_line_count_target -gt 0 ]] && [[ $urandom_bytes_user -ne 0 ]] ; then
@@ -222,6 +222,6 @@ fi
 # PW generation bits
 urandom_bytes=$(( ($urandom_bytes_default) + ($urandom_bytes_user) + ($urandom_bytes_calculated) )) 
 head -c     "$urandom_bytes"      < "$random_data" |
-tr   -dc    "$characters"                        |
-fold -s     -w$pw_len                            |
+tr   -dc    "$characters"                          |
+fold -s     -w$pw_len                              |
 head -n     "$pw_line_count_target"
