@@ -217,7 +217,9 @@ www.youtube.com##.ytd-info-panel-container-renderer.style-scope
 www.youtube.com##.ytd-mealbar-promo-renderer
 www.youtube.com##.ytd-primetime-promo-renderer.style-scope
 www.youtube.com##.ytd-rich-section-renderer.style-scope
+www.youtube.com##.ytp-cards-teaser
 www.youtube.com##.ytp-iv-player-content.ytp-player-content
+www.youtube.com##.ytp-next-button
 www.youtube.com##.ytp-suggested-action-badge-with-controls.ytp-suggested-action-badge-expanded.ytp-suggested-action-badge.ytp-button
 www.youtube.com###clarify-box > .ytd-watch-flexy.style-scope
 www.youtube.com###dismissible > .ytd-feed-nudge-renderer.style-scope
@@ -231,9 +233,9 @@ www.youtube.com##tp-yt-paper-dialog.ytd-popup-container.style-scope
 www.youtube.com##ytd-button-renderer.size-default.style-default.force-icon-button.ytd-menu-renderer.style-scope > .ytd-button-renderer.style-scope.yt-simple-endpoint
 www.youtube.com##ytd-clarification-renderer.ytd-item-section-renderer.style-scope
 www.youtube.com##ytd-horizontal-card-list-renderer.ytd-item-section-renderer.style-scope
+www.youtube.com##ytd-reel-shelf-renderer
 www.youtube.com##ytd-rich-section-renderer.ytd-rich-grid-renderer.style-scope > .ytd-rich-section-renderer.style-scope
 www.youtube.com##ytd-video-preview
-www.youtube.com##.ytp-next-button
 
 
 
