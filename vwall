@@ -1,0 +1,66 @@
+#!/usr/bin/env bash
+
+filetypes="mkv|mp4"         # Only match these filetypes
+num_files=48                # Number random files for mpv pool
+
+# Find matching files in current dir
+files="$(find "$PWD" -type f -regextype posix-extended -iregex "^.*(\.$filetypes)$")"
+
+# Pick files at random
+randomfiles="$(cat <<<"$files" | shuf -n $num_files)"
+
+# Add random files to array
+SAVEIFS=$IFS                # Save current IFS (Internal Field Separator)
+IFS=$'\n'                   # Change IFS to newline char
+randomfiles=($randomfiles)  # split the `to_kill` string into an array by the same name
+IFS=$SAVEIFS                # Restore original IFS
+
+# Get duration,width,height of videos
+files_info="$(for (( i=0; i<${#randomfiles[@]}; i++ ))
+do
+    fileinfo="$(ffprobe -v error -select_streams v -show_entries stream=duration,width,height -of csv=p=0:s='x' "${randomfiles[$i]}" )"
+    SAVEIFS=$IFS
+    IFS=$'x'
+    fileinfo=($fileinfo)
+    IFS=$SAVEIFS
+    video1_scale=$(bc <<< "scale=2; ${fileinfo[0]} / ${fileinfo[1]}")
+    echo $video1_scale ${fileinfo[2]} ${randomfiles[$i]} 
+done)"
+
+# Set variables containing vertical and horizontal videos
+vertical_vids="$(echo "$files_info" | sort -g | perl -0777 -pe "s/^(\d+\.|\n)+.*//gm" | perl -pe "s/^[^\/]+(\/A )?//g" )"
+horizontal_vids="$(echo "$files_info" | sort -g | perl -0777 -pe "s/^(\..*\n)//gm" | perl -pe "s/^[^\/]+(\/A )?//g" )"
+
+# Convert vars to arrays
+SAVEIFS=$IFS
+IFS=$'\n'
+vertical_vids=($vertical_vids)
+horizontal_vids=($horizontal_vids)
+IFS=$SAVEIFS
+
+# Play vertical files in mpv
+resolution="620:1080"
+file1="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}"
+file2="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}"
+file3="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}"
+file4="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}"
+setsid >/dev/null 2>&1 </dev/null \
+mpv \
+--audio=no \
+--autofit=20% \
+--border=no \
+--cache=yes \
+--geometry=50%:50% \
+--watch-later-options-clr \
+"${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}" \
+--external-file="$file1" \
+--external-file="$file2" \
+--external-file="$file3" \
+--external-file="$file4" \
+--lavfi-complex="[vid1]setpts=floor(PTS*24)/24,scale=$resolution:force_original_aspect_ratio=1,pad=$resolution:(ow-iw)/2:(oh-ih)/2[v1];
+[vid2]setpts=floor(PTS*24)/24,scale=$resolution:force_original_aspect_ratio=1,pad=$resolution:(ow-iw)/2:(oh-ih)/2[v2];
+[vid3]setpts=floor(PTS*24)/24,scale=$resolution:force_original_aspect_ratio=1,pad=$resolution:(ow-iw)/2:(oh-ih)/2[v3];
+[vid4]setpts=floor(PTS*24)/24,scale=$resolution:force_original_aspect_ratio=1,pad=$resolution:(ow-iw)/2:(oh-ih)/2[v4];
+[v1] [v2] hstack [t1];
+[v3] [v4] hstack [t2];
+[t1] [t2] hstack [vo]" 2>&1 >/dev/null & 
