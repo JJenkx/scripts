@@ -10,37 +10,36 @@ files="$(find "$PWD" -type f -regextype posix-extended -iregex "^.*(\.$filetypes
 randomfiles="$(cat <<<"$files" | shuf -n $num_files)"
 
 # Add random files to array
-SAVEIFS=$IFS        # Save current IFS (Internal Field Separator)
-IFS=$'\n'           # Change IFS to newline char
+SAVEIFS=$IFS                # Save current IFS (Internal Field Separator)
+IFS=$'\n'                   # Change IFS to newline char
 randomfiles=($randomfiles)  # split the `to_kill` string into an array by the same name
-IFS=$SAVEIFS        # Restore original IFS
+IFS=$SAVEIFS                # Restore original IFS
 
-
+# Get duration,width,height of videos
 files_info="$(for (( i=0; i<${#randomfiles[@]}; i++ ))
 do
     fileinfo="$(ffprobe -v error -select_streams v -show_entries stream=duration,width,height -of csv=p=0:s='x' "${randomfiles[$i]}" )"
     SAVEIFS=$IFS
-    IFS=$'x'            # Change IFS to newline char
+    IFS=$'x'
     fileinfo=($fileinfo)
     IFS=$SAVEIFS
     video1_scale=$(bc <<< "scale=2; ${fileinfo[0]} / ${fileinfo[1]}")
     echo $video1_scale ${fileinfo[2]} ${randomfiles[$i]} 
 done)"
 
-
-verticle_vids="$(echo "$files_info" | sort -g | perl -0777 -pe "s/^(\d+\.|\n)+.*//gm" | perl -pe "s/^[^\/]+(\/A )?//g" )"
+# Set variables containing vertical and horizontal videos
+vertical_vids="$(echo "$files_info" | sort -g | perl -0777 -pe "s/^(\d+\.|\n)+.*//gm" | perl -pe "s/^[^\/]+(\/A )?//g" )"
 horizontal_vids="$(echo "$files_info" | sort -g | perl -0777 -pe "s/^(\..*\n)//gm" | perl -pe "s/^[^\/]+(\/A )?//g" )"
 
+# Convert vars to arrays
 SAVEIFS=$IFS
 IFS=$'\n'
-verticle_vids=($verticle_vids)
+vertical_vids=($vertical_vids)
 horizontal_vids=($horizontal_vids)
 IFS=$SAVEIFS
-echo "$verticle_vids"
-echo "$horizontal_vids"
 
 
-# Play files in mpv
+# Play horizontal files in mpv
 resolution="1920:1080"
 setsid >/dev/null 2>&1 </dev/null \
 mpv \
@@ -49,7 +48,6 @@ mpv \
 --border=no \
 --cache=yes \
 --geometry=50%:50% \
---no-config \
 --watch-later-options-clr \
 "${horizontal_vids[ $RANDOM % ${#horizontal_vids[@]} ]}" \
 --external-file="${horizontal_vids[ $RANDOM % ${#horizontal_vids[@]} ]}" \
@@ -65,6 +63,7 @@ mpv \
 [t1] [t2] vstack [vo]" 2>&1 >/dev/null & 
 
 
+# Play vertical files in mpv
 resolution="620:1080"
 setsid >/dev/null 2>&1 </dev/null \
 mpv \
@@ -73,13 +72,12 @@ mpv \
 --border=no \
 --cache=yes \
 --geometry=50%:50% \
---no-config \
 --watch-later-options-clr \
-"${verticle_vids[ $RANDOM % ${#verticle_vids[@]} ]}" \
---external-file="${verticle_vids[ $RANDOM % ${#verticle_vids[@]} ]}" \
---external-file="${verticle_vids[ $RANDOM % ${#verticle_vids[@]} ]}" \
---external-file="${verticle_vids[ $RANDOM % ${#verticle_vids[@]} ]}" \
---external-file="${verticle_vids[ $RANDOM % ${#verticle_vids[@]} ]}" \
+"${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}" \
+--external-file="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}" \
+--external-file="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}" \
+--external-file="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}" \
+--external-file="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}" \
 --lavfi-complex="[vid1]setpts=floor(PTS*24)/24,scale=$resolution:force_original_aspect_ratio=1,pad=$resolution:(ow-iw)/2:(oh-ih)/2[v1];
 [vid2]setpts=floor(PTS*24)/24,scale=$resolution:force_original_aspect_ratio=1,pad=$resolution:(ow-iw)/2:(oh-ih)/2[v2];
 [vid3]setpts=floor(PTS*24)/24,scale=$resolution:force_original_aspect_ratio=1,pad=$resolution:(ow-iw)/2:(oh-ih)/2[v3];
