@@ -1,0 +1,92 @@
+#!/usr/bin/env bash
+
+filetypes="mkv|mp4"         # Only match these filetypes
+num_files=48
+widescreen=1.3
+
+# Find matching files in current dir
+files="$(find "$PWD" -type f -regextype posix-extended -iregex "^.*(\.$filetypes)$"  -exec echo {} \;)"
+
+# Pick 4 files at random
+randomfiles="$(cat <<<"$files" | shuf -n $num_files)"
+
+# Add 4 random files to array
+SAVEIFS=$IFS        # Save current IFS (Internal Field Separator)
+IFS=$'\n'           # Change IFS to newline char
+randomfiles=($randomfiles)  # split the `to_kill` string into an array by the same name
+IFS=$SAVEIFS        # Restore original IFS
+
+
+files_info="$(for (( i=0; i<${#randomfiles[@]}; i++ ))
+do
+    fileinfo="$(ffprobe -v error -select_streams v -show_entries stream=duration,width,height -of csv=p=0:s='x' "${randomfiles[$i]}" )"
+    SAVEIFS=$IFS
+    IFS=$'x'            # Change IFS to newline char
+    fileinfo=($fileinfo)
+    IFS=$SAVEIFS
+    video1_scale=$(bc <<< "scale=2; ${fileinfo[0]} / ${fileinfo[1]}")
+    echo $video1_scale ${fileinfo[2]} ${randomfiles[$i]} 
+done)"
+
+
+verticle_vids="$(echo "$files_info" | sort -g | perl -0777 -pe "s/^(\d+\.|\n)+.*//gm" | perl -pe "s/^[^\/]+(\/A )?//g" )"
+horizontal_vids="$(echo "$files_info" | sort -g | perl -0777 -pe "s/^(\..*\n)//gm" | perl -pe "s/^[^\/]+(\/A )?//g" )"
+
+SAVEIFS=$IFS
+IFS=$'\n'
+verticle_vids=($verticle_vids)
+horizontal_vids=($horizontal_vids)
+IFS=$SAVEIFS
+echo "$verticle_vids"
+echo "$horizontal_vids"
+
+#mpv "${horizontal_vids[ $RANDOM % ${#horizontal_vids[@]} ]}"
+
+
+
+# Play files in mpv
+resolution="1920:1080"
+setsid >/dev/null 2>&1 </dev/null \
+mpv \
+--audio=no \
+--autofit=20% \
+--border=no \
+--cache=yes \
+--geometry=50%:50% \
+--no-config \
+--watch-later-options-clr \
+"${horizontal_vids[ $RANDOM % ${#horizontal_vids[@]} ]}" \
+--external-file="${horizontal_vids[ $RANDOM % ${#horizontal_vids[@]} ]}" \
+--external-file="${horizontal_vids[ $RANDOM % ${#horizontal_vids[@]} ]}" \
+--external-file="${horizontal_vids[ $RANDOM % ${#horizontal_vids[@]} ]}" \
+--external-file="${horizontal_vids[ $RANDOM % ${#horizontal_vids[@]} ]}" \
+--lavfi-complex="[vid1]setpts=floor(PTS*24)/24,scale=$resolution:force_original_aspect_ratio=1,pad=$resolution:(ow-iw)/2:(oh-ih)/2[v1];
+[vid2]setpts=floor(PTS*24)/24,scale=$resolution:force_original_aspect_ratio=1,pad=$resolution:(ow-iw)/2:(oh-ih)/2[v2];
+[vid3]setpts=floor(PTS*24)/24,scale=$resolution:force_original_aspect_ratio=1,pad=$resolution:(ow-iw)/2:(oh-ih)/2[v3];
+[vid4]setpts=floor(PTS*24)/24,scale=$resolution:force_original_aspect_ratio=1,pad=$resolution:(ow-iw)/2:(oh-ih)/2[v4];
+[v1] [v2] hstack [t1];
+[v3] [v4] hstack [t2];
+[t1] [t2] vstack [vo]" 2>&1 >/dev/null & 
+
+resolution="620:1080"
+setsid >/dev/null 2>&1 </dev/null \
+mpv \
+--audio=no \
+--autofit=20% \
+--border=no \
+--cache=yes \
+--geometry=50%:50% \
+--no-config \
+--watch-later-options-clr \
+"${verticle_vids[ $RANDOM % ${#verticle_vids[@]} ]}" \
+--external-file="${verticle_vids[ $RANDOM % ${#verticle_vids[@]} ]}" \
+--external-file="${verticle_vids[ $RANDOM % ${#verticle_vids[@]} ]}" \
+--external-file="${verticle_vids[ $RANDOM % ${#verticle_vids[@]} ]}" \
+--external-file="${verticle_vids[ $RANDOM % ${#verticle_vids[@]} ]}" \
+--lavfi-complex="[vid1]setpts=floor(PTS*24)/24,scale=$resolution:force_original_aspect_ratio=1,pad=$resolution:(ow-iw)/2:(oh-ih)/2[v1];
+[vid2]setpts=floor(PTS*24)/24,scale=$resolution:force_original_aspect_ratio=1,pad=$resolution:(ow-iw)/2:(oh-ih)/2[v2];
+[vid3]setpts=floor(PTS*24)/24,scale=$resolution:force_original_aspect_ratio=1,pad=$resolution:(ow-iw)/2:(oh-ih)/2[v3];
+[vid4]setpts=floor(PTS*24)/24,scale=$resolution:force_original_aspect_ratio=1,pad=$resolution:(ow-iw)/2:(oh-ih)/2[v4];
+[v1] [v2] hstack [t1];
+[v3] [v4] hstack [t2];
+[t1] [t2] hstack [vo]" 2>&1 >/dev/null & 
