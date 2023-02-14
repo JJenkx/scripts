@@ -6,10 +6,10 @@ num_files=48                # Number random files for mpv pool
 # Find matching files in current dir
 files="$(find "$PWD" -type f -regextype posix-extended -iregex "^.*(\.$filetypes)$")"
 
-# Pick 4 files at random
+# Pick files at random
 randomfiles="$(cat <<<"$files" | shuf -n $num_files)"
 
-# Add 4 random files to array
+# Add random files to array
 SAVEIFS=$IFS        # Save current IFS (Internal Field Separator)
 IFS=$'\n'           # Change IFS to newline char
 randomfiles=($randomfiles)  # split the `to_kill` string into an array by the same name
