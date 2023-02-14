@@ -1,11 +1,10 @@
 #!/usr/bin/env bash
 
 filetypes="mkv|mp4"         # Only match these filetypes
-num_files=48
-widescreen=1.3
+num_files=48                # Number random files for mpv pool
 
 # Find matching files in current dir
-files="$(find "$PWD" -type f -regextype posix-extended -iregex "^.*(\.$filetypes)$"  -exec echo {} \;)"
+files="$(find "$PWD" -type f -regextype posix-extended -iregex "^.*(\.$filetypes)$")"
 
 # Pick 4 files at random
 randomfiles="$(cat <<<"$files" | shuf -n $num_files)"
@@ -40,9 +39,6 @@ IFS=$SAVEIFS
 echo "$verticle_vids"
 echo "$horizontal_vids"
 
-#mpv "${horizontal_vids[ $RANDOM % ${#horizontal_vids[@]} ]}"
-
-
 
 # Play files in mpv
 resolution="1920:1080"
@@ -67,6 +63,7 @@ mpv \
 [v1] [v2] hstack [t1];
 [v3] [v4] hstack [t2];
 [t1] [t2] vstack [vo]" 2>&1 >/dev/null & 
+
 
 resolution="620:1080"
 setsid >/dev/null 2>&1 </dev/null \
