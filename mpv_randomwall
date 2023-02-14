@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 filetypes="mkv|mp4"         # Only match these filetypes
-num_files=48                # Number random files for mpv pool
+num_files=128               # Number random files for mpv pool
 
 # Find matching files in current dir
 files="$(find "$PWD" -type f -regextype posix-extended -iregex "^.*(\.$filetypes)$")"
@@ -61,6 +61,30 @@ mpv \
 [v1] [v2] hstack [t1];
 [v3] [v4] hstack [t2];
 [t1] [t2] vstack [vo]" 2>&1 >/dev/null & 
+
+
+# Play vertical files in mpv
+resolution="620:1080"
+setsid >/dev/null 2>&1 </dev/null \
+mpv \
+--audio=no \
+--autofit=20% \
+--border=no \
+--cache=yes \
+--geometry=50%:50% \
+--watch-later-options-clr \
+"${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}" \
+--external-file="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}" \
+--external-file="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}" \
+--external-file="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}" \
+--external-file="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}" \
+--lavfi-complex="[vid1]setpts=floor(PTS*24)/24,scale=$resolution:force_original_aspect_ratio=1,pad=$resolution:(ow-iw)/2:(oh-ih)/2[v1];
+[vid2]setpts=floor(PTS*24)/24,scale=$resolution:force_original_aspect_ratio=1,pad=$resolution:(ow-iw)/2:(oh-ih)/2[v2];
+[vid3]setpts=floor(PTS*24)/24,scale=$resolution:force_original_aspect_ratio=1,pad=$resolution:(ow-iw)/2:(oh-ih)/2[v3];
+[vid4]setpts=floor(PTS*24)/24,scale=$resolution:force_original_aspect_ratio=1,pad=$resolution:(ow-iw)/2:(oh-ih)/2[v4];
+[v1] [v2] hstack [t1];
+[v3] [v4] hstack [t2];
+[t1] [t2] hstack [vo]" 2>&1 >/dev/null & 
 
 
 # Play vertical files in mpv
