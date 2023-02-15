@@ -1,10 +1,12 @@
 #!/usr/bin/env bash
 # Play 4 randomly selected videos that have widescreen format in mpv
+# dependencies: mpv mediainfo bc
 filetypes="mkv|mp4"         # Only match these filetypes
 num_files=24                # Number random files for mpv pool
+directory_depth=1           # How many directories deep to look for video files
 
 # Find matching files in current dir
-files="$(find "$PWD" -type f -regextype posix-extended -iregex "^.*(\.$filetypes)$")"
+files="$(find "$PWD" -maxdepth $directory_depth -type f -regextype posix-extended -iregex "^.*(\.$filetypes)$")"
 
 # Pick files at random
 randomfiles="$(cat <<<"$files" | shuf -n $num_files)"
@@ -192,7 +194,7 @@ case $third in
   *)
 esac
 
-# Assign 4th longest video to $file3
+# Assign 4th longest video to $file4
 case $fourth in
   "$file1_length")
     file4="$original_file1"
