@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-
+# Play randomly selected 
 filetypes="mkv|mp4"         # Only match these filetypes
-num_files=48                # Number random files for mpv pool
+num_files=64                # Number random files for mpv pool
 
 # Find matching files in current dir
 files="$(find "$PWD" -type f -regextype posix-extended -iregex "^.*(\.$filetypes)$")"
@@ -15,21 +15,15 @@ IFS=$'\n'                   # Change IFS to newline char
 randomfiles=($randomfiles)  # split the `to_kill` string into an array by the same name
 IFS=$SAVEIFS                # Restore original IFS
 
-# Get duration,width,height of videos
-files_info="$(for (( i=0; i<${#randomfiles[@]}; i++ ))
+# Get aspect ratio of videos
+aspect_ratios="$(for (( i=0; i<${#randomfiles[@]}; i++ ))
 do
-    fileinfo="$(ffprobe -v error -select_streams v -show_entries stream=duration,width,height -of csv=p=0:s='x' "${randomfiles[$i]}" )"
-    SAVEIFS=$IFS
-    IFS=$'x'
-    fileinfo=($fileinfo)
-    IFS=$SAVEIFS
-    video1_scale=$(bc <<< "scale=2; ${fileinfo[0]} / ${fileinfo[1]}")
-    echo $video1_scale ${fileinfo[2]} ${randomfiles[$i]} 
+    aspect_ratio="$(mediainfo --Inform="Video;%DisplayAspectRatio%" "${randomfiles[$i]}" )"
+    echo $aspect_ratio ${randomfiles[$i]} 
 done)"
 
-# Set variables containing vertical and horizontal videos
-vertical_vids="$(echo "$files_info" | sort -g | perl -0777 -pe "s/^(\d+\.|\n)+.*//gm" | perl -pe "s/^[^\/]+(\/A )?//g" )"
-horizontal_vids="$(echo "$files_info" | sort -g | perl -0777 -pe "s/^(\..*\n)//gm" | perl -pe "s/^[^\/]+(\/A )?//g" )"
+horizontal_vids="$(echo "$aspect_ratios" | sort -g | perl -0777 -pe "s/^0\..*\n//gm" | perl -pe "s/^[^\/]+//g")"
+vertical_vids="$(echo "$aspect_ratios" | sort -g | perl -0777 -pe "s/^[1-9]\..*\n//gm" | perl -pe "s/^[^\/]+//g" )"
 
 # Convert vars to arrays
 SAVEIFS=$IFS
@@ -39,11 +33,201 @@ horizontal_vids=($horizontal_vids)
 IFS=$SAVEIFS
 
 # Play vertical files in mpv
-resolution="620:1080"
+resolution="610:1080"
 file1="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}"
 file2="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}"
 file3="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}"
 file4="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}"
+
+
+# Check if random selection is dupe of another random selection and if so, pick another at random
+case "$file1" in
+  "$file2" | "$file3" | "$file4" )
+    file1="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}"
+    echo "file1 check #1 was dupe"
+    ;;
+  * )
+esac
+
+case "$file2" in
+  "$file1" | "$file3" | "$file4" )
+    file2="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}"
+    echo "file2 check #1 was dupe"
+    ;;
+  * )
+esac
+
+case "$file3" in
+  "$file1" | "$file2" | "$file4" )
+    file3="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}"
+    echo "file3 check #1 was dupe"
+    ;;
+  * )
+esac
+
+case "$file4" in
+  "$file1" | "$file2" | "$file3" )
+    file4="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}"
+    echo "file4 check #1 was dupe"
+    ;;
+  * )
+esac
+
+
+# Check if random selection is dupe of another random selection (2nd round) and if so, pick another at random
+case "$file1" in
+  "$file2" | "$file3" | "$file4" )
+    file1="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}"
+    echo "file1 check #2 was dupe"
+    ;;
+  * )
+esac
+
+case "$file2" in
+  "$file1" | "$file3" | "$file4" )
+    file2="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}"
+    echo "file2 check #2 was dupe"
+    ;;
+  * )
+esac
+
+case "$file3" in
+  "$file1" | "$file2" | "$file4" )
+    file3="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}"
+    echo "file3 check #2 was dupe"
+    ;;
+  * )
+esac
+
+case "$file4" in
+  "$file1" | "$file2" | "$file3" )
+    file4="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}"
+    echo "file4 check #2 was dupe"
+    ;;
+  * )
+esac
+
+# Get length of files in miliseconds
+file1_length=$(mediainfo --Inform="Video;%Duration%" "$file1")
+file2_length=$(mediainfo --Inform="Video;%Duration%" "$file2")
+file3_length=$(mediainfo --Inform="Video;%Duration%" "$file3")
+file4_length=$(mediainfo --Inform="Video;%Duration%" "$file4")
+
+# Remove decimal from miliseconds
+file1_length=${file1_length%.*}
+file2_length=${file2_length%.*}
+file3_length=${file3_length%.*}
+file4_length=${file4_length%.*}
+
+# Save backup of file order for use in reasigning based on video length
+original_file1="$file1"
+original_file2="$file2"
+original_file3="$file3"
+original_file4="$file4"
+
+# Assign video lengths to variables. First is longest, second is second longest, Etc.
+first=$(  echo "$file1_length $file2_length $file3_length $file4_length" | tr ' ' '\n' | sort -rn | head -1 )
+second=$( echo "$file1_length $file2_length $file3_length $file4_length" | tr ' ' '\n' | sort -rn | head -2 | tail -1 )
+third=$(  echo "$file1_length $file2_length $file3_length $file4_length" | tr ' ' '\n' | sort -rn | head -3 | tail -1 )
+fourth=$( echo "$file1_length $file2_length $file3_length $file4_length" | tr ' ' '\n' | sort -rn | head -4 | tail -1 )
+
+# Assign longest video to $file1
+case $first in
+  "$file1_length")
+    file1="$original_file1"
+    new_file1_length=$file1_length
+    ;;
+  "$file2_length")
+    file1="$original_file2"
+    new_file1_length=$file2_length
+    ;;
+  "$file3_length")
+    file1="$original_file3"
+    new_file1_length=$file3_length
+    ;;
+  "$file4_length")
+    file1="$original_file4"
+    new_file1_length=$file4_length
+    ;;
+  *)
+esac
+
+# Assign 2nd longest video to $file2
+case $second in
+  "$file1_length")
+    file2="$original_file1"
+    new_file2_length=$file1_length
+    ;;
+  "$file2_length")
+    file2="$original_file2"
+    new_file2_length=$file2_length
+    ;;
+  "$file3_length")
+    file2="$original_file3"
+    new_file2_length=$file3_length
+    ;;
+  "$file4_length")
+    file2="$original_file4"
+    new_file2_length=$file4_length
+    ;;
+  *)
+esac
+
+# Assign 3rd longest video to $file3
+case $third in
+  "$file1_length")
+    file3="$original_file1"
+    new_file3_length=$file1_length
+    ;;
+  "$file2_length")
+    file3="$original_file2"
+    new_file3_length=$file2_length
+    ;;
+  "$file3_length")
+    file3="$original_file3"
+    new_file3_length=$file3_length
+    ;;
+  "$file4_length")
+    file3="$original_file4"
+    new_file3_length=$file4_length
+    ;;
+  *)
+esac
+
+# Assign 4th longest video to $file3
+case $fourth in
+  "$file1_length")
+    file4="$original_file1"
+    new_file4_length=$file1_length
+    ;;
+  "$file2_length")
+    file4="$original_file2"
+    new_file4_length=$file2_length
+    ;;
+  "$file3_length")
+    file4="$original_file3"
+    new_file4_length=$file3_length
+    ;;
+  "$file4_length")
+    file4="$original_file4"
+    new_file4_length=$file4_length
+    ;;
+  *)
+esac
+
+# Convert length miliseconds to length seconds
+file1_seconds=$(echo "scale=0; $new_file1_length/1000" | bc)
+file2_seconds=$(echo "scale=0; $new_file2_length/1000" | bc)
+file3_seconds=$(echo "scale=0; $new_file3_length/1000" | bc)
+file4_seconds=$(echo "scale=0; $new_file4_length/1000" | bc)
+
+# Print length seconds and filenames
+echo ""$file1_seconds"s $file1"
+echo ""$file2_seconds"s $file2"
+echo ""$file3_seconds"s $file3"
+echo ""$file4_seconds"s $file4"
+
+# Play with mpv in 1x1x1x1
 setsid >/dev/null 2>&1 </dev/null \
 mpv \
 --audio=no \
@@ -52,10 +236,10 @@ mpv \
 --cache=yes \
 --geometry=50%:50% \
 --watch-later-options-clr \
-"${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}" \
---external-file="$file1" \
+"$file1" \
 --external-file="$file2" \
 --external-file="$file3" \
+--external-file="$file4" \
 --external-file="$file4" \
 --lavfi-complex="[vid1]setpts=floor(PTS*24)/24,scale=$resolution:force_original_aspect_ratio=1,pad=$resolution:(ow-iw)/2:(oh-ih)/2[v1];
 [vid2]setpts=floor(PTS*24)/24,scale=$resolution:force_original_aspect_ratio=1,pad=$resolution:(ow-iw)/2:(oh-ih)/2[v2];
