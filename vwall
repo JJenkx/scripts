@@ -1,13 +1,14 @@
 #!/usr/bin/env bash
-# Play randomly selected 
+# Play 4 randomly selected videos that have portrait format in mpv
 filetypes="mkv|mp4"         # Only match these filetypes
 num_files=64                # Number random files for mpv pool
 directory_depth=1           # How many directories deep to look for video files
+resolution="610:1080"       # Resolution of each wall segment
 
 # Find matching files in current dir
 files="$(find "$PWD" -maxdepth $directory_depth -type f -regextype posix-extended -iregex "^.*(\.$filetypes)$")"
 
-# Pick files at random
+# Pick count $num_files files at random
 randomfiles="$(cat <<<"$files" | shuf -n $num_files)"
 
 # Add random files to array
@@ -33,8 +34,7 @@ vertical_vids=($vertical_vids)
 horizontal_vids=($horizontal_vids)
 IFS=$SAVEIFS
 
-# Play vertical files in mpv
-resolution="610:1080"
+# Assign randomly selected vertical files to var
 file1="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}"
 file2="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}"
 file3="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}"
