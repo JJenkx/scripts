@@ -51,7 +51,7 @@ file4_hori="${horizontal_vids[ $RANDOM % ${#horizontal_vids[@]} ]}"
 case "$file1_vert" in
   "$file2_vert" | "$file3_vert" | "$file4_vert" )
     file1_vert="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}"
-    echo "file1_vert check #1 was dupe"
+#    echo "file1_vert check #1 was dupe"
     ;;
   * )
 esac
@@ -59,7 +59,7 @@ esac
 case "$file2_vert" in
   "$file1_vert" | "$file3_vert" | "$file4_vert" )
     file2_vert="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}"
-    echo "file2_vert check #1 was dupe"
+#    echo "file2_vert check #1 was dupe"
     ;;
   * )
 esac
@@ -67,7 +67,7 @@ esac
 case "$file3_vert" in
   "$file1_vert" | "$file2_vert" | "$file4_vert" )
     file3_vert="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}"
-    echo "file3_vert check #1 was dupe"
+#    echo "file3_vert check #1 was dupe"
     ;;
   * )
 esac
@@ -75,7 +75,7 @@ esac
 case "$file4_vert" in
   "$file1_vert" | "$file2_vert" | "$file3_vert" )
     file4_vert="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}"
-    echo "file4_vert check #1 was dupe"
+#    echo "file4_vert check #1 was dupe"
     ;;
   * )
 esac
@@ -84,7 +84,7 @@ esac
 case "$file1_vert" in
   "$file2_vert" | "$file3_vert" | "$file4_vert" )
     file1_vert="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}"
-    echo "file1_vert check #2 was dupe"
+#    echo "file1_vert check #2 was dupe"
     ;;
   * )
 esac
@@ -92,7 +92,7 @@ esac
 case "$file2_vert" in
   "$file1_vert" | "$file3_vert" | "$file4_vert" )
     file2_vert="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}"
-    echo "file2_vert check #2 was dupe"
+#    echo "file2_vert check #2 was dupe"
     ;;
   * )
 esac
@@ -100,7 +100,7 @@ esac
 case "$file3_vert" in
   "$file1_vert" | "$file2_vert" | "$file4_vert" )
     file3_vert="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}"
-    echo "file3_vert check #2 was dupe"
+#    echo "file3_vert check #2 was dupe"
     ;;
   * )
 esac
@@ -108,7 +108,7 @@ esac
 case "$file4_vert" in
   "$file1_vert" | "$file2_vert" | "$file3_vert" )
     file4_vert="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}"
-    echo "file4_vert check #2 was dupe"
+#    echo "file4_vert check #2 was dupe"
     ;;
   * )
 esac
@@ -117,7 +117,7 @@ esac
 case "$file1_hori" in
   "$file2_hori" | "$file3_hori" | "$file4_hori" )
     file1_hori="${horizontal_vids[ $RANDOM % ${#horizontal_vids[@]} ]}"
-    echo "file1_hori check #1 was dupe"
+#    echo "file1_hori check #1 was dupe"
     ;;
   * )
 esac
@@ -125,7 +125,7 @@ esac
 case "$file2_hori" in
   "$file1_hori" | "$file3_hori" | "$file4_hori" )
     file2_hori="${horizontal_vids[ $RANDOM % ${#horizontal_vids[@]} ]}"
-    echo "file2_hori check #1 was dupe"
+#    echo "file2_hori check #1 was dupe"
     ;;
   * )
 esac
@@ -133,7 +133,7 @@ esac
 case "$file3_hori" in
   "$file1_hori" | "$file2_hori" | "$file4_hori" )
     file3_hori="${horizontal_vids[ $RANDOM % ${#horizontal_vids[@]} ]}"
-    echo "file3_hori check #1 was dupe"
+#    echo "file3_hori check #1 was dupe"
     ;;
   * )
 esac
@@ -141,7 +141,7 @@ esac
 case "$file4_hori" in
   "$file1_hori" | "$file2_hori" | "$file3_hori" )
     file4_hori="${horizontal_vids[ $RANDOM % ${#horizontal_vids[@]} ]}"
-    echo "file4_hori check #1 was dupe"
+#    echo "file4_hori check #1 was dupe"
     ;;
   * )
 esac
@@ -150,7 +150,7 @@ esac
 case "$file1_hori" in
   "$file2_hori" | "$file3_hori" | "$file4_hori" )
     file1_hori="${horizontal_vids[ $RANDOM % ${#horizontal_vids[@]} ]}"
-    echo "file1_hori check #2 was dupe"
+#    echo "file1_hori check #2 was dupe"
     ;;
   * )
 esac
@@ -158,7 +158,7 @@ esac
 case "$file2_hori" in
   "$file1_hori" | "$file3_hori" | "$file4_hori" )
     file2_hori="${horizontal_vids[ $RANDOM % ${#horizontal_vids[@]} ]}"
-    echo "file2_hori check #2 was dupe"
+#    echo "file2_hori check #2 was dupe"
     ;;
   * )
 esac
@@ -166,7 +166,7 @@ esac
 case "$file3_hori" in
   "$file1_hori" | "$file2_hori" | "$file4_hori" )
     file3_hori="${horizontal_vids[ $RANDOM % ${#horizontal_vids[@]} ]}"
-    echo "file3_hori check #2 was dupe"
+#    echo "file3_hori check #2 was dupe"
     ;;
   * )
 esac
@@ -174,7 +174,7 @@ esac
 case "$file4_hori" in
   "$file1_hori" | "$file2_hori" | "$file3_hori" )
     file4_hori="${horizontal_vids[ $RANDOM % ${#horizontal_vids[@]} ]}"
-    echo "file4_hori check #2 was dupe"
+#    echo "file4_hori check #2 was dupe"
     ;;
   * )
 esac
@@ -213,15 +213,15 @@ original_file3_hori="$file3_hori"
 original_file4_hori="$file4_hori"
 
 # Assign video lengths to variables. First_vert is longest, second_vert is second_vert longest, Etc.
-first_vert=$(  echo "$file1_vert_length $file2_vert_length $file3_vert_length $file4_vert_length" | tr ' ' '\n' | sort -rn | head -1 )
-second_vert=$( echo "$file1_vert_length $file2_vert_length $file3_vert_length $file4_vert_length" | tr ' ' '\n' | sort -rn | head -2 | tail -1 )
-third_vert=$(  echo "$file1_vert_length $file2_vert_length $file3_vert_length $file4_vert_length" | tr ' ' '\n' | sort -rn | head -3 | tail -1 )
-fourth_vert=$( echo "$file1_vert_length $file2_vert_length $file3_vert_length $file4_vert_length" | tr ' ' '\n' | sort -rn | head -4 | tail -1 )
+first_vert="$(  echo "$file1_vert_length $file2_vert_length $file3_vert_length $file4_vert_length" | tr ' ' '\n' | sort -rn | head -1 )"
+second_vert="$( echo "$file1_vert_length $file2_vert_length $file3_vert_length $file4_vert_length" | tr ' ' '\n' | sort -rn | head -2 | tail -1 )"
+third_vert="$(  echo "$file1_vert_length $file2_vert_length $file3_vert_length $file4_vert_length" | tr ' ' '\n' | sort -rn | head -3 | tail -1 )"
+fourth_vert="$( echo "$file1_vert_length $file2_vert_length $file3_vert_length $file4_vert_length" | tr ' ' '\n' | sort -rn | head -4 | tail -1 )"
 
-first_hori=$(  echo "$file1_hori_length $file2_hori_length $file3_hori_length $file4_hori_length" | tr ' ' '\n' | sort -rn | head -1 )
-second_hori=$( echo "$file1_hori_length $file2_hori_length $file3_hori_length $file4_hori_length" | tr ' ' '\n' | sort -rn | head -2 | tail -1 )
-third_hori=$(  echo "$file1_hori_length $file2_hori_length $file3_hori_length $file4_hori_length" | tr ' ' '\n' | sort -rn | head -3 | tail -1 )
-fourth_hori=$( echo "$file1_hori_length $file2_hori_length $file3_hori_length $file4_hori_length" | tr ' ' '\n' | sort -rn | head -4 | tail -1 )
+first_hori="$(  echo "$file1_hori_length $file2_hori_length $file3_hori_length $file4_hori_length" | tr ' ' '\n' | sort -rn | head -1 )"
+second_hori="$( echo "$file1_hori_length $file2_hori_length $file3_hori_length $file4_hori_length" | tr ' ' '\n' | sort -rn | head -2 | tail -1 )"
+third_hori="$(  echo "$file1_hori_length $file2_hori_length $file3_hori_length $file4_hori_length" | tr ' ' '\n' | sort -rn | head -3 | tail -1 )"
+fourth_hori="$( echo "$file1_hori_length $file2_hori_length $file3_hori_length $file4_hori_length" | tr ' ' '\n' | sort -rn | head -4 | tail -1 )"
 
 # Assign longest video to $file1_vert
 case $first_vert in
