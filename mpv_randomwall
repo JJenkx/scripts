@@ -1,12 +1,15 @@
 #!/usr/bin/env bash
-
+# Play 4 randomly selected videos that have portrait format in mpv
 filetypes="mkv|mp4"         # Only match these filetypes
-num_files=128               # Number random files for mpv pool
+num_files=64                # Number random files for mpv pool
+directory_depth=1           # How many directories deep to look for video files
+resolution_vert="610:1080"  # Resolution of each wall segment
+resolution_hori="1920:1080" # Resolution of each wall segment
 
 # Find matching files in current dir
-files="$(find "$PWD" -type f -regextype posix-extended -iregex "^.*(\.$filetypes)$")"
+files="$(find "$PWD" -maxdepth $directory_depth -type f -regextype posix-extended -iregex "^.*(\.$filetypes)$")"
 
-# Pick files at random
+# Pick count $num_files files at random
 randomfiles="$(cat <<<"$files" | shuf -n $num_files)"
 
 # Add random files to array
@@ -15,21 +18,15 @@ IFS=$'\n'                   # Change IFS to newline char
 randomfiles=($randomfiles)  # split the `to_kill` string into an array by the same name
 IFS=$SAVEIFS                # Restore original IFS
 
-# Get duration,width,height of videos
-files_info="$(for (( i=0; i<${#randomfiles[@]}; i++ ))
+# Get aspect ratio of videos
+aspect_ratios="$(for (( i=0; i<${#randomfiles[@]}; i++ ))
 do
-    fileinfo="$(ffprobe -v error -select_streams v -show_entries stream=duration,width,height -of csv=p=0:s='x' "${randomfiles[$i]}" )"
-    SAVEIFS=$IFS
-    IFS=$'x'
-    fileinfo=($fileinfo)
-    IFS=$SAVEIFS
-    video1_scale=$(bc <<< "scale=2; ${fileinfo[0]} / ${fileinfo[1]}")
-    echo $video1_scale ${fileinfo[2]} ${randomfiles[$i]} 
+    aspect_ratio="$(mediainfo --Inform="Video;%DisplayAspectRatio%" "${randomfiles[$i]}" )"
+    echo $aspect_ratio ${randomfiles[$i]} 
 done)"
 
-# Set variables containing vertical and horizontal videos
-vertical_vids="$(echo "$files_info" | sort -g | perl -0777 -pe "s/^(\d+\.|\n)+.*//gm" | perl -pe "s/^[^\/]+(\/A )?//g" )"
-horizontal_vids="$(echo "$files_info" | sort -g | perl -0777 -pe "s/^(\..*\n)//gm" | perl -pe "s/^[^\/]+(\/A )?//g" )"
+horizontal_vids="$(echo "$aspect_ratios" | sort -g | perl -0777 -pe "s/^0\..*\n//gm" | perl -pe "s/^[^\/]+//g")"
+vertical_vids="$(echo "$aspect_ratios" | sort -g | perl -0777 -pe "s/^[1-9]\..*\n//gm" | perl -pe "s/^[^\/]+//g" )"
 
 # Convert vars to arrays
 SAVEIFS=$IFS
@@ -38,9 +35,385 @@ vertical_vids=($vertical_vids)
 horizontal_vids=($horizontal_vids)
 IFS=$SAVEIFS
 
+# Assign randomly selected vertical files to var
+file1_vert="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}"
+file2_vert="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}"
+file3_vert="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}"
+file4_vert="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}"
+file1_hori="${horizontal_vids[ $RANDOM % ${#horizontal_vids[@]} ]}"
+file2_hori="${horizontal_vids[ $RANDOM % ${#horizontal_vids[@]} ]}"
+file3_hori="${horizontal_vids[ $RANDOM % ${#horizontal_vids[@]} ]}"
+file4_hori="${horizontal_vids[ $RANDOM % ${#horizontal_vids[@]} ]}"
 
-# Play horizontal files in mpv
-resolution="1920:1080"
+# Vert: Check if random selection is dupe of another random selection and if so, pick another at random
+case "$file1_vert" in
+  "$file2_vert" | "$file3_vert" | "$file4_vert" )
+    file1_vert="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}"
+    echo "file1_vert check #1 was dupe"
+    ;;
+  * )
+esac
+
+case "$file2_vert" in
+  "$file1_vert" | "$file3_vert" | "$file4_vert" )
+    file2_vert="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}"
+    echo "file2_vert check #1 was dupe"
+    ;;
+  * )
+esac
+
+case "$file3_vert" in
+  "$file1_vert" | "$file2_vert" | "$file4_vert" )
+    file3_vert="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}"
+    echo "file3_vert check #1 was dupe"
+    ;;
+  * )
+esac
+
+case "$file4_vert" in
+  "$file1_vert" | "$file2_vert" | "$file3_vert" )
+    file4_vert="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}"
+    echo "file4_vert check #1 was dupe"
+    ;;
+  * )
+esac
+
+# Vert: Check if random selection is dupe of another random selection (2nd round) and if so, pick another at random
+case "$file1_vert" in
+  "$file2_vert" | "$file3_vert" | "$file4_vert" )
+    file1_vert="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}"
+    echo "file1_vert check #2 was dupe"
+    ;;
+  * )
+esac
+
+case "$file2_vert" in
+  "$file1_vert" | "$file3_vert" | "$file4_vert" )
+    file2_vert="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}"
+    echo "file2_vert check #2 was dupe"
+    ;;
+  * )
+esac
+
+case "$file3_vert" in
+  "$file1_vert" | "$file2_vert" | "$file4_vert" )
+    file3_vert="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}"
+    echo "file3_vert check #2 was dupe"
+    ;;
+  * )
+esac
+
+case "$file4_vert" in
+  "$file1_vert" | "$file2_vert" | "$file3_vert" )
+    file4_vert="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}"
+    echo "file4_vert check #2 was dupe"
+    ;;
+  * )
+esac
+
+# Horizontal: Check if random selection is dupe of another random selection and if so, pick another at random
+case "$file1_hori" in
+  "$file2_hori" | "$file3_hori" | "$file4_hori" )
+    file1_hori="${horizontal_vids[ $RANDOM % ${#horizontal_vids[@]} ]}"
+    echo "file1_hori check #1 was dupe"
+    ;;
+  * )
+esac
+
+case "$file2_hori" in
+  "$file1_hori" | "$file3_hori" | "$file4_hori" )
+    file2_hori="${horizontal_vids[ $RANDOM % ${#horizontal_vids[@]} ]}"
+    echo "file2_hori check #1 was dupe"
+    ;;
+  * )
+esac
+
+case "$file3_hori" in
+  "$file1_hori" | "$file2_hori" | "$file4_hori" )
+    file3_hori="${horizontal_vids[ $RANDOM % ${#horizontal_vids[@]} ]}"
+    echo "file3_hori check #1 was dupe"
+    ;;
+  * )
+esac
+
+case "$file4_hori" in
+  "$file1_hori" | "$file2_hori" | "$file3_hori" )
+    file4_hori="${horizontal_vids[ $RANDOM % ${#horizontal_vids[@]} ]}"
+    echo "file4_hori check #1 was dupe"
+    ;;
+  * )
+esac
+
+# Horizontal: Check if random selection is dupe of another random selection (2nd round) and if so, pick another at random
+case "$file1_hori" in
+  "$file2_hori" | "$file3_hori" | "$file4_hori" )
+    file1_hori="${horizontal_vids[ $RANDOM % ${#horizontal_vids[@]} ]}"
+    echo "file1_hori check #2 was dupe"
+    ;;
+  * )
+esac
+
+case "$file2_hori" in
+  "$file1_hori" | "$file3_hori" | "$file4_hori" )
+    file2_hori="${horizontal_vids[ $RANDOM % ${#horizontal_vids[@]} ]}"
+    echo "file2_hori check #2 was dupe"
+    ;;
+  * )
+esac
+
+case "$file3_hori" in
+  "$file1_hori" | "$file2_hori" | "$file4_hori" )
+    file3_hori="${horizontal_vids[ $RANDOM % ${#horizontal_vids[@]} ]}"
+    echo "file3_hori check #2 was dupe"
+    ;;
+  * )
+esac
+
+case "$file4_hori" in
+  "$file1_hori" | "$file2_hori" | "$file3_hori" )
+    file4_hori="${horizontal_vids[ $RANDOM % ${#horizontal_vids[@]} ]}"
+    echo "file4_hori check #2 was dupe"
+    ;;
+  * )
+esac
+
+# Get length of files in miliseconds
+file1_vert_length=$(mediainfo --Inform="Video;%Duration%" "$file1_vert")
+file2_vert_length=$(mediainfo --Inform="Video;%Duration%" "$file2_vert")
+file3_vert_length=$(mediainfo --Inform="Video;%Duration%" "$file3_vert")
+file4_vert_length=$(mediainfo --Inform="Video;%Duration%" "$file4_vert")
+
+file1_hori_length=$(mediainfo --Inform="Video;%Duration%" "$file1_hori")
+file2_hori_length=$(mediainfo --Inform="Video;%Duration%" "$file2_hori")
+file3_hori_length=$(mediainfo --Inform="Video;%Duration%" "$file3_hori")
+file4_hori_length=$(mediainfo --Inform="Video;%Duration%" "$file4_hori")
+
+# Remove decimal from miliseconds
+file1_vert_length=${file1_vert_length%.*}
+file2_vert_length=${file2_vert_length%.*}
+file3_vert_length=${file3_vert_length%.*}
+file4_vert_length=${file4_vert_length%.*}
+
+file1_hori_length=${file1_hori_length%.*}
+file2_hori_length=${file2_hori_length%.*}
+file3_hori_length=${file3_hori_length%.*}
+file4_hori_length=${file4_hori_length%.*}
+
+# Save backup of file order for use in reasigning based on video length
+original_file1_vert="$file1_vert"
+original_file2_vert="$file2_vert"
+original_file3_vert="$file3_vert"
+original_file4_vert="$file4_vert"
+
+original_file1_hori="$file1_hori"
+original_file2_hori="$file2_hori"
+original_file3_hori="$file3_hori"
+original_file4_hori="$file4_hori"
+
+# Assign video lengths to variables. First_vert is longest, second_vert is second_vert longest, Etc.
+first_vert=$(  echo "$file1_vert_length $file2_vert_length $file3_vert_length $file4_vert_length" | tr ' ' '\n' | sort -rn | head -1 )
+second_vert=$( echo "$file1_vert_length $file2_vert_length $file3_vert_length $file4_vert_length" | tr ' ' '\n' | sort -rn | head -2 | tail -1 )
+third_vert=$(  echo "$file1_vert_length $file2_vert_length $file3_vert_length $file4_vert_length" | tr ' ' '\n' | sort -rn | head -3 | tail -1 )
+fourth_vert=$( echo "$file1_vert_length $file2_vert_length $file3_vert_length $file4_vert_length" | tr ' ' '\n' | sort -rn | head -4 | tail -1 )
+
+first_hori=$(  echo "$file1_hori_length $file2_hori_length $file3_hori_length $file4_hori_length" | tr ' ' '\n' | sort -rn | head -1 )
+second_hori=$( echo "$file1_hori_length $file2_hori_length $file3_hori_length $file4_hori_length" | tr ' ' '\n' | sort -rn | head -2 | tail -1 )
+third_hori=$(  echo "$file1_hori_length $file2_hori_length $file3_hori_length $file4_hori_length" | tr ' ' '\n' | sort -rn | head -3 | tail -1 )
+fourth_hori=$( echo "$file1_hori_length $file2_hori_length $file3_hori_length $file4_hori_length" | tr ' ' '\n' | sort -rn | head -4 | tail -1 )
+
+# Assign longest video to $file1_vert
+case $first_vert in
+  "$file1_vert_length")
+    file1_vert="$original_file1_vert"
+    new_file1_vert_length=$file1_vert_length
+    ;;
+  "$file2_vert_length")
+    file1_vert="$original_file2_vert"
+    new_file1_vert_length=$file2_vert_length
+    ;;
+  "$file3_vert_length")
+    file1_vert="$original_file3_vert"
+    new_file1_vert_length=$file3_vert_length
+    ;;
+  "$file4_vert_length")
+    file1_vert="$original_file4_vert"
+    new_file1_vert_length=$file4_vert_length
+    ;;
+  *)
+esac
+
+# Assign 2nd longest video to $file2_vert
+case $second_vert in
+  "$file1_vert_length")
+    file2_vert="$original_file1_vert"
+    new_file2_vert_length=$file1_vert_length
+    ;;
+  "$file2_vert_length")
+    file2_vert="$original_file2_vert"
+    new_file2_vert_length=$file2_vert_length
+    ;;
+  "$file3_vert_length")
+    file2_vert="$original_file3_vert"
+    new_file2_vert_length=$file3_vert_length
+    ;;
+  "$file4_vert_length")
+    file2_vert="$original_file4_vert"
+    new_file2_vert_length=$file4_vert_length
+    ;;
+  *)
+esac
+
+# Assign 3rd longest video to $file3_vert
+case $third_vert in
+  "$file1_vert_length")
+    file3_vert="$original_file1_vert"
+    new_file3_vert_length=$file1_vert_length
+    ;;
+  "$file2_vert_length")
+    file3_vert="$original_file2_vert"
+    new_file3_vert_length=$file2_vert_length
+    ;;
+  "$file3_vert_length")
+    file3_vert="$original_file3_vert"
+    new_file3_vert_length=$file3_vert_length
+    ;;
+  "$file4_vert_length")
+    file3_vert="$original_file4_vert"
+    new_file3_vert_length=$file4_vert_length
+    ;;
+  *)
+esac
+
+# Assign 4th longest video to $file4_vert
+case $fourth_vert in
+  "$file1_vert_length")
+    file4_vert="$original_file1_vert"
+    new_file4_vert_length=$file1_vert_length
+    ;;
+  "$file2_vert_length")
+    file4_vert="$original_file2_vert"
+    new_file4_vert_length=$file2_vert_length
+    ;;
+  "$file3_vert_length")
+    file4_vert="$original_file3_vert"
+    new_file4_vert_length=$file3_vert_length
+    ;;
+  "$file4_vert_length")
+    file4_vert="$original_file4_vert"
+    new_file4_vert_length=$file4_vert_length
+    ;;
+  *)
+esac
+
+# Assign longest video to $file1_hori
+case $first_hori in
+  "$file1_hori_length")
+    file1_hori="$original_file1_hori"
+    new_file1_hori_length=$file1_hori_length
+    ;;
+  "$file2_hori_length")
+    file1_hori="$original_file2_hori"
+    new_file1_hori_length=$file2_hori_length
+    ;;
+  "$file3_hori_length")
+    file1_hori="$original_file3_hori"
+    new_file1_hori_length=$file3_hori_length
+    ;;
+  "$file4_hori_length")
+    file1_hori="$original_file4_hori"
+    new_file1_hori_length=$file4_hori_length
+    ;;
+  *)
+esac
+
+# Assign 2nd longest video to $file2_hori
+case $second_hori in
+  "$file1_hori_length")
+    file2_hori="$original_file1_hori"
+    new_file2_hori_length=$file1_hori_length
+    ;;
+  "$file2_hori_length")
+    file2_hori="$original_file2_hori"
+    new_file2_hori_length=$file2_hori_length
+    ;;
+  "$file3_hori_length")
+    file2_hori="$original_file3_hori"
+    new_file2_hori_length=$file3_hori_length
+    ;;
+  "$file4_hori_length")
+    file2_hori="$original_file4_hori"
+    new_file2_hori_length=$file4_hori_length
+    ;;
+  *)
+esac
+
+# Assign 3rd longest video to $file3_hori
+case $third_hori in
+  "$file1_hori_length")
+    file3_hori="$original_file1_hori"
+    new_file3_hori_length=$file1_hori_length
+    ;;
+  "$file2_hori_length")
+    file3_hori="$original_file2_hori"
+    new_file3_hori_length=$file2_hori_length
+    ;;
+  "$file3_hori_length")
+    file3_hori="$original_file3_hori"
+    new_file3_hori_length=$file3_hori_length
+    ;;
+  "$file4_hori_length")
+    file3_hori="$original_file4_hori"
+    new_file3_hori_length=$file4_hori_length
+    ;;
+  *)
+esac
+
+# Assign 4th longest video to $file4_hori
+case $fourth_hori in
+  "$file1_hori_length")
+    file4_hori="$original_file1_hori"
+    new_file4_hori_length=$file1_hori_length
+    ;;
+  "$file2_hori_length")
+    file4_hori="$original_file2_hori"
+    new_file4_hori_length=$file2_hori_length
+    ;;
+  "$file3_hori_length")
+    file4_hori="$original_file3_hori"
+    new_file4_hori_length=$file3_hori_length
+    ;;
+  "$file4_hori_length")
+    file4_hori="$original_file4_hori"
+    new_file4_hori_length=$file4_hori_length
+    ;;
+  *)
+esac
+
+# Convert length miliseconds to length seconds
+file1_vert_seconds=$(echo "scale=0; $new_file1_vert_length/1000" | bc)
+file2_vert_seconds=$(echo "scale=0; $new_file2_vert_length/1000" | bc)
+file3_vert_seconds=$(echo "scale=0; $new_file3_vert_length/1000" | bc)
+file4_vert_seconds=$(echo "scale=0; $new_file4_vert_length/1000" | bc)
+
+file1_hori_seconds=$(echo "scale=0; $new_file1_hori_length/1000" | bc)
+file2_hori_seconds=$(echo "scale=0; $new_file2_hori_length/1000" | bc)
+file3_hori_seconds=$(echo "scale=0; $new_file3_hori_length/1000" | bc)
+file4_hori_seconds=$(echo "scale=0; $new_file4_hori_length/1000" | bc)
+
+# Print length seconds and filenames
+echo "Vertical:"
+echo ""$file1_vert_seconds"s $file1_vert"
+echo ""$file2_vert_seconds"s $file2_vert"
+echo ""$file3_vert_seconds"s $file3_vert"
+echo ""$file4_vert_seconds"s $file4_vert"
+echo ""
+echo "Horizontal:"
+echo ""$file1_hori_seconds"s $file1_hori"
+echo ""$file2_hori_seconds"s $file2_hori"
+echo ""$file3_hori_seconds"s $file3_hori"
+echo ""$file4_hori_seconds"s $file4_hori"
+
+# Play vertical files with mpv in 1x1x1x1
 setsid >/dev/null 2>&1 </dev/null \
 mpv \
 --audio=no \
@@ -48,64 +421,65 @@ mpv \
 --border=no \
 --cache=yes \
 --geometry=50%:50% \
+--script-opts=autoload-disabled=yes \
 --watch-later-options-clr \
-"${horizontal_vids[ $RANDOM % ${#horizontal_vids[@]} ]}" \
---external-file="${horizontal_vids[ $RANDOM % ${#horizontal_vids[@]} ]}" \
---external-file="${horizontal_vids[ $RANDOM % ${#horizontal_vids[@]} ]}" \
---external-file="${horizontal_vids[ $RANDOM % ${#horizontal_vids[@]} ]}" \
---external-file="${horizontal_vids[ $RANDOM % ${#horizontal_vids[@]} ]}" \
---lavfi-complex="[vid1]setpts=floor(PTS*24)/24,scale=$resolution:force_original_aspect_ratio=1,pad=$resolution:(ow-iw)/2:(oh-ih)/2[v1];
-[vid2]setpts=floor(PTS*24)/24,scale=$resolution:force_original_aspect_ratio=1,pad=$resolution:(ow-iw)/2:(oh-ih)/2[v2];
-[vid3]setpts=floor(PTS*24)/24,scale=$resolution:force_original_aspect_ratio=1,pad=$resolution:(ow-iw)/2:(oh-ih)/2[v3];
-[vid4]setpts=floor(PTS*24)/24,scale=$resolution:force_original_aspect_ratio=1,pad=$resolution:(ow-iw)/2:(oh-ih)/2[v4];
+"$file1_vert" \
+--external-file="$file2_vert" \
+--external-file="$file3_vert" \
+--external-file="$file4_vert" \
+--external-file="$file4_vert" \
+--lavfi-complex="[vid1]setpts=floor(PTS*24)/24,scale=$resolution_vert:force_original_aspect_ratio=1,pad=$resolution_vert:(ow-iw)/2:(oh-ih)/2[v1];
+[vid2]setpts=floor(PTS*24)/24,scale=$resolution_vert:force_original_aspect_ratio=1,pad=$resolution_vert:(ow-iw)/2:(oh-ih)/2[v2];
+[vid3]setpts=floor(PTS*24)/24,scale=$resolution_vert:force_original_aspect_ratio=1,pad=$resolution_vert:(ow-iw)/2:(oh-ih)/2[v3];
+[vid4]setpts=floor(PTS*24)/24,scale=$resolution_vert:force_original_aspect_ratio=1,pad=$resolution_vert:(ow-iw)/2:(oh-ih)/2[v4];
+[v1] [v2] hstack [t1];
+[v3] [v4] hstack [t2];
+[t1] [t2] hstack [vo]" 2>&1 >/dev/null & 
+
+
+# Play horizontal files with mpv in 1x1
+#                                   1x1
+setsid >/dev/null 2>&1 </dev/null \
+mpv \
+--audio=no \
+--autofit=20% \
+--border=no \
+--cache=yes \
+--geometry=50%:50% \
+--script-opts=autoload-disabled=yes \
+--watch-later-options-clr \
+"$file1_hori" \
+--external-file="$file2_hori" \
+--external-file="$file3_hori" \
+--external-file="$file4_hori" \
+--external-file="$file4_hori" \
+--lavfi-complex="[vid1]setpts=floor(PTS*24)/24,scale=$resolution_hori:force_original_aspect_ratio=1,pad=$resolution_hori:(ow-iw)/2:(oh-ih)/2[v1];
+[vid2]setpts=floor(PTS*24)/24,scale=$resolution_hori:force_original_aspect_ratio=1,pad=$resolution_hori:(ow-iw)/2:(oh-ih)/2[v2];
+[vid3]setpts=floor(PTS*24)/24,scale=$resolution_hori:force_original_aspect_ratio=1,pad=$resolution_hori:(ow-iw)/2:(oh-ih)/2[v3];
+[vid4]setpts=floor(PTS*24)/24,scale=$resolution_hori:force_original_aspect_ratio=1,pad=$resolution_hori:(ow-iw)/2:(oh-ih)/2[v4];
 [v1] [v2] hstack [t1];
 [v3] [v4] hstack [t2];
 [t1] [t2] vstack [vo]" 2>&1 >/dev/null & 
 
 
-# Play vertical files in mpv
-resolution="620:1080"
-setsid >/dev/null 2>&1 </dev/null \
-mpv \
---audio=no \
---autofit=20% \
---border=no \
---cache=yes \
---geometry=50%:50% \
---watch-later-options-clr \
-"${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}" \
---external-file="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}" \
---external-file="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}" \
---external-file="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}" \
---external-file="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}" \
---lavfi-complex="[vid1]setpts=floor(PTS*24)/24,scale=$resolution:force_original_aspect_ratio=1,pad=$resolution:(ow-iw)/2:(oh-ih)/2[v1];
-[vid2]setpts=floor(PTS*24)/24,scale=$resolution:force_original_aspect_ratio=1,pad=$resolution:(ow-iw)/2:(oh-ih)/2[v2];
-[vid3]setpts=floor(PTS*24)/24,scale=$resolution:force_original_aspect_ratio=1,pad=$resolution:(ow-iw)/2:(oh-ih)/2[v3];
-[vid4]setpts=floor(PTS*24)/24,scale=$resolution:force_original_aspect_ratio=1,pad=$resolution:(ow-iw)/2:(oh-ih)/2[v4];
-[v1] [v2] hstack [t1];
-[v3] [v4] hstack [t2];
-[t1] [t2] hstack [vo]" 2>&1 >/dev/null & 
-
-
-# Play vertical files in mpv
-resolution="620:1080"
-setsid >/dev/null 2>&1 </dev/null \
-mpv \
---audio=no \
---autofit=20% \
---border=no \
---cache=yes \
---geometry=50%:50% \
---watch-later-options-clr \
-"${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}" \
---external-file="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}" \
---external-file="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}" \
---external-file="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}" \
---external-file="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}" \
---lavfi-complex="[vid1]setpts=floor(PTS*24)/24,scale=$resolution:force_original_aspect_ratio=1,pad=$resolution:(ow-iw)/2:(oh-ih)/2[v1];
-[vid2]setpts=floor(PTS*24)/24,scale=$resolution:force_original_aspect_ratio=1,pad=$resolution:(ow-iw)/2:(oh-ih)/2[v2];
-[vid3]setpts=floor(PTS*24)/24,scale=$resolution:force_original_aspect_ratio=1,pad=$resolution:(ow-iw)/2:(oh-ih)/2[v3];
-[vid4]setpts=floor(PTS*24)/24,scale=$resolution:force_original_aspect_ratio=1,pad=$resolution:(ow-iw)/2:(oh-ih)/2[v4];
-[v1] [v2] hstack [t1];
-[v3] [v4] hstack [t2];
-[t1] [t2] hstack [vo]" 2>&1 >/dev/null & 
+## Play horizontal files with mpv in 1x1x1x1
+#setsid >/dev/null 2>&1 </dev/null \
+#mpv \
+#--audio=no \
+#--autofit=20% \
+#--border=no \
+#--cache=yes \
+#--geometry=50%:50% \
+#--watch-later-options-clr \
+#"$file1_hori" \
+#--external-file="$file2_hori" \
+#--external-file="$file3_hori" \
+#--external-file="$file4_hori" \
+#--external-file="$file4_hori" \
+#--lavfi-complex="[vid1]setpts=floor(PTS*24)/24,scale=$resolution_hori:force_original_aspect_ratio=1,pad=$resolution_hori:(ow-iw)/2:(oh-ih)/2[v1];
+#[vid2]setpts=floor(PTS*24)/24,scale=$resolution_hori:force_original_aspect_ratio=1,pad=$resolution_hori:(ow-iw)/2:(oh-ih)/2[v2];
+#[vid3]setpts=floor(PTS*24)/24,scale=$resolution_hori:force_original_aspect_ratio=1,pad=$resolution_hori:(ow-iw)/2:(oh-ih)/2[v3];
+#[vid4]setpts=floor(PTS*24)/24,scale=$resolution_hori:force_original_aspect_ratio=1,pad=$resolution_hori:(ow-iw)/2:(oh-ih)/2[v4];
+#[v1] [v2] hstack [t1];
+#[v3] [v4] hstack [t2];
+#[t1] [t2] hstack [vo]" 2>&1 >/dev/null & 
