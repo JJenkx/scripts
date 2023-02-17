@@ -40,6 +40,7 @@ file1_vert="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}"
 file2_vert="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}"
 file3_vert="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}"
 file4_vert="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}"
+
 file1_hori="${horizontal_vids[ $RANDOM % ${#horizontal_vids[@]} ]}"
 file2_hori="${horizontal_vids[ $RANDOM % ${#horizontal_vids[@]} ]}"
 file3_hori="${horizontal_vids[ $RANDOM % ${#horizontal_vids[@]} ]}"
@@ -436,7 +437,6 @@ mpv \
 [v3] [v4] hstack [t2];
 [t1] [t2] hstack [vo]" 2>&1 >/dev/null & 
 
-
 # Play horizontal files with mpv in 1x1
 #                                   1x1
 setsid >/dev/null 2>&1 </dev/null \
@@ -460,7 +460,6 @@ mpv \
 [v1] [v2] hstack [t1];
 [v3] [v4] hstack [t2];
 [t1] [t2] vstack [vo]" 2>&1 >/dev/null & 
-
 
 ## Play horizontal files with mpv in 1x1x1x1
 #setsid >/dev/null 2>&1 </dev/null \
