@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# Play 4 randomly selected videos that have portrait format in mpv
+# Play 4 randomly selected videos that have portrait format in one mpv instance
+# Play 4 randomly selected videos that have landscape format in another mpv instance
 filetypes="mkv|mp4"         # Only match these filetypes
 num_files=64                # Number random files for mpv pool
 directory_depth=1           # How many directories deep to look for video files
