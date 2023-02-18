@@ -4,7 +4,7 @@
 filetypes="mkv|mp4"         # Only match these filetypes
 num_files=24                # Number random files for mpv pool
 directory_depth=1           # How many directories deep to look for video files
-resolution="1920:1080"       # Resolution of each wall segment
+resolution="1920:1080"      # Resolution of each wall segment
 
 # Find matching files in current dir
 files="$(find "$PWD" -maxdepth $directory_depth -type f -regextype posix-extended -iregex "^.*(\.$filetypes)$")"
@@ -15,7 +15,7 @@ randomfiles="$(cat <<<"$files" | shuf -n $num_files)"
 # Add random files to array
 SAVEIFS=$IFS                # Save current IFS (Internal Field Separator)
 IFS=$'\n'                   # Change IFS to newline char
-randomfiles=($randomfiles)  # split the `to_kill` string into an array by the same name
+randomfiles=($randomfiles)  # split the `randomfiles` string into an array by the same name
 IFS=$SAVEIFS                # Restore original IFS
 
 # Get aspect ratio of videos
@@ -236,6 +236,7 @@ mpv \
 --border=no \
 --cache=yes \
 --geometry=50%:50% \
+--script-opts=autoload-disabled=yes \
 --watch-later-options-clr \
 "$file1" \
 --external-file="$file2" \
