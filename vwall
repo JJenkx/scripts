@@ -5,8 +5,13 @@ num_files=64                # Number random files for mpv pool
 directory_depth=1           # How many directories deep to look for video files
 resolution="610:1080"       # Resolution of each wall segment
 
+dir="$PWD"
+if [[ ! -z $@ ]]; then
+    dir="$@"
+fi
+
 # Find matching files in current dir
-files="$(find "$PWD" -maxdepth $directory_depth -type f -regextype posix-extended -iregex "^.*(\.$filetypes)$")"
+files="$(find "$dir" -maxdepth $directory_depth -type f -regextype posix-extended -iregex "^.*(\.$filetypes)$")"
 
 # Pick count $num_files files at random
 randomfiles="$(cat <<<"$files" | shuf -n $num_files)"
@@ -24,6 +29,7 @@ do
     echo $aspect_ratio ${randomfiles[$i]} 
 done)"
 
+# Split horizontal vids and portrait vids into 2 lists
 horizontal_vids="$(echo "$aspect_ratios" | sort -g | perl -0777 -pe "s/^0\..*\n//gm" | perl -pe "s/^[^\/]+//g")"
 vertical_vids="$(echo "$aspect_ratios" | sort -g | perl -0777 -pe "s/^[1-9]\..*\n//gm" | perl -pe "s/^[^\/]+//g" )"
 
@@ -45,7 +51,7 @@ file4="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}"
 case "$file1" in
   "$file2" | "$file3" | "$file4" )
     file1="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}"
-    echo "file1 check #1 was dupe"
+#    echo "file1 check #1 was dupe"
     ;;
   * )
 esac
@@ -53,7 +59,7 @@ esac
 case "$file2" in
   "$file1" | "$file3" | "$file4" )
     file2="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}"
-    echo "file2 check #1 was dupe"
+#    echo "file2 check #1 was dupe"
     ;;
   * )
 esac
@@ -61,7 +67,7 @@ esac
 case "$file3" in
   "$file1" | "$file2" | "$file4" )
     file3="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}"
-    echo "file3 check #1 was dupe"
+#    echo "file3 check #1 was dupe"
     ;;
   * )
 esac
@@ -69,7 +75,7 @@ esac
 case "$file4" in
   "$file1" | "$file2" | "$file3" )
     file4="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}"
-    echo "file4 check #1 was dupe"
+#    echo "file4 check #1 was dupe"
     ;;
   * )
 esac
@@ -79,7 +85,7 @@ esac
 case "$file1" in
   "$file2" | "$file3" | "$file4" )
     file1="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}"
-    echo "file1 check #2 was dupe"
+#    echo "file1 check #2 was dupe"
     ;;
   * )
 esac
@@ -87,7 +93,7 @@ esac
 case "$file2" in
   "$file1" | "$file3" | "$file4" )
     file2="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}"
-    echo "file2 check #2 was dupe"
+#    echo "file2 check #2 was dupe"
     ;;
   * )
 esac
@@ -95,7 +101,7 @@ esac
 case "$file3" in
   "$file1" | "$file2" | "$file4" )
     file3="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}"
-    echo "file3 check #2 was dupe"
+#    echo "file3 check #2 was dupe"
     ;;
   * )
 esac
@@ -103,7 +109,7 @@ esac
 case "$file4" in
   "$file1" | "$file2" | "$file3" )
     file4="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}"
-    echo "file4 check #2 was dupe"
+#    echo "file4 check #2 was dupe"
     ;;
   * )
 esac
