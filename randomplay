@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# Play ramdom file with mpv from current dir or specify path
+filetypes="mkv|mp4"         # Only match these filetypes
+directory_depth=3           # How many directories deep to look for video files
+
+dir="$PWD"
+if [[ ! -z $@ ]]; then
+    dir="$@"
+fi
+
+files="$( find "$dir" -maxdepth $directory_depth -type f -regextype posix-extended -iregex "^.*(\.$filetypes)$" )"
+shuffledfiles="$( shuf <<< "$files" )"
+randfile="$( head -1 <<< "$shuffledfiles" )"
+
+echo "$randfile"
+
+setsid >/dev/null 2>&1 </dev/null \
+mpv "$randfile" 2>&1 >/dev/null & 
