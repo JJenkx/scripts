@@ -2,14 +2,20 @@
 # Play 4 randomly selected videos that have portrait format in one mpv instance
 # Play 4 randomly selected videos that have landscape format in another mpv instance
 # dependencies: mpv mediainfo bc
+
 filetypes="mkv|mp4"         # Only match these filetypes
 num_files=64                # Number random files for mpv pool
-directory_depth=1           # How many directories deep to look for video files
+directory_depth=3           # How many directories deep to look for video files
 resolution_vert="610:1080"  # Resolution of each wall segment
 resolution_hori="1920:1080" # Resolution of each wall segment
 
+dir="$PWD"
+if [[ ! -z $@ ]]; then
+    dir="$@"
+fi
+
 # Find matching files in current dir
-files="$(find "$PWD" -maxdepth $directory_depth -type f -regextype posix-extended -iregex "^.*(\.$filetypes)$")"
+files="$(find "$dir" -maxdepth $directory_depth -type f -regextype posix-extended -iregex "^.*(\.$filetypes)$")"
 
 # Pick count $num_files files at random
 randomfiles="$(cat <<<"$files" | shuf -n $num_files)"
@@ -27,6 +33,7 @@ do
     echo $aspect_ratio ${randomfiles[$i]} 
 done)"
 
+# Split horizontal vids and portrait vids into 2 lists
 horizontal_vids="$(echo "$aspect_ratios" | sort -g | perl -0777 -pe "s/^0\..*\n//gm" | perl -pe "s/^[^\/]+//g")"
 vertical_vids="$(echo "$aspect_ratios" | sort -g | perl -0777 -pe "s/^[1-9]\..*\n//gm" | perl -pe "s/^[^\/]+//g" )"
 
@@ -471,6 +478,7 @@ mpv \
 #--border=no \
 #--cache=yes \
 #--geometry=50%:50% \
+#--script-opts=autoload-disabled=yes \
 #--watch-later-options-clr \
 #"$file1_hori" \
 #--external-file="$file2_hori" \
