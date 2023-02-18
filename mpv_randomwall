@@ -17,7 +17,7 @@ randomfiles="$(cat <<<"$files" | shuf -n $num_files)"
 # Add random files to array
 SAVEIFS=$IFS                # Save current IFS (Internal Field Separator)
 IFS=$'\n'                   # Change IFS to newline char
-randomfiles=($randomfiles)  # split the `to_kill` string into an array by the same name
+randomfiles=($randomfiles)  # split the `randomfiles` string into an array by the same name
 IFS=$SAVEIFS                # Restore original IFS
 
 # Get aspect ratio of videos
