@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+#set -x
+# This prints the timer format that I use. Run it to to print itself or add code to time something
+
+
+Timer_Name="MyLabel"       # Name the segments being times
+Decimal_Points=9           # Decimals to return, Max 9
+
+
+                                        start=$(($(date +%s%N)))
+# ===============================================================
+
+
+
+# Times everything in here
+cat "$BASH_SOURCE" | perl -077 -pe 's/^(#echo|#set|# Logic|cat "$BASH_SOURCE).*\n{1,2}//gm'
+# Times everything in here
+
+
+
+# ===============================================================
+                                         end=$(($(date +%s%N)))
+# Logic
+timeget=$(( $end-$start ))
+#echo "\$timeget=$timeget"
+
+timeget_length=$(expr length "$timeget")
+#echo "\$timeget_length=$timeget_length"
+
+pad_length="$((   18-$timeget_length      ))"
+#echo "\$pad_length=$pad_length"
+
+pad_zeroes=$(for i in $(seq 1 $pad_length); do echo -n "0"; done)
+#echo "\$pad_zeroes=$pad_zeroes"
+
+time_padded="$pad_zeroes$timeget"
+#echo "\$time_padded=$time_padded"
+
+padded_first_nine="$(expr substr "$time_padded" 1 9 )"
+#echo "\$padded_first_nine=$padded_first_nine"
+
+cut_len_first_line="$(( $pad_length+1 ))"
+#echo "\$cut_len_first_line=$cut_len_first_line"
+
+trimmed_first_nine=$(cut -c $cut_len_first_line- <<<"$padded_first_nine")
+#echo "\$trimmed_first_nine=$trimmed_first_nine"
+
+last_nine="$(echo ."${time_padded:9}")"
+#echo "\$last_nine=$last_nine"
+
+cut_args_last_nine="1-$(( $Decimal_Points+1  ))"
+#echo "\$cut_args_last_nine=$cut_args_last_nine"
+
+cut_last_nine="$(cut -c $cut_args_last_nine <<<"$last_nine")"
+#echo "\$cut_last_nine=$cut_last_nine"
+echo " "
+echo -e "\n\n\n"
+echo "$Timer_Name / $trimmed_first_nine$cut_last_nine seconds"
+echo -e "\n\n\n"
