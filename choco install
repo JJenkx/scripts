@@ -50,3 +50,8 @@ vscode-powershell
 wget
 winaero-tweaker
 windirstat
+
+adb alacritty alacritty.install awk beaker calibre ChocolateyGUI chocolateygui crystaldiskinfo crystaldiskinfo.portable docker-cli docker-compose docker-desktop dual-monitor-tools dupeguru Everything ffmpeg foobar2000 freeplane gawk gimp git git.install googleearth grep grepwin gzip infekt InkScape libreoffice-fresh lockhunter lxrunoffline lyx mediainfo miktex miktex.install mpv mpv.install naps2 naps2.install neovim nodejs nodejs.install obs-studio obs-studio.install opencodecs OpenOffice openvpn pandoc pip putty putty.portable pwgen pwgen.install python3 sed sharex simplewall simplewall.install spotify stunnel thunderbird treesizefree veracrypt virtualbox vlc vlc.install Wget windirstat WinMerge winmerge winmerge wireshark wizmouse wiztree wpd
+
+choco uninstall youtube-dl adb alacritty alacritty.install awk beaker calibre ChocolateyGUI chocolateygui crystaldiskinfo crystaldiskinfo.portable docker-cli docker-compose docker-desktop dual-monitor-tools dupeguru Everything ffmpeg foobar2000 freeplane gawk gimp git git.install googleearth grep grepwin gzip infekt InkScape libreoffice-fresh lockhunter lxrunoffline lyx mediainfo miktex miktex.install mpv mpv.install naps2 naps2.install neovim nodejs nodejs.install obs-studio obs-studio.install opencodecs OpenOffice openvpn pandoc pip putty putty.portable pwgen pwgen.install python3 sed sharex simplewall simplewall.install spotify stunnel thunderbird treesizefree veracrypt virtualbox vlc vlc.install Wget windirstat WinMerge winmerge winmerge wireshark wizmouse wiztree wpd
+wiztree
