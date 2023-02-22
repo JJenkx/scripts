@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# Return mpv watch history newest to oldest. Need line "write-filename-in-watch-later-config=yes" in mpv.conf
+
+WATCH_LATER_DIR='/home/jjenkx/.config/mpv/watch_later/'
+HOW_MANY_TO_RETURN=1000
+cat $(find "$WATCH_LATER_DIR" -type f -printf "%T@ %p\n" \
+| sort \
+| cut -c23- \
+| tail -$HOW_MANY_TO_RETURN) \
+\
+| perl -0777 -pe 's/^[^#].*\n|# (.+\/)(.*)/'\''$1$2'\''\n$2/gm' \
+| rg \
+    --colors 'match:none' \
+    --colors 'match:fg:0,200,0' \
+    --colors 'match:bg:0,0,0' \
+    --colors 'match:style:bold' \
+    -B1 -P "^[^'\/].*" 
+unset WATCH_LATER_DIR
