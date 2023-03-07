@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Convert webp to jpg if static or gif/mp4 if animated
 # Pads animated webp to avoid "libx264 not divisible by 2 error"
-# Deps Arch: sudo pacman -S imagemagick libwebp parallel ripgrep
+# Deps imagemagick libwebp parallel rg
 
 # Usage assuming saved as convertwebp
 # convertwebp             # Will convert all webp in current dir to jpeg or mp4 and gif if animated
