@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+
+# Strings to match
+streets="$(cat /home/jjenkx/ventoy/CENSORED/CENSORED.streets)"
+custnames="$(cat /home/jjenkx/ventoy/CENSORED/CENSORED.cust.names)"
+parent_file_of_search_terms="/home/jjenkx/ventoy/CENSORED/AP_Vendor.CENSORED.csv"
+
+# File to grep for matches
+global_file="/home/jjenkx/ventoy/CENSORED/Vendors/Global.csv"
+
+# Write results to file
+outfile="/home/jjenkx/Documents/results.txt"
+
+
+SAVEIFS=$IFS
+IFS=$'\n'
+
+streets=($streets)
+custnames=($custnames)
+
+IFS=$SAVEIFS
+
+for (( i=0; i<${#streets[@]}; i++ )); do
+    pattern="${streets[$i]}"
+    pattern_parent_file="$( rg -i "$pattern" "$parent_file_of_search_terms" )"
+    results="$( ugrep -i -I --max-depth=1 -Z+~3 --sort=best "$pattern" "$global_file" | head -n 1 )"
+    len=$(wc -c <<< "$results")
+    if [ $len -gt 1 ]; then
+        echo "$pattern_parent_file"
+        echo "$results"
+        echo
+    fi
+done > "$outfile"
+
+for (( i=0; i<${#custnames[@]}; i++ )); do
+    pattern="${custnames[$i]}"
+    pattern_parent_file="$( rg -i "$pattern" "$parent_file_of_search_terms" )"
+    results="$( ugrep -i -I --max-depth=1 -Z+~3 --sort=best "$pattern" "$global_file" | head -n 1 )"
+    len=$(wc -c <<< "$results")
+    if [ $len -gt 1 ]; then
+        echo "$pattern_parent_file"
+        echo "$results"
+        echo
+    fi
+done >> "$outfile"
