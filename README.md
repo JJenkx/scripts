@@ -17,14 +17,26 @@ cp ~/.zshrc ~/.zshrc$(date +%Y%m%d%H%M%S%N).bak ; wget -O- -q "https://github.co
 
 ```
 
-scripts='https://raw.githubusercontent.com/JJenkx/Personal/main/.zshrc
+scripts='https://raw.githubusercontent.com/JJenkx/Personal/main/.zshrcscripts='https://raw.githubusercontent.com/JJenkx/Personal/main/.zshrc
 https://raw.githubusercontent.com/JJenkx/Personal/main/backupplasmadesktop.sh
 https://raw.githubusercontent.com/JJenkx/Personal/main/CIDRtoIP.sh
+https://raw.githubusercontent.com/JJenkx/Personal/main/convertwebp
 https://raw.githubusercontent.com/JJenkx/Personal/main/gclone.sh
+https://raw.githubusercontent.com/JJenkx/Personal/main/hwall
+https://raw.githubusercontent.com/JJenkx/Personal/main/manx
+https://raw.githubusercontent.com/JJenkx/Personal/main/mpv_randomwall
+https://raw.githubusercontent.com/JJenkx/Personal/main/mpvhist
+https://raw.githubusercontent.com/JJenkx/Personal/main/namekill
+https://raw.githubusercontent.com/JJenkx/Personal/main/plex_dl
+https://raw.githubusercontent.com/JJenkx/Personal/main/plex_dl_list
+https://raw.githubusercontent.com/JJenkx/Personal/main/pw
+https://raw.githubusercontent.com/JJenkx/Personal/main/randomplay
 https://raw.githubusercontent.com/JJenkx/Personal/main/restoreplasmadesktop.sh
 https://raw.githubusercontent.com/JJenkx/Personal/main/searchstackoverflowdatadump.sh
 https://raw.githubusercontent.com/JJenkx/Personal/main/searchwikipedia.sh
-https://raw.githubusercontent.com/JJenkx/Personal/main/tts.sh'
+https://raw.githubusercontent.com/JJenkx/Personal/main/timer
+https://raw.githubusercontent.com/JJenkx/Personal/main/tts.sh
+https://raw.githubusercontent.com/JJenkx/Personal/main/vwall'
 cat<<< "$scripts" | parallel -j 8 wget -O $HOME/.local/scripts/{/} {}
 
 ```
