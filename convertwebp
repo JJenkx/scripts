@@ -40,7 +40,8 @@ filelist=($filelist)
 # Get files that haven't been converted by checking for converted files
 to_convert="$(for (( i=0; i<${#filelist[@]}; i++ )); do
   strip_webp="${filelist[$i]%.webp}"
-  if [ ! -e "$strip_webp"_"$QUALITY_ONE""_percent.jpg" ] && [ ! -e "$strip_webp".gif ]; then
+  #if [ ! -e "$strip_webp"_"$QUALITY_ONE""_percent.jpg" ] && [ ! -e "$strip_webp".gif ]; then
+  if [[ ( ! -e "$strip_webp"_"$QUALITY_ONE""_percent.jpg" || ! -e "$strip_webp"_"$QUALITY_TWO""_percent.jpg" ) && ( ! -e "$strip_webp".gif || ! -e "$strip_webp".mp4 ) ]]; then
     echo "${filelist[$i]}"
   fi
 done)"
@@ -93,6 +94,3 @@ if [[ "$isanimated" == "Features present: animation transparency" ]]; then
         dwebp '{}' -o - | convert - -quality $QUALITY_TWO% "$jpg_out_quality_two"    # pipe to convert for filesize reduction
 fi
 '
-unset DIR
-unset QUALITY_ONE
-unset QUALITY_TWO
