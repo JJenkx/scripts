@@ -1,66 +1,83 @@
 #!/usr/bin/env bash
 # Convert webp to jpg if static or gif/mp4 if animated
 # Pads animated webp to avoid "libx264 not divisible by 2 error"
-# Deps imagemagick libwebp parallel rg
+# Deps imagemagick libwebp parallel
 
 # Usage assuming saved as convertwebp
 # convertwebp             # Will convert all webp in current dir to jpeg or mp4 and gif if animated
 # convertwebp /some/dir/  # Same but on specified dir
 # convertwebp /some/file  # Same but on specified file
 
-# Set MY_DWEBP_OUTDIR as hard path. No links like "$HOME" Etc.
-export MY_DWEBP_OUTDIR='/home/jjenkx/Pictures/WebpConverted/'
-
 ######### Set jpg quality. There will be 2 outputs one of each quality setting
 #          0-100 percent
 export     QUALITY_ONE=35
 export     QUALITY_TWO=75
 
+find_args=(-maxdepth 1 -type f -regextype posix-extended -iregex '.*\.(webp)$')
 
-
-
-
-find_args=(-maxdepth 1 -type f -regextype posix-extended -iregex '.*\.(webp)$' -print0)
-
-dir="$PWD"
+export DIR="$PWD"
+# Add / to end of specified path if it is a directory and / is not at the end
 if [[ -d "$@" ]]; then
-    dir="$@"
-    echo "Dir $@"
+    if [[ "$@" != */ ]]; then
+        DIR="$@/"
+    else
+        DIR="$@"
+    fi
+    echo "DIR $@"
 else
     if [[ -f "$@" ]]; then
-        dir="$@"
+        DIR="$@"
         echo "File $@"
     fi
 fi
 
-mkdir -p "$MY_DWEBP_OUTDIR"
+filelist="$(  find "$DIR" "${find_args[@]}"  )"
 
-find "$dir" "${find_args[@]}" | parallel -0 -j+0 --eta --bar '
-jpg_out_quality_one=$(echo "$MY_DWEBP_OUTDIR"{/.}_"$QUALITY_ONE"_percent.jpg)
-jpg_out_quality_two=$(echo "$MY_DWEBP_OUTDIR"{/.}_"$QUALITY_TWO"_percent.jpg)
-png_out=$(echo "$MY_DWEBP_OUTDIR"{/.}.ffmpeg.png)
-gif_out=$(echo "$MY_DWEBP_OUTDIR"{/.}.gif)
-mp4_out=$(echo "$MY_DWEBP_OUTDIR"{/.}.mp4)
-isanimated="$(webpmux -info {} | rg animation)"
+SAVEIFS=$IFS
+IFS=$'\n'
+filelist=($filelist)
+
+# Get files that haven't been converted by checking for converted files
+to_convert="$(for (( i=0; i<${#filelist[@]}; i++ )); do
+  strip_webp="${filelist[$i]%.webp}"
+  if [ ! -e "$strip_webp"_"$QUALITY_ONE""_percent.jpg" ] && [ ! -e "$strip_webp".gif ]; then
+    echo "${filelist[$i]}"
+  fi
+done)"
+
+# Check if there are files to convert
+if [ -z "$to_convert" ]; then
+  echo "There are no new files to process"
+  exit 1
+fi
+
+IFS=$SAVEIFS
+
+# Run conversion with parallel
+cat <<< "$to_convert" | parallel -j+0 --eta --bar '
+jpg_out_quality_one=$(echo "$DIR"{/.}_"$QUALITY_ONE"_percent.jpg)
+jpg_out_quality_two=$(echo "$DIR"{/.}_"$QUALITY_TWO"_percent.jpg)
+png_out=$(echo "$DIR"{/.}.ffmpeg.png)
+gif_out=$(echo "$DIR"{/.}.gif)
+mp4_out=$(echo "$DIR"{/.}.mp4)
+isanimated="$(webpmux -info {} | grep animation)"
 if [[ "$isanimated" == "Features present: animation transparency" ]]; then
     convert '{}' "$gif_out"
     # Begin mp4 conversion handler to pad geometry 1 pixel to x and y if either are odd to avoid "libx264 not divisible by 2 error"
     geometry_x=$(webpmux -info '{}' | head -n 1 | tr "[:space:]" "\n" | tail -3 | head -n 1)
     geometry_y=$(webpmux -info '{}' | head -n 1 | tr "[:space:]" "\n" | tail -3 | tail -1)
-    just_x=$geometry_x
-    just_y=$geometry_y
-    if [ $(( $just_x  % 2)) -ne 0 ] | [ $(( $just_y  % 2)) -ne 0 ]; then
-        if [ $(( $just_x  % 2)) -ne 0 ] && [ $(( $just_y  % 2)) -ne 0 ]; then
+    if [ $(( $geometry_x  % 2)) -ne 0 ] | [ $(( $geometry_y  % 2)) -ne 0 ]; then
+        if [ $(( $geometry_x  % 2)) -ne 0 ] && [ $(( $geometry_y  % 2)) -ne 0 ]; then
             splice_geometry="1x1"
             gravity_direction="northeast"
             convert -splice $splice_geometry -gravity $gravity_direction '{}' "$mp4_out"
         else 
-            if [ $(( $just_x  % 2)) -ne 0 ]; then
+            if [ $(( $geometry_x  % 2)) -ne 0 ]; then
                 splice_geometry="1x0"
                 gravity_direction="east"
                 convert -splice $splice_geometry -gravity $gravity_direction '{}' "$mp4_out"
             else
-                if [ $(( $just_y  % 2)) -ne 0 ]; then
+                if [ $(( $geometry_y  % 2)) -ne 0 ]; then
                     splice_geometry="0x1"
                     gravity_direction="north"
                     convert -splice $splice_geometry -gravity $gravity_direction '{}' "$mp4_out"
@@ -76,15 +93,6 @@ if [[ "$isanimated" == "Features present: animation transparency" ]]; then
         dwebp '{}' -o - | convert - -quality $QUALITY_TWO% "$jpg_out_quality_two"    # pipe to convert for filesize reduction
 fi
 '
-unset MY_DWEBP_OUTDIR
+unset DIR
 unset QUALITY_ONE
 unset QUALITY_TWO
-
-
-
-
-# Notes: Undesireable attempts
-#   ffmpeg -y -i '{}' -q:v 1 "$png_out"                                          # PNG files are too big with ffmpeg
-#   dwebp -v '{}' -o "$png_out"                                                  # PNG files are too big with dwebp
-#   dwebp -v '{}' -o "$MY_DWEBP_OUTDIR""{/.}.jpg"                                # jpg files same size as png if not run through "convert"
-#   dwebp '{}' -o - | convert - -quality 15% "$MY_DWEBP_OUTDIR"{/.}.png          # dwebp png pipe to convert, barely smaller file
