@@ -8,43 +8,53 @@
 # convertwebp /some/dir/  # Same but on specified dir
 # convertwebp /some/file  # Same but on specified file
 
-######### Set jpg quality. There will be 2 outputs one of each quality setting
-#          0-100 percent
-export     QUALITY_ONE=35
-export     QUALITY_TWO=75
+
+JPG_SUFFIX="_percent.jpg"
+#           Set jpg quality. There will be 2 outputs one of each quality setting
+#           0-100 percent
+QUALITY_ONE=35
+QUALITY_TWO=75
+
 
 find_args=(-maxdepth 1 -type f -regextype posix-extended -iregex '.*\.(webp)$')
 
-export DIR="$PWD"
-# Add / to end of specified path if it is a directory and / is not at the end
+DIR="$PWD/"
+# If directory specified, ensure "/" is included at end of path
 if [[ -d "$@" ]]; then
     if [[ "$@" != */ ]]; then
         DIR="$@/"
     else
         DIR="$@"
     fi
-    echo "DIR $@"
+    echo "DIR $DIR"
 else
     if [[ -f "$@" ]]; then
         DIR="$@"
-        echo "File $@"
+        echo "File $DIR"
     fi
 fi
 
 filelist="$(  find "$DIR" "${find_args[@]}"  )"
 
+# Convert filelist to array
 SAVEIFS=$IFS
 IFS=$'\n'
 filelist=($filelist)
+IFS=$SAVEIFS
 
 # Get files that haven't been converted by checking for converted files
-to_convert="$(for (( i=0; i<${#filelist[@]}; i++ )); do
-  strip_webp="${filelist[$i]%.webp}"
-  #if [ ! -e "$strip_webp"_"$QUALITY_ONE""_percent.jpg" ] && [ ! -e "$strip_webp".gif ]; then
-  if [[ ( ! -e "$strip_webp"_"$QUALITY_ONE""_percent.jpg" || ! -e "$strip_webp"_"$QUALITY_TWO""_percent.jpg" ) && ( ! -e "$strip_webp".gif || ! -e "$strip_webp".mp4 ) ]]; then
-    echo "${filelist[$i]}"
-  fi
-done)"
+to_convert="$( 
+  for (( i=0; i<${#filelist[@]}; i++ )); do
+    webp_basename="${filelist[$i]%.webp}"
+    if [[ ( ! -e "$webp_basename"_"$QUALITY_ONE""$JPG_SUFFIX" || ! -e "$webp_basename"_"$QUALITY_TWO""$JPG_SUFFIX" ) 
+    && ( ! -e "$webp_basename".gif || ! -e "$webp_basename".mp4 ) ]]; then
+      echo "${filelist[$i]}"
+    fi
+  done
+)"
+
+numLines=$(echo "$to_convert" | wc -l)
+echo "Processing: $numLines files"
 
 # Check if there are files to convert
 if [ -z "$to_convert" ]; then
@@ -52,12 +62,16 @@ if [ -z "$to_convert" ]; then
   exit 1
 fi
 
-IFS=$SAVEIFS
+# Export vars needed for parallel
+export DIR
+export JPG_SUFFIX
+export QUALITY_ONE
+export QUALITY_TWO
 
 # Run conversion with parallel
 cat <<< "$to_convert" | parallel -j+0 --eta --bar '
-jpg_out_quality_one=$(echo "$DIR"{/.}_"$QUALITY_ONE"_percent.jpg)
-jpg_out_quality_two=$(echo "$DIR"{/.}_"$QUALITY_TWO"_percent.jpg)
+jpg_out_quality_one=$(echo "$DIR"{/.}_"$QUALITY_ONE""$JPG_SUFFIX")
+jpg_out_quality_two=$(echo "$DIR"{/.}_"$QUALITY_TWO""$JPG_SUFFIX")
 png_out=$(echo "$DIR"{/.}.ffmpeg.png)
 gif_out=$(echo "$DIR"{/.}.gif)
 mp4_out=$(echo "$DIR"{/.}.mp4)
