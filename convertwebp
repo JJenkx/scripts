@@ -59,8 +59,7 @@ if [ -z "$to_convert" ]; then
   exit 1
 fi
 
-numLines=$(echo "$to_convert" | wc -l)
-echo "Processing: $numLines files"
+echo "Processing: "$(wc -l <<< "$to_convert")" files"
 
 # Export vars needed for parallel
 export DIR
