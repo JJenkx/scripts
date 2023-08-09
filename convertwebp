@@ -19,7 +19,7 @@ QUALITY_TWO=75
 find_args=(-maxdepth 1 -type f -regextype posix-extended -iregex '.*\.(webp)$')
 
 DIR="$PWD/"
-# If directory specified, ensure "/" is included at end of path
+# If directory specified, add "/" to end of path of needed
 if [[ -d "$@" ]]; then
     if [[ "$@" != */ ]]; then
         DIR="$@/"
