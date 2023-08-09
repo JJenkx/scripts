@@ -53,14 +53,14 @@ to_convert="$(
   done
 )"
 
-numLines=$(echo "$to_convert" | wc -l)
-echo "Processing: $numLines files"
-
 # Check if there are files to convert
 if [ -z "$to_convert" ]; then
   echo "There are no new files to process"
   exit 1
 fi
+
+numLines=$(echo "$to_convert" | wc -l)
+echo "Processing: $numLines files"
 
 # Export vars needed for parallel
 export DIR
