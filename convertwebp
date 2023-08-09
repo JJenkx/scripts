@@ -26,13 +26,14 @@ if [[ -d "$@" ]]; then
     else
         DIR="$@"
     fi
-    echo "DIR $DIR"
 else
     if [[ -f "$@" ]]; then
         DIR="$@"
         echo "File $DIR"
     fi
 fi
+
+echo "$DIR"
 
 filelist="$(  find "$DIR" "${find_args[@]}"  )"
 
