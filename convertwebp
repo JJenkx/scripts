@@ -71,7 +71,6 @@ export QUALITY_TWO
 cat <<< "$to_convert" | parallel -j+0 --eta --bar '
 jpg_out_quality_one=$(echo "$DIR"{/.}_"$QUALITY_ONE""$JPG_SUFFIX")
 jpg_out_quality_two=$(echo "$DIR"{/.}_"$QUALITY_TWO""$JPG_SUFFIX")
-png_out=$(echo "$DIR"{/.}.ffmpeg.png)
 gif_out=$(echo "$DIR"{/.}.gif)
 mp4_out=$(echo "$DIR"{/.}.mp4)
 
@@ -109,6 +108,6 @@ else
 
     dwebp '{}' -o - | convert - -quality $QUALITY_ONE% "$jpg_out_quality_one"    # pipe to convert for filesize reduction
     dwebp '{}' -o - | convert - -quality $QUALITY_TWO% "$jpg_out_quality_two"    # pipe to convert for filesize reduction
-    
+
 fi
 '
