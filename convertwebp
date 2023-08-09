@@ -74,36 +74,41 @@ jpg_out_quality_two=$(echo "$DIR"{/.}_"$QUALITY_TWO""$JPG_SUFFIX")
 png_out=$(echo "$DIR"{/.}.ffmpeg.png)
 gif_out=$(echo "$DIR"{/.}.gif)
 mp4_out=$(echo "$DIR"{/.}.mp4)
-isanimated="$(webpmux -info {} | grep animation)"
+
+info="$(  webpmux -info '{}'  )"
+
+isanimated="$(  grep animation <<< "$info"  )"
+
 if [[ "$isanimated" == "Features present: animation transparency" ]]; then
+
     convert '{}' "$gif_out"
-    # Begin mp4 conversion handler to pad geometry 1 pixel to x and y if either are odd to avoid "libx264 not divisible by 2 error"
-    geometry_x=$(webpmux -info '{}' | head -n 1 | tr "[:space:]" "\n" | tail -3 | head -n 1)
-    geometry_y=$(webpmux -info '{}' | head -n 1 | tr "[:space:]" "\n" | tail -3 | tail -1)
-    if [ $(( $geometry_x  % 2)) -ne 0 ] | [ $(( $geometry_y  % 2)) -ne 0 ]; then
-        if [ $(( $geometry_x  % 2)) -ne 0 ] && [ $(( $geometry_y  % 2)) -ne 0 ]; then
-            splice_geometry="1x1"
-            gravity_direction="northeast"
-            convert -splice $splice_geometry -gravity $gravity_direction '{}' "$mp4_out"
-        else 
-            if [ $(( $geometry_x  % 2)) -ne 0 ]; then
-                splice_geometry="1x0"
-                gravity_direction="east"
-                convert -splice $splice_geometry -gravity $gravity_direction '{}' "$mp4_out"
-            else
-                if [ $(( $geometry_y  % 2)) -ne 0 ]; then
-                    splice_geometry="0x1"
-                    gravity_direction="north"
-                    convert -splice $splice_geometry -gravity $gravity_direction '{}' "$mp4_out"
-                fi
-            fi
-        fi
+
+    # Begin mp4 conversion handler to pad geometry 1 pixel to x and y if either 
+    # are odd to avoid "libx264 not divisible by 2 error"
+
+    geometry_x=$(  cat <<< "$info" | head -n 1 | tr "[:space:]" "\n" | tail -3 | head -n 1  )
+    geometry_y=$(  cat <<< "$info" | head -n 1 | tr "[:space:]" "\n" | tail -3 | tail -1  )
+
+    if [ $((geometry_x % 2)) -ne 0 ] && [ $((geometry_y % 2)) -ne 0 ]; then
+        splice_geometry="1x1"
+        gravity_direction="northeast"
+    elif [ $((geometry_x % 2)) -ne 0 ]; then
+        splice_geometry="1x0"
+        gravity_direction="east"
+    elif [ $((geometry_y % 2)) -ne 0 ]; then
+        splice_geometry="0x1"
+        gravity_direction="north"
     else
         convert '{}' "$mp4_out"
+        exit
     fi
-    # End mp4 conversion handler to pad geometry 1 pixel to x and y if either are odd to avoid "libx264 not divisible by 2 error"
-    else
-        dwebp '{}' -o - | convert - -quality $QUALITY_ONE% "$jpg_out_quality_one"    # pipe to convert for filesize reduction
-        dwebp '{}' -o - | convert - -quality $QUALITY_TWO% "$jpg_out_quality_two"    # pipe to convert for filesize reduction
+    convert -splice $splice_geometry -gravity $gravity_direction '{}' "$mp4_out"
+    # End mp4 conversion handler
+
+else
+
+    dwebp '{}' -o - | convert - -quality $QUALITY_ONE% "$jpg_out_quality_one"    # pipe to convert for filesize reduction
+    dwebp '{}' -o - | convert - -quality $QUALITY_TWO% "$jpg_out_quality_two"    # pipe to convert for filesize reduction
+    
 fi
 '
