@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+url="$@"
+filename="$(  curl -i "$url" 2>/dev/null | head | sed -n 's/.*filename="\([^"]*\)".*/\1/p'  )"
+format_filename="$(  cat <<< "$filename" | sed 's/[][(). ]\+/\./g' | sed 's/\.-/-/g' | sed 's/\(Remux\|WEBDL\)-/\1./g'  )"
+aria2c \
+  --allow-piece-length-change=true \
+  --check-certificate=false \
+  --console-log-level=notice \
+  --content-disposition-default-utf8=true \
+  --continue=true \
+  --disk-cache=8192 \
+  --download-result=full \
+  --file-allocation=none \
+  --lowest-speed-limit=4M \
+  --max-concurrent-downloads=1 \
+  --max-connection-per-server=1 \
+  --max-resume-failure-tries=64 \
+  --max-file-not-found=64 \
+  --max-tries=64 \
+  --min-split-size=5M \
+  --out="$format_filename" \
+  --piece-length=5M \
+  --realtime-chunk-checksum=true \
+  --retry-on-400=true \
+  --retry-on-403=true \
+  --retry-on-406=true \
+  --retry-on-unknown=true \
+  --retry-wait=120 \
+  --split=1 \
+  --summary-interval=180 \
+  --stream-piece-selector=geom \
+  --timeout=10 \
+  --user-agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.#55 Safari/537.36' \
+  "$url"
