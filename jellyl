@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
-url_list="$( cat /home/jjenkx/.local/input_files/jelly_dl.txt )" 
+url_list_file="/home/jjenkx/.local/input_files/jelly_dl.txt"
+
+url_list="$( cat "$url_list_file" )" 
 
 SAVEIFS=$IFS          # Save current IFS (Internal Field Separator)
 IFS=$'\n'             # Change IFS to newline char
@@ -42,3 +44,5 @@ do
     --user-agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36' \
   "${url_list[$i]}"
 done
+
+echo -n "" > "$url_list_file"
