@@ -1,17 +1,33 @@
 #!/usr/bin/env bash
-# Play 4 randomly selected videos that have portrait format in mpv
-filetypes="mkv|mp4"         # Only match these filetypes
+# Play 8 randomly selected videos that have portrait format in mpv
+# dependencies: mpv mediainfo bc
+# set -x
+filetypes="mkv|mp4|ts"      # Only match these filetypes
 num_files=64                # Number random files for mpv pool
 directory_depth=1           # How many directories deep to look for video files
 resolution="610:1080"       # Resolution of each wall segment
+archive=seen.txt            # Filename to store record of files seen
+move_files_to_seen_dir=no   # yes=yes, anything else including blank is no
 
-dir="$PWD"
+# In $archive file, use prefixes to manipulate files
+# prefix "!" delete file
+# prefix "@" moves file to $move_to_marked
+move_to_marked="/some/dir/"
+
+# todo 
+# increase num_files automatically if needed
+# Add wall selector
+# Add quantity selector
+# Adjust resolution based on wall
+
+# Set current directory if script called without specifying a path. Set specified path if specified
+dir="$PWD/"
 if [[ ! -z $@ ]]; then
-    dir="$@"
+  dir="$@"
 fi
 
 # Find matching files in current dir
-files="$(find "$dir" -maxdepth $directory_depth -type f -regextype posix-extended -iregex "^.*(\.$filetypes)$")"
+files="$(find "$dir" -maxdepth $directory_depth -type f -regextype posix-extended -iregex "^.*(\.$filetypes)$" )"
 
 # Pick count $num_files files at random
 randomfiles="$(cat <<<"$files" | shuf -n $num_files)"
@@ -40,219 +56,257 @@ vertical_vids=($vertical_vids)
 horizontal_vids=($horizontal_vids)
 IFS=$SAVEIFS
 
-# Assign randomly selected vertical files to var
-file1="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}"
-file2="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}"
-file3="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}"
-file4="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}"
+# Assign randomly selected vertical files to vars
+file1="${vertical_vids[ $RANDOM % "${#vertical_vids[@]}" ]}"
+# Remove $file1 from vertical_vids array
+vertical_vids=( "${vertical_vids[@]/"$file1"}" )
+# Remove empty array element that resulted from removing $file1
+withoutemptyelements=()
+for i in "${vertical_vids[@]}"; do
+  if [[ "$i" != "" ]]; then
+    withoutemptyelements+=("$i")
+  fi
+done
+# Set vertical_vids array back to an array without empty elements
+vertical_vids=("${withoutemptyelements[@]}")
 
 
-# Check if random selection is dupe of another random selection and if so, pick another at random
-case "$file1" in
-  "$file2" | "$file3" | "$file4" )
-    file1="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}"
-#    echo "file1 check #1 was dupe"
-    ;;
-  * )
-esac
+file2="${vertical_vids[ $RANDOM % "${#vertical_vids[@]}" ]}"
+vertical_vids=( "${vertical_vids[@]/"$file2"}" )
+withoutemptyelements=()
+for i in "${vertical_vids[@]}"; do
+  if [[ "$i" != "" ]]; then
+    withoutemptyelements+=("$i")
+  fi
+done
+vertical_vids=("${withoutemptyelements[@]}")
 
-case "$file2" in
-  "$file1" | "$file3" | "$file4" )
-    file2="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}"
-#    echo "file2 check #1 was dupe"
-    ;;
-  * )
-esac
+file3="${vertical_vids[ $RANDOM % "${#vertical_vids[@]}" ]}"
+vertical_vids=( "${vertical_vids[@]/"$file3"}" )
+withoutemptyelements=()
+for i in "${vertical_vids[@]}"; do
+  if [[ "$i" != "" ]]; then
+    withoutemptyelements+=("$i")
+  fi
+done
+vertical_vids=("${withoutemptyelements[@]}")
 
-case "$file3" in
-  "$file1" | "$file2" | "$file4" )
-    file3="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}"
-#    echo "file3 check #1 was dupe"
-    ;;
-  * )
-esac
+file4="${vertical_vids[ $RANDOM % "${#vertical_vids[@]}" ]}"
+vertical_vids=( "${vertical_vids[@]/"$file4"}" )
+withoutemptyelements=()
+for i in "${vertical_vids[@]}"; do
+  if [[ "$i" != "" ]]; then
+    withoutemptyelements+=("$i")
+  fi
+done
+vertical_vids=("${withoutemptyelements[@]}")
 
-case "$file4" in
-  "$file1" | "$file2" | "$file3" )
-    file4="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}"
-#    echo "file4 check #1 was dupe"
-    ;;
-  * )
-esac
+file5="${vertical_vids[ $RANDOM % "${#vertical_vids[@]}" ]}"
+vertical_vids=( "${vertical_vids[@]/"$file5"}" )
+withoutemptyelements=()
+for i in "${vertical_vids[@]}"; do
+  if [[ "$i" != "" ]]; then
+    withoutemptyelements+=("$i")
+  fi
+done
+vertical_vids=("${withoutemptyelements[@]}")
 
+file6="${vertical_vids[ $RANDOM % "${#vertical_vids[@]}" ]}"
+vertical_vids=( "${vertical_vids[@]/"$file6"}" )
+withoutemptyelements=()
+for i in "${vertical_vids[@]}"; do
+  if [[ "$i" != "" ]]; then
+    withoutemptyelements+=("$i")
+  fi
+done
+vertical_vids=("${withoutemptyelements[@]}")
 
-# Check if random selection is dupe of another random selection (2nd round) and if so, pick another at random
-case "$file1" in
-  "$file2" | "$file3" | "$file4" )
-    file1="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}"
-#    echo "file1 check #2 was dupe"
-    ;;
-  * )
-esac
+file7="${vertical_vids[ $RANDOM % "${#vertical_vids[@]}" ]}"
+vertical_vids=( "${vertical_vids[@]/"$file7"}" )
+withoutemptyelements=()
+for i in "${vertical_vids[@]}"; do
+  if [[ "$i" != "" ]]; then
+    withoutemptyelements+=("$i")
+  fi
+done
+vertical_vids=("${withoutemptyelements[@]}")
 
-case "$file2" in
-  "$file1" | "$file3" | "$file4" )
-    file2="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}"
-#    echo "file2 check #2 was dupe"
-    ;;
-  * )
-esac
-
-case "$file3" in
-  "$file1" | "$file2" | "$file4" )
-    file3="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}"
-#    echo "file3 check #2 was dupe"
-    ;;
-  * )
-esac
-
-case "$file4" in
-  "$file1" | "$file2" | "$file3" )
-    file4="${vertical_vids[ $RANDOM % ${#vertical_vids[@]} ]}"
-#    echo "file4 check #2 was dupe"
-    ;;
-  * )
-esac
+file8="${vertical_vids[ $RANDOM % "${#vertical_vids[@]}" ]}"
+vertical_vids=( "${vertical_vids[@]/"$file8"}" )
+withoutemptyelements=()
+for i in "${vertical_vids[@]}"; do
+  if [[ "$i" != "" ]]; then
+    withoutemptyelements+=("$i")
+  fi
+done
+vertical_vids=("${withoutemptyelements[@]}")
 
 # Get length of files in miliseconds
 file1_length=$(mediainfo --Inform="Video;%Duration%" "$file1")
 file2_length=$(mediainfo --Inform="Video;%Duration%" "$file2")
 file3_length=$(mediainfo --Inform="Video;%Duration%" "$file3")
 file4_length=$(mediainfo --Inform="Video;%Duration%" "$file4")
+file5_length=$(mediainfo --Inform="Video;%Duration%" "$file5")
+file6_length=$(mediainfo --Inform="Video;%Duration%" "$file6")
+file7_length=$(mediainfo --Inform="Video;%Duration%" "$file7")
+file8_length=$(mediainfo --Inform="Video;%Duration%" "$file8")
 
 # Remove decimal from miliseconds
 file1_length=${file1_length%.*}
 file2_length=${file2_length%.*}
 file3_length=${file3_length%.*}
 file4_length=${file4_length%.*}
+file5_length=${file5_length%.*}
+file6_length=${file6_length%.*}
+file7_length=${file7_length%.*}
+file8_length=${file8_length%.*}
 
-# Save backup of file order for use in reasigning based on video length
-original_file1="$file1"
-original_file2="$file2"
-original_file3="$file3"
-original_file4="$file4"
+# List of filepaths with length preceding filename sorted highest length down
+length_filename_sorted_by_length="$( \
+printf "\
+$file1_length$file1\n \
+$file2_length$file2\n \
+$file3_length$file3\n \
+$file4_length$file4\n \
+$file5_length$file5\n \
+$file6_length$file6\n \
+$file7_length$file7\n \
+$file8_length $file8" \
+| sort -rn 
+)"
 
-# Assign video lengths to variables. First is longest, second is second longest, Etc.
-first=$(  echo "$file1_length $file2_length $file3_length $file4_length" | tr ' ' '\n' | sort -rn | head -1 )
-second=$( echo "$file1_length $file2_length $file3_length $file4_length" | tr ' ' '\n' | sort -rn | head -2 | tail -1 )
-third=$(  echo "$file1_length $file2_length $file3_length $file4_length" | tr ' ' '\n' | sort -rn | head -3 | tail -1 )
-fourth=$( echo "$file1_length $file2_length $file3_length $file4_length" | tr ' ' '\n' | sort -rn | head -4 | tail -1 )
+# Lists; filepaths and filelengths
+filepaths="$( echo "$length_filename_sorted_by_length" | sed 's/^[[:space:]]*[[:digit:]]*[[:space:]]*//gm' )"
+filelengths="$( echo "$length_filename_sorted_by_length" | sed 's/^[[:space:]]*\([0-9]*\).*/\1/gm' )"
 
-# Assign longest video to $file1
-case $first in
-  "$file1_length")
-    file1="$original_file1"
-    new_file1_length=$file1_length
-    ;;
-  "$file2_length")
-    file1="$original_file2"
-    new_file1_length=$file2_length
-    ;;
-  "$file3_length")
-    file1="$original_file3"
-    new_file1_length=$file3_length
-    ;;
-  "$file4_length")
-    file1="$original_file4"
-    new_file1_length=$file4_length
-    ;;
-  *)
-esac
-
-# Assign 2nd longest video to $file2
-case $second in
-  "$file1_length")
-    file2="$original_file1"
-    new_file2_length=$file1_length
-    ;;
-  "$file2_length")
-    file2="$original_file2"
-    new_file2_length=$file2_length
-    ;;
-  "$file3_length")
-    file2="$original_file3"
-    new_file2_length=$file3_length
-    ;;
-  "$file4_length")
-    file2="$original_file4"
-    new_file2_length=$file4_length
-    ;;
-  *)
-esac
-
-# Assign 3rd longest video to $file3
-case $third in
-  "$file1_length")
-    file3="$original_file1"
-    new_file3_length=$file1_length
-    ;;
-  "$file2_length")
-    file3="$original_file2"
-    new_file3_length=$file2_length
-    ;;
-  "$file3_length")
-    file3="$original_file3"
-    new_file3_length=$file3_length
-    ;;
-  "$file4_length")
-    file3="$original_file4"
-    new_file3_length=$file4_length
-    ;;
-  *)
-esac
-
-# Assign 4th longest video to $file4
-case $fourth in
-  "$file1_length")
-    file4="$original_file1"
-    new_file4_length=$file1_length
-    ;;
-  "$file2_length")
-    file4="$original_file2"
-    new_file4_length=$file2_length
-    ;;
-  "$file3_length")
-    file4="$original_file3"
-    new_file4_length=$file3_length
-    ;;
-  "$file4_length")
-    file4="$original_file4"
-    new_file4_length=$file4_length
-    ;;
-  *)
-esac
+# Lists to arrays
+OLD_IFS=$IFS
+IFS=$'\n'
+filepaths=($filepaths)
+filelengths=($filelengths)
+IFS=$OLD_IFS
 
 # Convert length miliseconds to length seconds
-file1_seconds=$(echo "scale=0; $new_file1_length/1000" | bc)
-file2_seconds=$(echo "scale=0; $new_file2_length/1000" | bc)
-file3_seconds=$(echo "scale=0; $new_file3_length/1000" | bc)
-file4_seconds=$(echo "scale=0; $new_file4_length/1000" | bc)
+file1_seconds=$(echo "scale=0; ${filelengths[0]}/1000" | bc)
+file2_seconds=$(echo "scale=0; ${filelengths[1]}/1000" | bc)
+file3_seconds=$(echo "scale=0; ${filelengths[2]}/1000" | bc)
+file4_seconds=$(echo "scale=0; ${filelengths[3]}/1000" | bc)
+file5_seconds=$(echo "scale=0; ${filelengths[4]}/1000" | bc)
+file6_seconds=$(echo "scale=0; ${filelengths[5]}/1000" | bc)
+file7_seconds=$(echo "scale=0; ${filelengths[6]}/1000" | bc)
+file8_seconds=$(echo "scale=0; ${filelengths[7]}/1000" | bc)
 
-# Print length seconds and filenames
-echo ""$file1_seconds"s $file1"
-echo ""$file2_seconds"s $file2"
-echo ""$file3_seconds"s $file3"
-echo ""$file4_seconds"s $file4"
+# Print to screen, lengths and filepaths
+if [[ $directory_depth -eq 1 ]] ; then
+  # Print length seconds and filenames with path separated
+  pad_parent=$(echo "$file1_seconds" | wc -c )
+  spaces="$(for i in $(seq 1 $pad_parent); do echo -n " "; done)"
+  echo "Parent:"
+  echo "$spaces"" ""$dir"
+  echo ""
+  echo "$file1_seconds"s  "|| 1  ""$(basename "${filepaths[0]}")"
+  echo "$file2_seconds"s  "|| 2  ""$(basename "${filepaths[1]}")"
+  echo "$file3_seconds"s  "|| 3  ""$(basename "${filepaths[2]}")"
+  echo "$file4_seconds"s  "|| 4  ""$(basename "${filepaths[3]}")"
+  echo "$file5_seconds"s  "|| 5  ""$(basename "${filepaths[4]}")"
+  echo "$file6_seconds"s  "|| 6  ""$(basename "${filepaths[5]}")"
+  echo "$file7_seconds"s  "|| 7  ""$(basename "${filepaths[6]}")"
+  echo "$file8_seconds"s  "|| 8  ""$(basename "${filepaths[7]}")"
+  echo " "
+else
+  # Print length seconds and filenames with path
+  echo "$file1_seconds"s  "|| 1  ""${filepaths[0]}"
+  echo "$file2_seconds"s  "|| 2  ""${filepaths[1]}"
+  echo "$file3_seconds"s  "|| 3  ""${filepaths[2]}"
+  echo "$file4_seconds"s  "|| 4  ""${filepaths[3]}"
+  echo "$file5_seconds"s  "|| 5  ""${filepaths[4]}"
+  echo "$file6_seconds"s  "|| 6  ""${filepaths[5]}"
+  echo "$file7_seconds"s  "|| 7  ""${filepaths[6]}"
+  echo "$file8_seconds"s  "|| 8  ""${filepaths[7]}"
+  echo ""
+fi
 
-# Play with mpv in 1x1x1x1
+
+# Move watched videos to seen folder if $move_files_to_seen_dir=yes
+if [ "$move_files_to_seen_dir" = "yes" ]; then
+  # Move files seen to dir seen
+  archive="$(echo "$dir""$archive")"
+  echo "archive=""$archive"
+  touch "$archive"
+  
+  seen="$(cat "$archive" | sort -u)"
+  SAVEIFS=$IFS
+  IFS=$'\n'
+  seen=($seen)
+  IFS=$SAVEIFS
+  
+  # Manually move or delete files
+  # Prefix filenames in archive file.
+  # Prefix "@" moves vid to specific folder set below.
+  # Prefix "!" deletes the file. Happens on next run
+  # Will send non prefixed files to "$dir""seen"
+  mkdir -p "$dir""seen"
+  for (( i=0; i<${#seen[@]}; i++ ))
+  do
+    if [[ "${seen[$i]}" == @* ]]; then
+      mv -n "${seen[$i]:1}" "$move_to_marked" 2> /dev/null
+    else
+      if [[ "${seen[$i]}" == !* ]]; then
+        rm "${seen[$i]:1}"
+      else
+        mv -n "${seen[$i]}" "$dir""seen" 2> /dev/null
+      fi
+    fi
+  done
+# Write current filepaths to $archive file after handling previous archive entries
+echo " "
+echo " "
+echo "${filepaths[0]}" > "$archive"
+echo "${filepaths[1]}" >> "$archive"
+echo "${filepaths[2]}" >> "$archive"
+echo "${filepaths[3]}" >> "$archive"
+echo "${filepaths[4]}" >> "$archive"
+echo "${filepaths[5]}" >> "$archive"
+echo "${filepaths[6]}" >> "$archive"
+echo -n "${filepaths[7]}" >> "$archive"
+echo " "
+echo " "
+fi
+
+# Play with mpv in 1x1
+#                  1x1
 setsid >/dev/null 2>&1 </dev/null \
 mpv \
 --audio=no \
---autofit=20% \
+--autofit=50% \
 --border=no \
---cache=yes \
+--vd-lavc-threads=64 \
+--cache=no \
+--start=5 \
 --geometry=50%:50% \
 --script-opts=autoload-disabled=yes \
 --watch-later-options-clr \
-"$file1" \
---external-file="$file2" \
---external-file="$file3" \
---external-file="$file4" \
---external-file="$file4" \
+"${filepaths[0]}" \
+--external-file="${filepaths[1]}" \
+--external-file="${filepaths[2]}" \
+--external-file="${filepaths[3]}" \
+--external-file="${filepaths[4]}" \
+--external-file="${filepaths[5]}" \
+--external-file="${filepaths[6]}" \
+--external-file="${filepaths[7]}" \
+--external-file="${filepaths[7]}" \
 --lavfi-complex="[vid1]setpts=floor(PTS*24)/24,scale=$resolution:force_original_aspect_ratio=1,pad=$resolution:(ow-iw)/2:(oh-ih)/2[v1];
 [vid2]setpts=floor(PTS*24)/24,scale=$resolution:force_original_aspect_ratio=1,pad=$resolution:(ow-iw)/2:(oh-ih)/2[v2];
 [vid3]setpts=floor(PTS*24)/24,scale=$resolution:force_original_aspect_ratio=1,pad=$resolution:(ow-iw)/2:(oh-ih)/2[v3];
 [vid4]setpts=floor(PTS*24)/24,scale=$resolution:force_original_aspect_ratio=1,pad=$resolution:(ow-iw)/2:(oh-ih)/2[v4];
-[v1] [v2] hstack [t1];
-[v3] [v4] hstack [t2];
-[t1] [t2] hstack [vo]" 2>&1 >/dev/null & 
+[vid5]setpts=floor(PTS*24)/24,scale=$resolution:force_original_aspect_ratio=1,pad=$resolution:(ow-iw)/2:(oh-ih)/2[v5];
+[vid6]setpts=floor(PTS*24)/24,scale=$resolution:force_original_aspect_ratio=1,pad=$resolution:(ow-iw)/2:(oh-ih)/2[v6];
+[vid7]setpts=floor(PTS*24)/24,scale=$resolution:force_original_aspect_ratio=1,pad=$resolution:(ow-iw)/2:(oh-ih)/2[v7];
+[vid8]setpts=floor(PTS*24)/24,scale=$resolution:force_original_aspect_ratio=1,pad=$resolution:(ow-iw)/2:(oh-ih)/2[v8];
+[v1] [v2] hstack [s1];
+[v3] [v4] hstack [s2];
+[s1] [s2] hstack [t1];
+[v5] [v6] hstack [s3];
+[v7] [v8] hstack [s4];
+[s3] [s4] hstack [t2];
+[t1] [t2] vstack [vo]" 2>&1 >/dev/null & 
