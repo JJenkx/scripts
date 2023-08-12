@@ -1,17 +1,71 @@
 #!/usr/bin/env bash
-# Return mpv watch history newest to oldest. Need line "write-filename-in-watch-later-config=yes" in mpv.conf
+# Return mpv watch history oldest to newest. 
+# Numbered selector to play files from history.
+# Need line "write-filename-in-watch-later-config=yes" in mpv.conf
+# Deps rg
 
-watch_later_dir='/home/jjenkx/.config/mpv/watch_later/'
-how_many_to_return=1000
-cat $(find "$watch_later_dir" -type f -printf "%T@ %p\n" \
-| sort \
-| cut -c23- \
-| tail -$how_many_to_return) \
-\
-| perl -0777 -pe 's/^[^#].*\n|# (.+\/)(.*)/'\''$1$2'\''\n$2/gm' \
-| rg \
-    --colors 'match:none' \
-    --colors 'match:fg:0,200,0' \
-    --colors 'match:bg:0,0,0' \
-    --colors 'match:style:bold' \
-    -B1 -P "^[^'\/].*" 
+watch_later_dir="$HOME/.config/mpv/watch_later/"
+
+SAVEIFS=$IFS
+IFS=$'\n'
+
+if [ ! -d "$watch_later_dir" ]; then
+    echo "Specified dir doesn't exist: $watch_later_dir"
+    echo "Set var watch_later_dir to your watch later dir"
+    echo "also, mpv.conf should have line \"write-filename-in-watch-later-config=yes\""
+    exit 1
+fi
+
+watch_later_files="$(find "$watch_later_dir" -type f -printf "%T@ %p\n" | sort | sed 's/^\([0-9]\+\.[0-9]\+\) //')"
+
+file_count=$(find "$watch_later_dir" -type f | wc -l)
+
+if [ "$file_count" -eq 0 ]; then
+    echo "no files found in \"$watch_later_dir\""
+    exit 1
+fi
+
+watch_later_files=($watch_later_files) 
+
+filepaths_not_echoed="$(for (( i=0; i<${#watch_later_files[@]}; i++ ))
+do
+  cat "${watch_later_files[$i]}" | rg -o --color=never '(/|http).*'
+done)"
+
+filepaths_not_echoed=($filepaths_not_echoed) 
+
+# Reverse the order of array
+length=${#filepaths_not_echoed[@]}
+for ((i=0; i<length/2; i++)); do
+    temp="${filepaths_not_echoed[i]}"
+    filepaths_not_echoed[i]="${filepaths_not_echoed[length-i-1]}"
+    filepaths_not_echoed[length-i-1]="$temp"
+done
+
+filepaths="$(for (( i=0; i<${#watch_later_files[@]}; i++ ))
+do
+  echo -n "$(( $i - $file_count +1 )) " | sed 's/^-//' 
+  cat "${watch_later_files[$i]}" | rg -o --color=never '/.*'
+done)"
+
+#echo "$filepaths" | perl -pe 's/^(\d+ ).*\//$1/g' | rg \
+echo "$filepaths" | sed -E 's/^([0-9]+ ).*\//\1/g' | rg \
+  --colors 'match:none' \
+  --colors 'match:fg:0,200,0' \
+  --colors 'match:bg:0,0,0' \
+  --colors 'match:style:bold' \
+  -P "(?<=[0-9] ).*" 
+
+IFS=$SAVEIFS
+
+read -p "Enter number to play " selection
+
+echo "${filepaths_not_echoed[$selection]}"
+
+if [ ! -f "${filepaths_not_echoed[$selection]}" ]; then
+  echo "Error: File not found"
+  exit 1
+fi
+
+setsid >/dev/null 2>&1 </dev/null \
+mpv "${filepaths_not_echoed[$selection]}" 2>&1 >/dev/null & 
