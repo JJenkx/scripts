@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 url_list_file="/home/jjenkx/.local/input_files/jelly_dl.txt"
+results_file="/home/jjenkx/Documents/jelly_dl_results.txt"
 
 url_list="$( cat "$url_list_file" )" 
 
@@ -13,7 +14,8 @@ IFS=$SAVEIFS          # Restore original IFS
 for (( i=0; i<${#url_list[@]}; i++ ))
 do
   filename="$(  curl -i "${url_list[$i]}" 2>/dev/null | head | sed -n 's/.*filename="\([^"]*\)".*/\1/p'  )"
-  format_filename="$(  cat <<< "$filename" | sed 's/[][(). ]\+/\./g' | sed 's/\.-/-/g' | sed 's/\(Remux\|WEBDL\)-/\1./g'  )"
+  #format_filename="$(  cat <<< "$filename" | sed 's/[][(). ]\+/\./g' | sed 's/\.-/-/g' | sed 's/\(Remux\|WEBDL\)-/\1./g'  )"
+  format_filename="$(  cat <<< "$filename" | perl -pe 's/(\[|\]|\s(?!$)|-(?![^\s]+$)|\(|\))+/./gm' | sed 's/\.-/-/g'  )"
   aria2c \
     --allow-piece-length-change=true \
     --check-certificate=false \
@@ -43,6 +45,12 @@ do
     --timeout=10 \
     --user-agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36' \
   "${url_list[$i]}"
-done
+  
+  exit_code=$?
+  if [ $exit_code -eq 0 ]; then
+    printf "$(date +"%Y/%m/%d %I:%M%p") $(( $i + 1 )) Done: $format_filename\n$(date +"%Y/%m/%d %I:%M%p") $(( $i + 1 )) Done: ${url_list[$i]} \n" >> "$results_file"
+  else
+    printf "$(date +"%Y/%m/%d %I:%M%p") $(( $i + 1 )) Fail: $format_filename\n$(date +"%Y/%m/%d %I:%M%p") $(( $i + 1 )) Fail: ${url_list[$i]} \n" >> "$results_file"
+  fi
 
-echo -n "" > "$url_list_file"
+done
