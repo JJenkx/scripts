@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 url="$@"
 filename="$(  curl -i "$url" 2>/dev/null | head | sed -n 's/.*filename="\([^"]*\)".*/\1/p'  )"
-format_filename="$(  cat <<< "$filename" | sed 's/[][(). ]\+/\./g' | sed 's/\.-/-/g' | sed 's/\(Remux\|WEBDL\)-/\1./g'  )"
+format_filename="$(  cat <<< "$filename" | perl -pe 's/(\[|\]|\s(?!$)|-(?![^\s]+$)|\(|\))+/./gm' | sed 's/\.-/-/g'  )"
 aria2c \
   --allow-piece-length-change=true \
   --check-certificate=false \
