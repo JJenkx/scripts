@@ -10,11 +10,29 @@ IFS=$'\n'             # Change IFS to newline char
 url_list=($url_list)  # split the `url_list` string into an array by the same name
 IFS=$SAVEIFS          # Restore original IFS
 
+# Get the length of the array
+arraylength=${#url_list[@]}
+
+# Define the color codes with bold attribute
+lightgreen="\033[1;38;2;28;220;154m"
+redish="\033[1;38;2;246;116;0m"
+brightgreen="\033[1;38;2;17;209;22m"
+
+# Reset color and attributes to default
+reset_color="\033[0m"
+
+# Text to display in the custom color and bold
+notice="NOTICE"
+
+
+
 # Download Jellyfin URLs one at a time
 for (( i=0; i<${#url_list[@]}; i++ ))
 do
+  echo
+  datestamp=$(date +'%m/%d %H:%M:%S')
+  echo -e "$datestamp [${lightgreen}${notice}${reset_color}] Downloading ${brightgreen}$((i+1))${reset_color} of ${redish}$arraylength${reset_color} files"
   filename="$(  curl -i "${url_list[$i]}" 2>/dev/null | head | sed -n 's/.*filename="\([^"]*\)".*/\1/p'  )"
-  #format_filename="$(  cat <<< "$filename" | sed 's/[][(). ]\+/\./g' | sed 's/\.-/-/g' | sed 's/\(Remux\|WEBDL\)-/\1./g'  )"
   format_filename="$(  cat <<< "$filename" | perl -pe 's/(\[|\]|\s(?!$)|-(?![^\s]+$)|\(|\))+/./gm' | sed 's/\.-/-/g'  )"
   aria2c \
     --allow-piece-length-change=true \
