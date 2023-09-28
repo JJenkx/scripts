@@ -1,0 +1,113 @@
+#!/usr/bin/env bash
+# Deps
+# sudo pacman -S --needed npm wireguard-tools
+# npm install fast-cli
+
+# User set vars
+fast_cli_bin="/home/jjenkx/node_modules/.bin/fast"
+
+config_dir="/etc/wireguard/"
+
+results_output="/tmp/fast-cli.results"
+
+# Other vars
+find_args=(-maxdepth 1 -type f -regextype posix-extended -iregex '.*\.(conf)$')
+
+config_files="$(sudo find "${config_dir}" "${find_args[@]}" | sort)"
+
+# Make array of config filepaths
+SAVEIFS=$IFS
+IFS=$'\n'
+config_files=($config_files)
+IFS=$SAVEIFS
+
+# Get filecount of config files
+config_file_count=${#config_files[@]}
+
+# Check if wg-quick is available
+if ! type -P wg-quick >/dev/null; then
+    echo "Dependency wg-quick is not available."
+    echo "Install wireguard-tools from your package manager"
+    exit 1
+fi
+
+# Check if filepath to executable "fast" from npm package fast-cli is valid
+if [[ ! -x "${fast_cli_bin}" ]]; then
+    echo "Error: path from fast_cli_bin: ${fast_cli_bin} is not a valid executable. Specify path to executable \"fast\" from npm package \"fast-cli\"."
+    echo "Run \"npm install fast-cli\" to install it\""
+    exit 1
+fi
+
+# Check if there is at least one .conf file in config_dir
+if [ "${config_file_count}" -lt 1 ]; then
+    echo "Error: no config files found in dir ${config_dir}. Add wireguard config files to that dir or specifiy path to config files in var config_dir"
+    exit 1
+fi
+
+# Get active connection name if there is one
+activevpnconnection="$(  sudo wg | grep -oP "interface: \K.*"  )"
+
+# Disconnect from any active connections
+case "${activevpnconnection}" in
+    "") 
+        # echo "No active VPN connection found."
+        ;;
+    *) 
+        sudo wg-quick down "${activevpnconnection}"
+        sleep 1
+        ;;
+esac
+
+# Clear old results from results_output file
+echo -n "" > "${results_output}"
+
+# This was made in case a previous iptables rule was still activated from an improper closure of a vpn connection. It runs sudo wg-quick down on all config files.
+#for ((i=0; i<${#config_files[@]}; i++)); do
+#    sudo wg-quick down "${config_files[i]}"
+#done
+#sleep 1
+
+# Run speedtests on all available connections
+for ((i=0; i<${#config_files[@]}; i++)); do
+    echo
+    echo "Connecting to ${config_files[i]} $((i+1)) of "${config_file_count}" servers"
+    echo
+    
+    sudo wg-quick up "${config_files[i]}"
+    sleep 1
+
+    echo "${config_files[i]}" >> "${results_output}"
+    "${fast_cli_bin}" --json >> "${results_output}"
+
+    echo "Disconnecting: ${config_files[i]}"
+    echo
+    sudo wg-quick down "${config_files[i]}"
+    sleep 1
+done
+
+# Return info from results_output file
+cat "${results_output}" | perl -0777 -pe 's/\n(?!\/)//gm' | awk -F': ' '/downloadSpeed/ {print $2 " " $0}' | sort -nr | cut -d' ' -f2-
+echo
+
+# Return config filepaths only from results_output file
+fastest="$(  cat "${results_output}" | perl -0777 -pe 's/\n(?!\/)//gm' | awk -F': ' '/downloadSpeed/ {print $2 " " $0}' | sort -nr | cut -d' ' -f2- | grep -oE '/etc/wireguard/[^{]*'  )"
+echo "The fastest servers from fastest to slowest are:"
+cat <<< "${fastest}"
+
+SAVEIFS=$IFS
+IFS=$'\n'
+fastest=($fastest)
+IFS=$SAVEIFS
+
+first_server="${fastest[0]}"
+
+# Prompt to connect to fastest server
+read -p "Connect to fastest server: "${first_server}" ? [y/N]: " connect
+case "${connect}" in
+    [yY][eE][sS]|[yY]) 
+        sudo wg-quick up "$first_server"
+        ;;
+    [nN][oO]|[nN]|"") 
+        exit
+esac
+
