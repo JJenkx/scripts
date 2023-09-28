@@ -8,7 +8,7 @@ fast_cli_bin="/home/jjenkx/node_modules/.bin/fast"
 
 config_dir="/etc/wireguard/"
 
-results_output="/tmp/fast-cli.results"
+results_output="/home/jjenkx/Documents/fast-cli.results"
 
 # Other vars
 find_args=(-maxdepth 1 -type f -regextype posix-extended -iregex '.*\.(conf)$')
