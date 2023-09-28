@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+# Deps
+# sudo pacman -S --needed wireguard-tools
+
+config_dir="/etc/wireguard/"
+
+find_args=(-maxdepth 1 -type f -regextype posix-extended -iregex '.*\.(conf)$')
+
+config_files="$(sudo find "${config_dir}" "${find_args[@]}" | sort)"
+
+SAVEIFS=$IFS
+IFS=$'\n'
+config_files=($config_files)
+IFS=$SAVEIFS
+
+config_file_count=${#config_files[@]}
+
+# This was made in case a previous iptables rule was still activated from an improper closure of a vpn connection. It runs sudo wg-quick down on all config files.
+for ((i=0; i<${#config_files[@]}; i++)); do
+    sudo wg-quick down "${config_files[i]}"
+done
+
