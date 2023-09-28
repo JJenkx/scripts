@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# Ramdomly selects a vpn server to connect too
+
+DIR="/etc/wireguard/"
+
+find_args=(-maxdepth 1 -type f -regextype posix-extended -iregex '.*\.(conf)$')
+
+files="$(  sudo find "${DIR}" "${find_args[@]}" )"
+
+SAVEIFS=$IFS
+IFS=$'\n'
+files=($files)
+IFS=$SAVEIFS
+
+activevpnconnection="${files[ $RANDOM % ${#files[@]} ]}"
+
+echo "Connecting: ${activevpnconnection}"
+
+echo
+
+sudo wg-quick up "${activevpnconnection}"
