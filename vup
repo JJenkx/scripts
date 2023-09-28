@@ -3,10 +3,10 @@
 # sudo pacman -S --needed wireguard-tools
 # Must run mullvadbenchmark before this script will work. This connects to fastest speedtest vpn server by reading output file from https://github.com/JJenkx/Personal/blob/main/mullvadbenchmark
 
-cat /tmp/fast-cli.results | perl -0777 -pe 's/\n(?!\/)//gm' | awk -F': ' '/downloadSpeed/ {print $2 " " $0}' | sort -nr | cut -d' ' -f2-
+cat /home/jjenkx/Documents/fast-cli.results | perl -0777 -pe 's/\n(?!\/)//gm' | awk -F': ' '/downloadSpeed/ {print $2 " " $0}' | sort -nr | cut -d' ' -f2-
 echo
 
-fastest="$(  cat /tmp/fast-cli.results | perl -0777 -pe 's/\n(?!\/)//gm' | awk -F': ' '/downloadSpeed/ {print $2 " " $0}' | sort -nr | cut -d' ' -f2- | grep -oE '/etc/wireguard/[^{]*'  )"
+fastest="$(  cat /home/jjenkx/Documents/fast-cli.results | perl -0777 -pe 's/\n(?!\/)//gm' | awk -F': ' '/downloadSpeed/ {print $2 " " $0}' | sort -nr | cut -d' ' -f2- | grep -oE '/etc/wireguard/[^{]*'  )"
 echo "The fastest servers from fastest to slowest are:"
 cat <<< "$fastest"
 
