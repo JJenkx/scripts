@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# Disconnects from active wireguard connection
+
+activevpnconnection="$(  sudo wg | grep -oP "interface: \K.*"  )"
+
+echo "Disconnecting: ${activevpnconnection}"
+
+echo
+
+sudo wg-quick down "${activevpnconnection}"
