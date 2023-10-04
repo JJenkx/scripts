@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+
 # Return mpv watch history oldest to newest. 
 # Numbered selector to play files from history.
 # Need line "write-filename-in-watch-later-config=yes" in mpv.conf
@@ -38,13 +39,13 @@ filepaths_not_echoed=($filepaths_not_echoed)
 length=${#filepaths_not_echoed[@]}
 for ((i=0; i<length/2; i++)); do
     temp="${filepaths_not_echoed[i]}"
-    filepaths_not_echoed[i]="${filepaths_not_echoed[length-i-1]}"
-    filepaths_not_echoed[length-i-1]="$temp"
+    filepaths_not_echoed[i]="${filepaths_not_echoed[length-i]}"
+    filepaths_not_echoed[length-i]="$temp"
 done
 
 filepaths="$(for (( i=0; i<${#watch_later_files[@]}; i++ ))
 do
-  echo -n "$(( $i - $file_count +1 )) " | sed 's/^-//' 
+  echo -n "$(( $i - $file_count + 1 )) " | sed 's/^-//' 
   cat "${watch_later_files[$i]}" | rg -o --color=never '/.*'
 done)"
 
@@ -67,5 +68,5 @@ if [ ! -f "${filepaths_not_echoed[$selection]}" ]; then
   exit 1
 fi
 
-setsid >/dev/null 2>&1 </dev/null \
-mpv "${filepaths_not_echoed[$selection]}" 2>&1 >/dev/null & 
+#setsid >/dev/null 2>&1 </dev/null \
+mpv "${filepaths_not_echoed[$selection]}" #2>&1 >/dev/null & 
