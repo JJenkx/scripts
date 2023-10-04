@@ -68,5 +68,5 @@ if [ ! -f "${filepaths_not_echoed[$selection]}" ]; then
   exit 1
 fi
 
-#setsid >/dev/null 2>&1 </dev/null \
-mpv "${filepaths_not_echoed[$selection]}" #2>&1 >/dev/null & 
+setsid >/dev/null 2>&1 </dev/null \
+mpv "${filepaths_not_echoed[$selection]}" 2>&1 >/dev/null & 
