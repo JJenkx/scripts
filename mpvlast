@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+setsid >/dev/null 2>&1 </dev/null \
+mpv "$(cat $(echo /home/jjenkx/.config/mpv/watch_later/$(exa --color=never -1 --reverse -s modified /home/jjenkx/.config/mpv/watch_later/ | head -1)) | head -1 | cut -c3-)" \
+2>&1 >/dev/null & 
