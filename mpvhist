@@ -7,6 +7,21 @@
 
 watch_later_dir="$HOME/.config/mpv/watch_later/"
 
+# List the four newest text files in the directory
+newest_files=$(ls -t "$watch_later_dir"/* 2>/dev/null | head -n 4)
+
+# Iterate through the four newest text files
+for file in $newest_files; do
+    # Check if the file exists and is a regular file
+    if [ -f "$file" ]; then
+        # Check if the first line of the file starts with "# redirect entry"
+        if head -n 1 "$file" | grep -q "^# redirect entry"; then
+            # Remove the file if the condition is met
+            rm "$file"
+        fi
+    fi
+done
+
 SAVEIFS=$IFS
 IFS=$'\n'
 
@@ -45,7 +60,7 @@ done
 
 filepaths="$(for (( i=0; i<${#watch_later_files[@]}; i++ ))
 do
-  echo -n "$(( $i - $file_count + 1 )) " | sed 's/^-//' 
+  echo -n "$(( $i - $file_count )) " | sed 's/^-//' 
   cat "${watch_later_files[$i]}" | rg -o --color=never '/.*'
 done)"
 
