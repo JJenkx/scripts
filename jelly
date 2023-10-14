@@ -1,7 +1,26 @@
 #!/usr/bin/env bash
+
+results_file="/home/jjenkx/Documents/jelly_dl_results.txt"
+
+# Define the color codes with bold attribute
+lightgreen="\033[1;38;2;28;220;154m"
+redish="\033[1;38;2;246;116;0m"
+brightgreen="\033[1;38;2;17;209;22m"
+
+# Reset color and attributes to default
+reset_color="\033[0m"
+
+# Text to display in the custom color and bold
+notice="NOTICE"
+
 url="$@"
 filename="$(  curl -i "$url" 2>/dev/null | head | sed -n 's/.*filename="\([^"]*\)".*/\1/p'  )"
 format_filename="$(  cat <<< "$filename" | perl -pe 's/(\[|\]|\s(?!$)|-(?![^\s]+$)|\(|\))+/./gm' | sed 's/\.-/-/g'  )"
+
+datestamp=$(date +'%m/%d %H:%M:%S')
+
+echo -e "$datestamp [${lightgreen}${notice}${reset_color}] Downloading: ${brightgreen}$format_filename${reset_color}"
+
 aria2c \
   --allow-piece-length-change=true \
   --check-certificate=false \
@@ -27,8 +46,13 @@ aria2c \
   --retry-on-unknown=true \
   --retry-wait=120 \
   --split=1 \
-  --summary-interval=180 \
+  --summary-interval=0 \
   --stream-piece-selector=geom \
   --timeout=10 \
   --user-agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.#55 Safari/537.36' \
   "$url"
+
+exit_code=$?
+if [ $exit_code -eq 0 ]; then
+  printf "$(date +"%Y/%m/%d %I:%M%p") 001 Done: $format_filename "$url" \n" >> "$results_file"
+fi
