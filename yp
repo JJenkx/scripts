@@ -1,0 +1,88 @@
+#!/usr/bin/env bash
+#set -x
+
+if [[ -z $@ ]]; then
+    echo "specify download url"
+    exit
+fi
+
+dir_dl="$PWD"
+url="$@"
+
+ffmpeg_dir="/home/jjenkx/.local/bin.notpath/"
+download_archive_dir="$HOME/Videos/yt-dlp/"
+download_archive_filename=".yt-dlp-archived-done.txt"
+
+mkdir -p "$download_archive_dir"
+
+youtube_match_regex='^.*(youtube[.]com|youtu[.]be|youtube-nocookie[.]com).*$'
+
+if [[ "$1" =~ $youtube_match_regex ]]; then
+    url="$(echo "$@" | perl -pe 's/((?:http:|https:)*?\/\/(?:www\.|)(?:youtube\.com|m\.youtube\.com|youtu\.|#youtube-nocookie\.com).*(?:c(?:hannel)?\/|u(?:ser)?\/|v=|v%3D|v\/|(?:a|p)\/(?:a|u)\/\d.*\/|watch\?|vi(?:=|\/)|\/#embed\/|oembed\?|be\/|e\/)([^&?%#\/\n]+)).*/$1/gm')"
+    yt-dlp \
+    --check-formats \
+    --clean-info-json \
+    --download-archive "$download_archive_dir$download_archive_filename" \
+    --embed-chapters \
+    --embed-info-json \
+    --embed-metadata \
+    --embed-thumbnail \
+    --external-downloader aria2c \
+    --downloader-args \
+    "aria2c: \
+        --allow-piece-length-change=true \
+        --check-certificate=false \
+        --console-log-level=notice \
+        --content-disposition-default-utf8=true \
+        --continue=true \
+        --disk-cache=8192 \
+        --download-result=full \
+        --enable-mmap \
+        --file-allocation=falloc \
+        --lowest-speed-limit=100K \
+        --max-concurrent-downloads=16 \
+        --max-connection-per-server=64 \
+        --max-mmap-limit=8192M \
+        --max-resume-failure-tries=5 \
+        --max-file-not-found=2 \
+        --max-tries=3 \
+        --min-split-size=64K \
+        --no-file-allocation-limit=8192M \
+        --piece-length=64k \
+        --realtime-chunk-checksum=false \
+        --retry-on-400=true \
+        --retry-on-403=true \
+        --retry-on-406=true \
+        --retry-on-unknown=true \
+        --retry-wait=1 \
+        --split=32 \
+        --stream-piece-selector=geom \
+        --summary-interval=0 " \
+    --ffmpeg-location "$ffmpeg_dir" \
+    --output "$dir_dl"'/%(channel)s/%(title)s_%(channel)s_%(upload_date>%Y-%m-%d)s_%(duration>%H-%M-%S)s_%(resolution)s.%(ext)s' \
+    --prefer-free-formats \
+    --remux-video mkv \
+    --restrict-filenames \
+    --sponsorblock-remove "filler,interaction,intro,music_offtopic,outro,preview,selfpromo,sponsor" \
+    --sub-langs "en.*,live_chat" \
+    --write-auto-subs \
+    --write-description \
+    --write-info-json \
+    --write-playlist-metafiles \
+    --write-subs \
+    --write-thumbnail \
+    "$url"
+else
+    yt-dlp \
+    --download-archive "$download_archive_dir$download_archive_filename" \
+    --embed-chapters \
+    --ffmpeg-location "$ffmpeg_dir" \
+    --http-chunk-size 10M \
+    --output "$dir_dl/%(title)s_%(duration>%H-%M-%S)s_%(upload_date>%Y-%m-%d)s_%(resolution)s_URL_(%(id)s).%(ext)s" \
+    --prefer-free-formats \
+    --restrict-filenames \
+    "$url"
+fi
+
+setsid >/dev/null 2>&1 </dev/null \
+mpv "$( /usr/bin/ls -t --time=creation "$PWD"/*/*.mkv | head -n 1 )" 2>&1 >/dev/null & 
