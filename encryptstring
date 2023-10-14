@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# URL to encrypt
+read -p "Enter string to encrypt: " string
+echo
+
+# Ask the user for a password to encrypt the URL
+read -s -p "Enter encryption password: " password
+echo
+
+# Encrypt the URL using openssl
+encrypted_string=$(echo -n "$string" | openssl enc -aes-256-cbc -a -salt -k "$password" -pbkdf2)
+
+# Print the encrypted URL
+echo "Encrypted String: $encrypted_string"
+echo
+
+# Echo usage for a script
+echo "Use in a script like this:"
+echo 'read -s -p "Enter decryption password: " password'
+echo "decrypted_string=\$(echo "$encrypted_string" | openssl enc -d -aes-256-cbc -a -salt -k \"\$password\" -pbkdf2)"
