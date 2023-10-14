@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+read -s -p "Enter decryption password: " password
+
+output_directory="$(echo U2FsdGVkX1/4ncOMQX6FvW+xmmhFYXMtmrjU8+6+Orb/WXm55fxVUoZYTJ0/yIn5 80c8EWwlwOY4i+FcXaY/6g== | openssl enc -d -aes-256-cbc -a -salt -k "$password" -pbkdf2)"
+
+url="$(echo U2FsdGVkX1+G9xVllTs0CHRoQjwfQLQq95e+5HoJYgbqfc4PaB9uZZZ78jENIk27 I6Mj5bJ2J8P/81VSFPFwR4drIGkI7gmt/0dRYJI2dq4= | openssl enc -d -aes-256-cbc -a -salt -k "$password" -pbkdf2)"
+
+# Function to download the live stream
+download_live_stream() {
+    yt-dlp \
+    --continue \
+    "$url" -o "$output_directory/%(title)s.%(ext)s"
+}
+
+# Function to handle Ctrl+C (SIGINT) signal
+handle_ctrl_c() {
+    echo "Ctrl+C detected. Exiting..."
+    exit
+}
+
+# Set up the Ctrl+C handler
+trap 'handle_ctrl_c' INT
+
+while true; do
+    download_live_stream
+    sleeptime=$((1 + RANDOM % 5))
+    sleep "$sleeptime"
+done
