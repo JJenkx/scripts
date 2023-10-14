@@ -25,15 +25,26 @@ reset_color="\033[0m"
 notice="NOTICE"
 
 
-
 # Download Jellyfin URLs one at a time
 for (( i=0; i<${#url_list[@]}; i++ ))
 do
+
   echo
+
   datestamp=$(date +'%m/%d %H:%M:%S')
-  echo -e "$datestamp [${lightgreen}${notice}${reset_color}] Downloading ${brightgreen}$((i+1))${reset_color} of ${redish}$arraylength${reset_color} files"
+
+  if ((i + 1 < 10)); then
+    padded_i=$(printf "00%d" $((i + 1)))
+  else
+    padded_i=$(printf "0%d" $((i + 1)))
+  fi
+
   filename="$(  curl -i "${url_list[$i]}" 2>/dev/null | head | sed -n 's/.*filename="\([^"]*\)".*/\1/p'  )"
+
   format_filename="$(  cat <<< "$filename" | perl -pe 's/(\[|\]|\s(?!$)|-(?![^\s]+$)|\(|\))+/./gm' | sed 's/\.-/-/g'  )"
+
+  echo -e "$datestamp [${lightgreen}${notice}${reset_color}] Downloading ( ${brightgreen}$((i+1))${reset_color} of ${redish}$arraylength${reset_color} ) $format_filename"
+
   aria2c \
     --allow-piece-length-change=true \
     --check-certificate=false \
@@ -58,7 +69,7 @@ do
     --retry-on-unknown=true \
     --retry-wait=120 \
     --split=1 \
-    --summary-interval=180 \
+    --summary-interval=0 \
     --stream-piece-selector=geom \
     --timeout=10 \
     --user-agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36' \
@@ -66,9 +77,9 @@ do
   
   exit_code=$?
   if [ $exit_code -eq 0 ]; then
-    printf "$(date +"%Y/%m/%d %I:%M%p") $(( $i + 1 )) Done: $format_filename\n$(date +"%Y/%m/%d %I:%M%p") $(( $i + 1 )) Done: ${url_list[$i]} \n" >> "$results_file"
+    printf "$(date +"%Y/%m/%d %I:%M%p") $padded_i Done: $format_filename ${url_list[$i]} \n" >> "$results_file"
   else
-    printf "$(date +"%Y/%m/%d %I:%M%p") $(( $i + 1 )) Fail: $format_filename\n$(date +"%Y/%m/%d %I:%M%p") $(( $i + 1 )) Fail: ${url_list[$i]} \n" >> "$results_file"
+    exit 0
   fi
 
 done
