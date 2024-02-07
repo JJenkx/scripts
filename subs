@@ -33,8 +33,8 @@ get_video_id() {
 
 search_newest_matching_files() {
     # Find newest file matching the video_id
-    vtt_file_matching_video_id="$(  /usr/bin/ls -t --time=creation "$PWD"/*${video_id}*\.vtt | head -n 1  )"
-    description_file_matching_video_id="$(  /usr/bin/ls -t --time=creation "$PWD"/*${video_id}*\.description | head -n 1  )"
+    vtt_file_matching_video_id="$(  /usr/bin/ls -t --time=creation "$PWD"/*${video_id}*\.vtt 2>/dev/null | head -n 1  )"
+    description_file_matching_video_id="$(  /usr/bin/ls -t --time=creation "$PWD"/*${video_id}*\.description 2>/dev/null | head -n 1  )"
 }
 
 
