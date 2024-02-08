@@ -17,7 +17,6 @@ main() {
 }
 
 
-# Iterate over the array and add items to the new array if they match the regex
 check_if_url() {
     local regex='^https://[^[:space:]]+$'
         if ! [[ $url =~ $regex ]]; then
