@@ -10,8 +10,8 @@ main() {
     check_if_files_already_downloaded
     download_subs
     find_downloaded_files
-    read_and_format_files
-    echo_formated_description_file
+    read_and_format_transcript_file
+    echo_description_file
     user_search
 }
 
@@ -32,7 +32,7 @@ get_video_id() {
 
 
 search_newest_matching_files() {
-    # Find newest file matching the video_id
+    # Find newest created files matching the video_id
     vtt_file_matching_video_id="$(  /usr/bin/ls -t --time=creation "$PWD"/*${video_id}*\.vtt 2>/dev/null | head -n 1  )"
     description_file_matching_video_id="$(  /usr/bin/ls -t --time=creation "$PWD"/*${video_id}*\.description 2>/dev/null | head -n 1  )"
 }
@@ -40,9 +40,9 @@ search_newest_matching_files() {
 
 check_if_files_already_downloaded() {
     if [ -n "$vtt_file_matching_video_id" ] && [ -n "$description_file_matching_video_id" ]; then
-      download=0
+        download=0
     else
-      download=1
+        download=1
     fi
 }
 
@@ -69,51 +69,41 @@ find_downloaded_files() {
 }
 
 
-read_and_format_files() {
-    formated_description_file="$(  cat "${description_file}" | tr '[:upper:]' '[:lower:]' | tr -cd '[:alnum:] \n' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//'  )"
+read_and_format_transcript_file() {
     formated_transcript_file="$(  cat "${transcript_file}" | tr '[:upper:]' '[:lower:]' | tr -cd '[:alnum:]:. \n' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//'  )"
 }
 
 
-echo_formated_description_file() {
-    echo "${formated_description_file}"
+echo_description_file() {
+    cat "${description_file}"
 }
 
 
 user_search() {
+    echo -e "\n\n"
     read -rp "Enter regex (read as raw input): " search_term
 
     : ${app_count:=0}
 
     if command -v ug >/dev/null 2>&1; then
-        echo
-        echo
-        echo
-        echo
+        echo -e "\n\n\n\n"
         echo "Ugrep output"
         ug -B2 -A1 -i -Z+-~1 "${search_term}" <<<"$formated_transcript_file"
         ((app_count++))
     fi
 
     if command -v rg >/dev/null 2>&1; then
-        echo
-        echo
-        echo
-        echo
+        echo -e "\n\n\n\n"
         echo "Ripgrep output"
         rg -iP -B2 -A1 "${search_term}" <<<"$formated_transcript_file"
         ((app_count++))
     fi
     
     if [ "$app_count" -eq 0 ]; then
-        echo
-        echo
-        echo
-        echo
+        echo -e "\n\n\n\n"
         echo "Grep output"
         grep -iP -B2 -A1 "${search_term}" <<<"$formated_transcript_file"
-        echo
-        echo
+        echo -e "\n\n"
         echo "Consider installing ripgrep and ugrep for better search"
         ((app_count++))
     fi
