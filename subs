@@ -60,7 +60,7 @@ download_subs() {
 
 
 read_and_format_transcript_file() {
-    perl_removed_dupes="$(perl -0777 -pe 's/^\d\d.*\n.*\n.*<\/c>//gm' <"${transcript_file}")"
+    perl_removed_dupes="$(perl -0777 -pe 's/^\n\d\d.*\n.*\n.*<\/c>\n//gm' <"${transcript_file}")"
     local prefix="https://www.youtube.com/watch?v=${video_id}&t="
     local suffix="s"
     formated_transcript_file="$(awk -v pre="$prefix" -v suf="$suffix" '
@@ -103,7 +103,7 @@ user_search() {
     if command -v rg >/dev/null 2>&1; then
         echo -e "\n\n\n\n"
         echo "Ripgrep output"
-        rg -iP -B2 -A7 "^(?!https?:\/\/).*\K${search_term}" <<<"$formated_transcript_file"
+        rg -iP -B2 -A5 "^(?!https?:\/\/).*\K${search_term}" <<<"$formated_transcript_file"
         ((app_count++))
     fi
     
