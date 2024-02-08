@@ -8,7 +8,7 @@ main() {
     url="$@"
     check_if_url
     get_video_id
-    search_newest_matching_files
+    search_for_downloaded_matching_files
     check_if_files_already_downloaded
     download_subs
     find_downloaded_files
@@ -33,7 +33,7 @@ get_video_id() {
 }
 
 
-search_newest_matching_files() {
+search_for_downloaded_matching_files() {
     # Find newest created files matching the video_id
     vtt_file_matching_video_id="$(  /usr/bin/ls -t --time=creation "$PWD"/*${video_id}*\.vtt 2>/dev/null | head -n 1  )"
     description_file_matching_video_id="$(  /usr/bin/ls -t --time=creation "$PWD"/*${video_id}*\.description 2>/dev/null | head -n 1  )"
@@ -61,7 +61,7 @@ download_subs() {
 find_downloaded_files() {
     if [ "$download" -eq 1 ]; then
         # Search files again since they were just downloaded
-        search_newest_matching_files
+        search_for_downloaded_matching_files
         transcript_file="$vtt_file_matching_video_id"
         description_file="$description_file_matching_video_id"
     else
