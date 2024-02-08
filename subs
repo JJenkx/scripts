@@ -9,9 +9,8 @@ main() {
     check_if_url
     get_video_id
     search_for_downloaded_matching_files
-    check_if_files_already_downloaded
+    set_download_boolean_flag
     download_subs
-    find_downloaded_files
     read_and_format_transcript_file
     echo_description_file
     user_search
@@ -35,16 +34,16 @@ get_video_id() {
 
 search_for_downloaded_matching_files() {
     # Find newest created files matching the video_id
-    vtt_file_matching_video_id="$(  /usr/bin/ls -t --time=creation "$PWD"/*${video_id}*\.vtt 2>/dev/null | head -n 1  )"
-    description_file_matching_video_id="$(  /usr/bin/ls -t --time=creation "$PWD"/*${video_id}*\.description 2>/dev/null | head -n 1  )"
+    transcript_file="$(  /usr/bin/ls -t --time=creation "$PWD"/*${video_id}*\.vtt 2>/dev/null | head -n 1  )"
+    description_file="$(  /usr/bin/ls -t --time=creation "$PWD"/*${video_id}*\.description 2>/dev/null | head -n 1  )"
 }
 
 
-check_if_files_already_downloaded() {
-    if [ -n "$vtt_file_matching_video_id" ] && [ -n "$description_file_matching_video_id" ]; then
-        download=0
+set_download_boolean_flag() {
+    if [ -n "$transcript_file" ] && [ -n "$description_file" ]; then
+        download=0 # FALSE
     else
-        download=1
+        download=1 # TRUE
     fi
 }
 
@@ -54,19 +53,8 @@ download_subs() {
         yt-dlp --restrict-filenames --write-auto-sub --skip-download "${url}"
         yt-dlp --restrict-filenames --sub-langs=eng --write-subs --skip-download "${url}"
         yt-dlp --restrict-filenames --write-description --skip-download "${url}"
-    fi
-}
-
-
-find_downloaded_files() {
-    if [ "$download" -eq 1 ]; then
         # Search files again since they were just downloaded
         search_for_downloaded_matching_files
-        transcript_file="$vtt_file_matching_video_id"
-        description_file="$description_file_matching_video_id"
-    else
-        transcript_file="$vtt_file_matching_video_id"
-        description_file="$description_file_matching_video_id"
     fi
 }
 
@@ -76,7 +64,6 @@ read_and_format_transcript_file() {
     local prefix="https://www.youtube.com/watch?v=${video_id}&t="
     local suffix="s"
     formated_transcript_file="$(awk -v pre="$prefix" -v suf="$suffix" '
-    /<c>/ { next; }  # Skip lines containing <c>
     /^([0-9]{2}:){2}[0-9]{2}\.[0-9]{3}/ {
         split($1, a, /[:.]/);
         $1 = pre (int(a[1]*3600 + a[2]*60 + a[3]) - 3) suf;
