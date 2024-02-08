@@ -19,10 +19,10 @@ main() {
 
 check_if_url() {
     local regex='^https://[^[:space:]]+$'
-        if ! [[ $url =~ $regex ]]; then
-            echo "Invalid input. Valid input is a url matching regex ${regex}"
-            exit 1
-        fi
+    if ! [[ $url =~ $regex ]]; then
+        echo "Invalid input. Valid input is a url matching regex ${regex}"
+        exit 1
+    fi
 }
 
 
