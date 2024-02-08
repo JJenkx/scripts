@@ -109,14 +109,14 @@ user_search() {
     if command -v ug >/dev/null 2>&1; then
         echo -e "\n\n\n\n"
         echo "Ugrep output"
-        ug --pretty=never -B2 -A1 -i -Z+-~1 "${search_term}" <<<"$formated_transcript_file_CRLF"
+        ug --pretty=never -B2 -A1 -i -Z+-~1 -e "${search_term}" --andnot "^https?:\/\/"  <<<"$formated_transcript_file_CRLF"
         ((app_count++))
     fi
 
     if command -v rg >/dev/null 2>&1; then
         echo -e "\n\n\n\n"
         echo "Ripgrep output"
-        rg -iP -B2 -A1 "${search_term}" <<<"$formated_transcript_file"
+        rg -iP -B2 -A7 "^(?!https?:\/\/).*\K${search_term}" <<<"$formated_transcript_file"
         ((app_count++))
     fi
     
