@@ -72,7 +72,7 @@ find_downloaded_files() {
 
 
 read_and_format_transcript_file() {
-    perl_removed_dupes="$(perl -0777 -pe 's/\d\d:\d\d:\d\d\.\d\d\d.*?\n.*?\n.*<c>.*?\n//g' <"${transcript_file}")"
+    perl_removed_dupes="$(perl -0777 -pe 's/^\d\d:\d\d:\d\d\.\d\d\d.*?\n.*?\n.*<c>.*?\n//g' <"${transcript_file}")"
 
     local prefix="https://www.youtube.com/watch?v=${video_id}&t="
     local suffix="s"
