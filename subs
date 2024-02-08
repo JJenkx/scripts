@@ -109,7 +109,7 @@ user_search() {
     if command -v ug >/dev/null 2>&1; then
         echo -e "\n\n\n\n"
         echo "Ugrep output"
-        ug -B2 -A1 -i -Z+-~1 "${search_term}" <<<"$formated_transcript_file_CRLF"
+        ug --pretty=never -B2 -A1 -i -Z+-~1 "${search_term}" <<<"$formated_transcript_file_CRLF"
         ((app_count++))
     fi
 
