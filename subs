@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # Download and search youtube subs
-# deps yt-dlp ,awk, any one or more of either ugrep, ripgrep, grep
+# deps yt-dlp ,awk, perl, any one or more of either ugrep, ripgrep, grep
+# usage "script youtube_url"
+
 
 main() {
     url="$@"
@@ -73,20 +75,23 @@ read_and_format_transcript_file() {
     local prefix="https://www.youtube.com/watch?v=${video_id}&t="
     local suffix="s"
 
+    perl_removed_dupes="$(perl -0777 -pe 's/\d\d:\d\d:\d\d\.\d\d\d.*?\n.*?\n.*<c>.*?\n//g' <"${transcript_file}")"
+    echo "$perl_removed_dupes"
     formated_transcript_file="$(awk -v pre="$prefix" -v suf="$suffix" '
-        /^([0-9]{2}:){2}[0-9]{2}\.[0-9]{3}/ {
-            split($1, a, /[:.]/);
-            $1 = pre (int(a[1]*3600 + a[2]*60 + a[3]) - 4) suf;  # Subtract 4 seconds here
-            sub(/ --> [0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{3}/, "");
-            sub(/ align:start position:0%$/, "");
-            print;
-            next;
-        }
-        {
-            sub(/ align:start position:0%$/, "");
-            print;
-        }
-    ' <"${transcript_file}")"
+    /<c>/ { next; }  # Skip lines containing <c>
+    /^([0-9]{2}:){2}[0-9]{2}\.[0-9]{3}/ {
+        split($1, a, /[:.]/);
+        $1 = pre (int(a[1]*3600 + a[2]*60 + a[3]) - 3) suf;
+        sub(/ --> [0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{3}/, "");
+        sub(/ align:start position:0%$/, "");
+        print;
+        next;
+    }
+    {
+        sub(/ align:start position:0%$/, "");
+        print;
+    }
+    ' <<<"${perl_removed_dupes}")"
 }
 
 
