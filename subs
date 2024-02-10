@@ -3,6 +3,7 @@
 # deps yt-dlp ,awk, perl, any one or more of either ugrep, ripgrep, grep
 # usage "script youtube_url"
 
+cd /tmp
 
 main() {
     url="$@"
@@ -62,7 +63,7 @@ read_and_format_transcript_file() {
     perl_removed_dupes="$(perl -0777 -pe 's/^\n\d\d.*\n.*\n.*<\/c>\n//gm' <"${transcript_file}")"
     local prefix="https://www.youtube.com/watch?v=${video_id}&t="
     local suffix="s"
-    formated_transcript_file="$(awk -v pre="$prefix" -v suf="$suffix" '
+    formatted_transcript_file="$(awk -v pre="$prefix" -v suf="$suffix" '
     /^([0-9]{2}:){2}[0-9]{2}\.[0-9]{3}/ {
         split($1, a, /[:.]/);
         $1 = pre (int(a[1]*3600 + a[2]*60 + a[3]) - 3) suf;
@@ -77,7 +78,7 @@ read_and_format_transcript_file() {
     }
     ' <<<"${perl_removed_dupes}")"
     #CRLF for ugrep to avoid ?bug? where before lines are not all outputted
-    formated_transcript_file_CRLF=$(printf '%b' "$formated_transcript_file" | sed 's/$/\r/')
+    formatted_transcript_file_CRLF=$(printf '%b' "$formatted_transcript_file" | sed 's/$/\r/')
 }
 
 
@@ -95,21 +96,21 @@ user_search() {
     if command -v ug >/dev/null 2>&1; then
         echo -e "\n\n\n\n"
         echo "Ugrep output"
-        ug --pretty=never -B2 -A1 -i -Z+-~1 -e "${search_term}" --andnot "^https?:\/\/"  <<<"$formated_transcript_file_CRLF"
+        ug --pretty=never -B2 -A1 -i -Z+-~1 -e "${search_term}" --andnot "^https?:\/\/"  <<<"$formatted_transcript_file_CRLF"
         ((app_count++))
     fi
 
     if command -v rg >/dev/null 2>&1; then
         echo -e "\n\n\n\n"
         echo "Ripgrep output"
-        rg -iP -B2 -A5 "^(?!https?:\/\/).*\K${search_term}" <<<"$formated_transcript_file"
+        rg -iP -B2 -A5 "^(?!https?:\/\/).*\K${search_term}" <<<"$formatted_transcript_file"
         ((app_count++))
     fi
     
     if [ "$app_count" -eq 0 ]; then
         echo -e "\n\n\n\n"
         echo "Grep output"
-        grep -iP -B2 -A1 "${search_term}" <<<"$formated_transcript_file"
+        grep -iP -B2 -A1 "${search_term}" <<<"$formatted_transcript_file"
         echo -e "\n\n"
         echo "Consider installing ripgrep and ugrep for better search"
         ((app_count++))
