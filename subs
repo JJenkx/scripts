@@ -77,8 +77,6 @@ read_and_format_transcript_file() {
         print;
     }
     ' <<<"${perl_removed_dupes}")"
-    #CRLF for ugrep to avoid ?bug? where before lines are not all outputted
-    formatted_transcript_file_CRLF=$(printf '%b' "$formatted_transcript_file" | sed 's/$/\r/')
 }
 
 
@@ -96,7 +94,7 @@ user_search() {
     if command -v ug >/dev/null 2>&1; then
         echo -e "\n\n\n\n"
         echo "Ugrep output"
-        ug --pretty=never -B2 -A1 -i -Z+-~1 -e "${search_term}" --andnot "^https?:\/\/"  <<<"$formatted_transcript_file_CRLF"
+        ug --pretty=never -B2 -A1 -i -Z+-~1 -e "${search_term}" --andnot "^https?:\/\/"  <<<"$formatted_transcript_file"
         ((app_count++))
     fi
 
