@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+
+curl -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36" -I -c /home/jjenkx/.local/cookies.txt  https://www.amctheatres.com/movie-theatres/raleigh-durham/amc-southpoint-17/showtimes/all/2024-01-06/amc-southpoint-17/all | grep "Last-Modified"
+
+
+# URLs for fetching showtimes
+url_a='https://www.amctheatres.com/movie-theatres/raleigh-durham/amc-southpoint-17/showtimes/all/'
+url_b='/amc-southpoint-17/dolbycinemaatamcprime'
+
+# Simplified and efficient way to get the current and end dates
+current_date=$(date +%Y-%m-%d)
+end_date=$(date -d "+2 months" +%Y-%m-%d)
+
+# Function to download and process showtimes
+process_showtimes() {
+    local date=$1
+    local file_name="amc.17.dolby.${date}"
+
+    if [[ ! -f "$file_name" ]] || [[ $(wc -l < "$file_name") -le 2 ]]; then
+        sleep $((1 + RANDOM % 3))
+        echo "${url_a}${date}${url_b}" > "$file_name"
+        curl --silent "${url_a}${date}${url_b}" | perl -0777 -nle '@matches = /aria-label="([^"]+ showtime at \d\d?:\d\d(?:am|pm))".*?href="(\/movie-theatres\/raleigh-durham\/amc-southpoint-17\/showtimes\/all\/\d{4}-\d\d-\d\d\/amc-southpoint-17\/dolbycinemaatamcprime\/\d{9})"/g; while (@matches) { $label = shift @matches; $href = "https://www.amctheatres.com" . shift @matches; print "$label $href\n" }' >> "$file_name"
+    fi
+    echo "$date"
+    cat "$file_name"
+    echo
+}
+
+# Main loop
+while [ "$current_date" != "$end_date" ]; do
+    day_of_week=$(date -d "$current_date" +%w)
+
+    if [[ "$day_of_week" -eq 6 ]] || [[ "$day_of_week" -eq 0 ]]; then
+        process_showtimes "$current_date"
+    fi
+
+    current_date=$(date -d "$current_date + 1 day" +%Y-%m-%d)
+done
