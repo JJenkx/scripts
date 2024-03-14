@@ -21,9 +21,10 @@ process_showtimes() {
         echo "${url_a}${date}${url_b}" > "$file_name"
         curl --silent "${url_a}${date}${url_b}" | perl -0777 -nle '@matches = /aria-label="([^"]+ showtime at \d\d?:\d\d(?:am|pm))".*?href="(\/movie-theatres\/raleigh-durham\/amc-southpoint-17\/showtimes\/all\/\d{4}-\d\d-\d\d\/amc-southpoint-17\/dolbycinemaatamcprime\/\d{9})"/g; while (@matches) { $label = shift @matches; $href = "https://www.amctheatres.com" . shift @matches; print "$label $href\n" }' >> "$file_name"
     fi
-    echo "$date"
+    date -d "$date" '+%A %Y-%m-%d'
     cat "$file_name"
     echo
+    echo 
 }
 
 # Main loop
