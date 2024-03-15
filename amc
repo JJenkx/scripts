@@ -1,40 +1,100 @@
 #!/usr/bin/env bash
 
-curl -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36" -I -c /home/jjenkx/.local/cookies.txt  https://www.amctheatres.com/movie-theatres/raleigh-durham/amc-southpoint-17/showtimes/all/2024-01-06/amc-southpoint-17/all | grep "Last-Modified"
+
+main() {
+    create_dirs
+    define_vars
+    get_showtimes
+    compare_files
+    copy_files
+    long_sleep
+}
 
 
-# URLs for fetching showtimes
-url_a='https://www.amctheatres.com/movie-theatres/raleigh-durham/amc-southpoint-17/showtimes/all/'
-url_b='/amc-southpoint-17/dolbycinemaatamcprime'
+create_dirs() {
+    files_dir="$HOME/Documents/amc"
+    copy_dir="$HOME/Documents/amc/amc.old"
 
-# Simplified and efficient way to get the current and end dates
-current_date=$(date +%Y-%m-%d)
-end_date=$(date -d "+2 months" +%Y-%m-%d)
+    mkdir -p "$files_dir"
+    mkdir -p "$copy_dir"
+    cd "$files_dir"
+}
 
-# Function to download and process showtimes
+
+define_vars() {
+    url_a='https://www.amctheatres.com/movie-theatres/raleigh-durham/amc-southpoint-17/showtimes/all/'
+    url_b='/amc-southpoint-17/dolbycinemaatamcprime'
+
+    # Simplified and efficient way to get the current and end dates
+    current_date=$(date +%Y-%m-%d)
+    end_date=$(date -d "+2 months" +%Y-%m-%d)
+}
+
+
 process_showtimes() {
     local date=$1
     local file_name="amc.17.dolby.${date}"
 
-    if [[ ! -f "$file_name" ]] || [[ $(wc -l < "$file_name") -le 2 ]]; then
-        sleep $((1 + RANDOM % 3))
-        echo "${url_a}${date}${url_b}" > "$file_name"
-        curl --silent "${url_a}${date}${url_b}" | perl -0777 -nle '@matches = /aria-label="([^"]+ showtime at \d\d?:\d\d(?:am|pm))".*?href="(\/movie-theatres\/raleigh-durham\/amc-southpoint-17\/showtimes\/all\/\d{4}-\d\d-\d\d\/amc-southpoint-17\/dolbycinemaatamcprime\/\d{9})"/g; while (@matches) { $label = shift @matches; $href = "https://www.amctheatres.com" . shift @matches; $label =~ s/showtime at //; print "$label $href\n" }' >> "$file_name"
-
-    fi
-    date -d "$date" '+%A %Y-%m-%d'
-    cat "$file_name"
-    echo
-    echo 
+    sleep $((15 + RANDOM % 15))
+    echo "${url_a}${date}${url_b}" > "$file_name"
+    curl --silent "${url_a}${date}${url_b}" | perl -0777 -nle '@matches = /aria-label="([^"]+ showtime at \d\d?:\d\d(?:am|pm))".*?href="(\/movie-theatres\/raleigh-durham\/amc-southpoint-17\/showtimes\/all\/\d{4}-\d\d-\d\d\/amc-southpoint-17\/dolbycinemaatamcprime\/\d{9})"/g; while (@matches) { $label = shift @matches; $href = "https://www.amctheatres.com" . shift @matches; $label =~ s/showtime at //; print "$label $href\n" }' >> "$file_name"
 }
 
-# Main loop
-while [ "$current_date" != "$end_date" ]; do
-    day_of_week=$(date -d "$current_date" +%w)
 
-    if [[ "$day_of_week" -eq 6 ]] || [[ "$day_of_week" -eq 0 ]]; then
-        process_showtimes "$current_date"
-    fi
+get_showtimes() {
+    while [ "$current_date" != "$end_date" ]; do
+        day_of_week=$(date -d "$current_date" +%w)
 
-    current_date=$(date -d "$current_date + 1 day" +%Y-%m-%d)
+        if [[ "$day_of_week" -eq 6 ]] || [[ "$day_of_week" -eq 0 ]]; then
+            process_showtimes "$current_date"
+        fi
+
+        current_date=$(date -d "$current_date + 1 day" +%Y-%m-%d)
+    done
+}
+
+
+compare_files() {
+    echo > newest.content
+    # Loop through files in the first directory
+    for file in "$files_dir"/*; do
+        # Extract just the filename, not the path
+        filename=$(basename "$file")
+    
+        # Check if the file exists in the second directory
+        if [ -f "$copy_dir/$filename" ]; then
+            # Use diff to compare the two files and get new lines in the first file
+            # We're interested in lines prefixed with '>', indicating they're unique to the first file
+            diff_output="$(  diff "$file" "$copy_dir/$filename" | grep '<' | cut -c 3-  )"
+            if [ ! -z "$diff_output" ]; then
+                # If there are new lines, output the filename and the new lines
+                now_timestamp="$(  date "+%A %Y/%m/%d %I:%M%p"  )"
+                echo >> newest.content
+                echo >> newest.content
+                echo "[*********] NEW LISTINGS [*********]" >> newest.content
+                echo "Found on $now_timestamp" >> newest.content
+                echo "$filename:" >> newest.content
+                echo "$diff_output" >> newest.content
+                echo >> newest.content
+                echo >> newest.content
+                cat newest.content >> new.content.record
+                cat newest.content >> /home/jjenkx/Sync_ALL/new.content.record
+            fi
+        fi
+    done
+}
+
+
+copy_files() {
+    cp amc.17.dolby* "$copy_dir"
+}
+
+
+long_sleep() {
+    sleep $((  7200 + RANDOM % 7200  ))
+}
+
+
+while true; do
+    main
 done
