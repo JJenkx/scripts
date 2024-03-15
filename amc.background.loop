@@ -55,9 +55,9 @@ get_showtimes() {
 
 
 compare_files() {
-    echo > newest.content
+    echo "" >| newest.content
     # Loop through files in the first directory
-    for file in "$files_dir"/*; do
+    for file in "$files_dir"/amc.17.dolby.*; do
         # Extract just the filename, not the path
         filename=$(basename "$file")
     
@@ -79,10 +79,30 @@ compare_files() {
                 echo >> newest.content
                 cat newest.content >> new.content.record
                 cat newest.content >> /home/jjenkx/Sync_ALL/new.content.record
-                kdialog --msgbox "$(cat newest.content)" &
+                send_kdialog=1
+            fi
+        else
+            line_count=$(wc -l < "$filename")
+            if [ "$line_count" -gt 1 ]; then
+                now_timestamp="$(  date "+%A %Y/%m/%d %I:%M%p"  )"
+                echo >> newest.content
+                echo >> newest.content
+                echo "[*********] NEW FILE     [*********]" >> newest.content
+                echo "[*********] NEW LISTINGS [*********]" >> newest.content
+                echo "Found on $now_timestamp" >> newest.content
+                echo "$filename:" >> newest.content
+                cat "$file" >> newest.content
+                echo >> newest.content
+                echo >> newest.content
+                cat newest.content >> new.content.record
+                cat newest.content >> /home/jjenkx/Sync_ALL/new.content.record
+                send_kdialog=1
             fi
         fi
     done
+    if [ $send_kdialog = 1 ]; then
+        kdialog --msgbox "$(cat newest.content)" &
+    fi
 }
 
 
