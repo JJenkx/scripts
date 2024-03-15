@@ -79,6 +79,7 @@ compare_files() {
                 echo >> newest.content
                 cat newest.content >> new.content.record
                 cat newest.content >> /home/jjenkx/Sync_ALL/new.content.record
+                kdialog --msgbox "$(cat newest.content)" &
             fi
         fi
     done
