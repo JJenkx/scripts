@@ -107,7 +107,7 @@ compare_files() {
 
 
 copy_files() {
-    cp amc.17.dolby* "$copy_dir"
+    rsync -avu "$files_dir"/amc.17.dolby.* "$copy_dir"/
 }
 
 
