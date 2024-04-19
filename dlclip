@@ -1,0 +1,251 @@
+#!/usr/bin/env bash
+#Deps parallel, aria2c, kde-desktop, ripgrep (rg)
+
+# Vars
+url_pattern="^http.*"
+max_clipboard_history_items_to_search=100
+results_file="$HOME/Documents/aria_dl_results.txt"
+aria2_threads=1
+aria2_instances=1
+
+
+
+
+main() {
+parse_arguments "$@"
+search_clipboard
+get_url_array
+clean_url_array
+if [[ $aria2_instances -eq 1 ]]; then
+    for (( i=0; i<${#url_list[@]}; i++ )); do
+        download_urls "${url_list[$i]}"
+    done
+else
+    export -f aria2_dl
+    export -f download_urls
+    export -f get_filenames
+    export aria2_threads
+    export arraylength
+    export max_clipboard_history_items_to_search
+    export progress_count_file
+    export url_pattern
+    export results_file
+    printf "%s\n" "${url_list[@]}" | parallel -j $aria2_instances --lb download_urls # | awk '{if (/^FILE:/) {print line1; print line2; print $0; getline; print $0; next;} line1=line2; line2=$0;}'
+fi
+}
+
+
+
+
+# Ensure the directory exists
+mkdir -p "$(dirname "$results_file")"
+
+# Ensure the file exists
+touch "$results_file"
+
+# Create a temporary file for download progress count
+progress_count_file=$(mktemp)
+
+# Initialize download progress count
+echo 1 > "$progress_count_file"
+
+
+# Function to print no URL message
+print_no_url_message() {
+    if [ "$clipboard_item_number" -lt "$max_clipboard_history_items_to_search" ]; then
+        echo "Clipboard history ended after $clipboard_item_number items."
+        echo "No valid URLs found within clipboard history items."
+    else
+        echo "No valid URLs found within $max_clipboard_history_items_to_search clipboard history items."
+    fi
+    exit 1
+}
+
+
+parse_arguments() {
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            --help) 
+                echo "Usage:"
+                echo " -s num [ --split=num ] Number of threads to use on aria2 download"
+                echo " -p num [ --parallel=num ] Number of simultaneous downloads spawned by parallel"
+                exit 0 ;;
+            -s) 
+                shift
+                aria2_threads=$1 ;;
+            -p) 
+                shift
+                aria2_instances=$1 ;;
+            --split=*)
+                aria2_threads="${1/*=}" ;;
+            --parallel=*)
+                aria2_instances="${1/*=}" ;;
+            *)
+                echo "Unknown option: $1"
+                exit 1 ;;
+        esac
+        shift
+    done
+    echo "aria2_threads is set to $aria2_threads. Change with option -s num"
+    echo "aria2_instances is set to $aria2_instances. Change with option -p value"
+    echo
+}
+
+
+# Function to search KDE clipboard history for urls matching regex url pattern
+search_clipboard() {
+for (( clipboard_item_number = 0; clipboard_item_number < max_clipboard_history_items_to_search; clipboard_item_number++ )); do
+    history_item=$(qdbus org.kde.klipper /klipper getClipboardHistoryItem $clipboard_item_number)
+    if echo "$history_item" | grep -Pq "$url_pattern"; then
+        url_list_clipboard=$history_item
+        echo "Matches found in clipboard history entry $clipboard_item_number:"
+        echo "$url_list_clipboard"
+        break
+    fi
+    # Break if history item is blank.
+    if [ -z "$history_item" ]; then
+        print_no_url_message $((i - 1))
+    fi
+done
+}
+
+
+# Function to convert URL list string to array
+get_url_array() {
+url_list_dirty="$url_list_clipboard"
+SAVEIFS=$IFS          # Save current IFS (Internal Field Separator)
+IFS=$'\n'             # Change IFS to newline char
+url_list_dirty=($url_list_dirty)  # split the `url_list` string into an array by the same name
+IFS=$SAVEIFS          # Restore original IFS
+}
+
+
+# Iterate over the array and add items to new array if they match the regex and not logged as downloaded in results_file
+clean_url_array() {
+    regex='^https://[^[:space:]]+$'
+    url_list=()
+    
+    # Read the results file into a variable
+    results_content=$(<"$results_file")
+
+    for item in "${url_list_dirty[@]}"; do
+        if [[ $item =~ $regex ]]; then
+            escaped_url="$( echo -n "$item" | sed 's/[.[\*^$(){}?+|/]/\\&/g' | tr -d '\r\n' )"
+            pattern="Done: .*$escaped_url"
+            
+            # Search results file and add url to new array if not logged as downloaded
+            if ! echo "$results_content" | rg -q "$pattern"; then
+                url_list+=("$item")
+            else
+                echo "Already downloaded $item"
+            fi
+        fi
+    done
+    
+    arraylength=${#url_list[@]}
+}
+
+
+get_filenames() {
+    # Dates and filenumber for log file
+    datestamp=$(date +'%m/%d %H:%M:%S')
+    padded_i=$(printf "%03d" $((i + 1)))
+
+    # Fetch headers and print, removing null bytes
+    curl_info=$(curl -I "$url" 2>/dev/null | tr -d '\000')
+
+    # Extract the redirect URL from headers and get filename from that url if redirect url is present
+    redirect_url="$( echo -n "$curl_info" | grep -I "location:" | awk '{print $2}' | tr -d '\r\n' )"
+    echo
+    echo
+    # Check if redirect_url is not blank and perform operations
+    if [[ -n "$redirect_url" ]]; then
+        # Fetch headers from the redirect URL, removing null bytes
+        new_curl_info=$(curl -I "$redirect_url" 2>/dev/null | tr -d '\000')
+
+        # Extract filename from the content-disposition header
+        filename="$( echo -n "$new_curl_info" | grep -I "content-disposition:" | sed -n 's/.*filename="\(.*\)";/\1/p' | tr -d '\r\n' )"
+        if [[ -n "$filename" ]]; then
+            echo "Filename found using redirect url:"
+            echo "$filename"
+        else
+            echo "Filename not found in the redirect content-disposition header."
+        fi
+    else
+        echo "No redirect URL found in the location header."
+        echo "Collecting filename from original url."
+        # Fallback if no location is found, tries to extract filename directly from the original curl output
+        filename="$( echo -n "$curl_info" | grep -I "content-disposition:" | sed -n 's/.*filename="\(.*\)";/\1/p' | tr -d '\r\n' )"
+        if [[ -n "$filename" ]]; then
+            echo "$filename"
+        else
+            echo "Filename not found."
+        fi
+    fi
+    echo
+    echo
+}
+
+
+output_download_progress() {
+    # Echo progress in style that matches aria2 colored progress output
+    local lightgreen="\033[1;38;2;28;220;154m"
+    local redish="\033[1;38;2;246;116;0m"
+    local brightgreen="\033[1;38;2;17;209;22m"
+    local reset_color="\033[0m"
+    local notice="NOTICE"
+    echo -e "$datestamp [${lightgreen}${notice}${reset_color}] Downloading ( ${brightgreen}$count${reset_color} of ${redish}$arraylength${reset_color} ) $filename"
+}
+
+
+aria2_dl() {
+    aria2c \
+      --allow-piece-length-change=true \
+      --check-certificate=false \
+      --continue=true \
+      --max-concurrent-downloads=1 \
+      --max-connection-per-server=$aria2_threads \
+      --max-resume-failure-tries=64 \
+      --max-file-not-found=64 \
+      --max-tries=64 \
+      --out="$filename" \
+      --retry-wait=120 \
+      --split=$aria2_threads \
+      --timeout=10 \
+      --user-agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36' \
+      "$url"
+}
+
+
+download_urls() {
+    # Read, increment, and write back the download progress count
+    count=$(<"$progress_count_file")
+    echo $((count + 1)) > "$progress_count_file"
+
+    # Download URLs
+    url="$1"
+    get_filenames
+    output_download_progress
+    aria2_dl
+
+    if [ $? -eq 0 ]; then
+        printf "$(date +"%Y/%m/%d %I:%M%p") $padded_i Done: $filename $url \n" >> "$results_file"
+    else
+        exit 0
+    fi
+}
+
+
+# Function to handle Ctrl+C
+handle_ctrl_c() {
+    echo "Ctrl+C pressed. Aborting."
+    exit 1
+}
+
+
+# Set up a trap to catch Ctrl+C and call handle_ctrl_c
+trap handle_ctrl_c INT
+
+
+main "$@"
+
