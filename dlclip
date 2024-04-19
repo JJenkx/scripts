@@ -152,7 +152,7 @@ get_filenames() {
     padded_i=$(printf "%03d" $((i + 1)))
 
     # Fetch headers and print, removing null bytes
-    curl_info=$(curl -I "$url" 2>/dev/null | tr -d '\000')
+    curl_info=$(curl -s -D - -o /dev/null -r 0-0 "$url" 2>/dev/null | tr -d '\000')
 
     # Extract the redirect URL from headers and get filename from that url if redirect url is present
     redirect_url="$( echo -n "$curl_info" | grep -I "location:" | awk '{print $2}' | tr -d '\r\n' )"
@@ -161,10 +161,10 @@ get_filenames() {
     # Check if redirect_url is not blank and perform operations
     if [[ -n "$redirect_url" ]]; then
         # Fetch headers from the redirect URL, removing null bytes
-        new_curl_info=$(curl -I "$redirect_url" 2>/dev/null | tr -d '\000')
+        new_curl_info=$(curl -s -D - -o /dev/null -r 0-0 "$redirect_url" 2>/dev/null | tr -d '\000')
 
         # Extract filename from the content-disposition header
-        filename="$( echo -n "$new_curl_info" | grep -I "content-disposition:" | sed -n 's/.*filename="\(.*\)";/\1/p' | tr -d '\r\n' )"
+        filename="$( echo -n "$curl_info" | grep -oP 'filename="[^"]+"' | sed -n 's/filename="\([^"]*\)"/\1/p' | tr -d '\r\n' )"
         if [[ -n "$filename" ]]; then
             echo "Filename found using redirect url:"
             echo "$filename"
@@ -175,7 +175,7 @@ get_filenames() {
         echo "No redirect URL found in the location header."
         echo "Collecting filename from original url."
         # Fallback if no location is found, tries to extract filename directly from the original curl output
-        filename="$( echo -n "$curl_info" | grep -I "content-disposition:" | sed -n 's/.*filename="\(.*\)";/\1/p' | tr -d '\r\n' )"
+        filename="$( echo -n "$curl_info" | grep -oP 'filename="[^"]+"' | sed -n 's/filename="\([^"]*\)"/\1/p' | tr -d '\r\n' )"
         if [[ -n "$filename" ]]; then
             echo "$filename"
         else
