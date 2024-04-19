@@ -164,7 +164,7 @@ get_filenames() {
         new_curl_info=$(curl -s -D - -o /dev/null -r 0-0 "$redirect_url" 2>/dev/null | tr -d '\000')
 
         # Extract filename from the content-disposition header
-        filename="$( echo -n "$curl_info" | grep -oP 'filename="[^"]+"' | sed -n 's/filename="\([^"]*\)"/\1/p' | tr -d '\r\n' )"
+        filename="$( echo -n "$new_curl_info" | grep -oP 'filename="[^"]+"' | sed -n 's/filename="\([^"]*\)"/\1/p' | tr -d '\r\n' )"
         if [[ -n "$filename" ]]; then
             echo "Filename found using redirect url:"
             echo "$filename"
