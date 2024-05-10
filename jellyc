@@ -124,7 +124,8 @@ set_dl_info() {
 
     # Format output filenames
     filename=$(curl -i "$url" 2>/dev/null | head | sed -n 's/.*filename="\([^"]*\)".*/\1/p' )
-    format_filename=$(echo "$filename" | perl -pe 's/(\{|\}|\[|\]|\s(?!$)|-(?![^\s]+$)|\(|\))+/./gm' | sed 's/\.-/-/g')
+    format_filename=$(echo "$filename" | perl -pe 's/(\{|\}|\[|\]|\s(?!$)|-(?![^\s]+$)|\(|\))+/./gm' | sed 's/\.-/-/g' | sed 's/\.\+/\./g'
+)
 
     # Echo progress in style that matches aria2 colored progress output
     local lightgreen="\033[1;38;2;28;220;154m"
@@ -232,3 +233,6 @@ fi
 
 
 main "$@"
+
+
+/home/jjenkx/.local/scripts/mkv
