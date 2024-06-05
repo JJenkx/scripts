@@ -2,24 +2,28 @@
 
 SERVER="sftp://sftp_server"
 REMOTE_PATH="$1"
-BASE_NAME=$(basename "$REMOTE_PATH")
+REMOTE_PATH_ESCAPED="$(echo "$REMOTE_PATH" | sed 's/ /\\ /g')"
+BASE_NAME="$(basename "$REMOTE_PATH")"
 LOCAL_PATH="$PWD/$BASE_NAME"
+
+echo "$REMOTE_PATH_ESCAPED"
 
 # Function to check if a path is a directory on the remote server
 is_remote_directory() {
   lftp -c "
   set sftp:connect-program 'ssh -o ForwardAgent=no -o ForwardX11=no'; 
   open ${SERVER}; 
-  cd $1 && echo 'directory'
+  cd "$1" && echo 'directory'
   " 2>/dev/null
 }
 
 # Check if REMOTE_PATH is a directory or file
 if [[ $(is_remote_directory "$REMOTE_PATH") == "directory" ]]; then
+  echo "Path detected"
   FILES=$(lftp -c "
   set sftp:connect-program 'ssh -o ForwardAgent=no -o ForwardX11=no'; 
   open ${SERVER}; 
-  cd ${REMOTE_PATH}; 
+  cd ${REMOTE_PATH_ESCAPED}; 
   find
   ")
 
@@ -37,13 +41,14 @@ if [[ $(is_remote_directory "$REMOTE_PATH") == "directory" ]]; then
       lftp -c "
       set sftp:connect-program 'ssh -o ForwardAgent=no -o ForwardX11=no';
       open ${SERVER};
-      cd ${REMOTE_PATH};
+      cd ${REMOTE_PATH_ESCAPED};
       pget -n 16 -c '${file}' -o '${LOCAL_FILE_PATH}'
       "
     fi
   done <<< "$NO_DIRS"
 else
   # If it's a file, just download it directly
+  echo "File detected"
   LOCAL_FILE_PATH="${LOCAL_PATH}"
   LOCAL_DIR_PATH=$(dirname "${LOCAL_FILE_PATH}")
   
