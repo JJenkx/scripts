@@ -140,8 +140,6 @@ if [[ -z "$PGET_VALUE" ]]; then
   fi
 fi
 
-echo "Calculated PGET_VALUE: $PGET_VALUE"
-
 REMOTE_PATH_ESCAPED="$(echo "$REMOTE_PATH" | sed 's/ /\\ /g')"
 BASE_NAME="$(basename "$REMOTE_PATH")"
 LOCAL_PATH="$PWD/$BASE_NAME"
