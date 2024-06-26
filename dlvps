@@ -1,19 +1,162 @@
 #!/usr/bin/env bash
 
 SERVER="sftp://sftp_server"
-REMOTE_PATH="$1"
+REMOTE_PATH=""
+NUM_DOWNLOADS=8         # Default to downloading eight files at a time
+TOTAL_THREAD_LIMIT=128  # Default total number of threads to use
+PGET_VALUE=""           # Default to an unset value
+
+# Function to show help message
+show_help() {
+  echo " "
+  echo " "
+  echo " "
+  echo "dlvpsm - download files in parallel"
+  echo " "
+  echo "dlvpsm [options] remote_path"
+  echo " "
+  echo "options:"
+  echo "-n NUM   ,  --num-downloads=NUM        Specify number of downloads to run concurrently. Defaults to $NUM_DOWNLOADS"
+  echo "-p NUM   ,  --pget-value=NUM           Specify pget value. If not set, calculated as TOTAL_THREAD_LIMIT/NUM_DOWNLOADS"
+  echo "-t NUM   ,  --total-thread-limit=NUM   Specify total number of threads. Defaults to $TOTAL_THREAD_LIMIT"
+  echo "-h       ,  --help                     Show brief help"
+  echo " "
+  echo "Dependencies:"
+  echo "This script requires the following programs to be installed:"
+  echo "lftp, openssh, parallel"
+  echo " "
+  echo " "
+}
+
+# Function to check for missing dependencies
+check_dependencies() {
+  local missing_deps=()
+  for dep in lftp ssh parallel; do
+    if ! command -v "$dep" &> /dev/null; then
+      missing_deps+=("$dep")
+    fi
+  done
+
+  if [[ ${#missing_deps[@]} -ne 0 ]]; then
+    echo "Error: The following dependencies are missing:"
+    for dep in "${missing_deps[@]}"; do
+      echo " - $dep"
+    done
+    exit 1
+  fi
+}
+
+# Check for dependencies before proceeding
+check_dependencies
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    -h|--help)
+      show_help
+      exit 0
+      ;;
+    -n)
+      shift
+      if [[ $1 -gt 0 ]] 2> /dev/null; then
+        NUM_DOWNLOADS=$1
+      else
+        echo "error: \"-n NUM\" needs numeral greater than 0"
+        exit 1
+      fi
+      shift
+      ;;
+    --num-downloads=*)
+      NUM_DOWNLOADS="${1#*=}"
+      if ! [[ $NUM_DOWNLOADS -gt 0 ]] 2> /dev/null; then
+        echo "error: \"--num-downloads=NUM\" needs numeral greater than 0"
+        exit 1
+      fi
+      shift
+      ;;
+    -p)
+      shift
+      if [[ $1 -gt 0 ]] 2> /dev/null; then
+        PGET_VALUE=$1
+      else
+        echo "error: \"-p NUM\" needs numeral greater than 0"
+        exit 1
+      fi
+      shift
+      ;;
+    --pget-value=*)
+      PGET_VALUE="${1#*=}"
+      if ! [[ $PGET_VALUE -gt 0 ]] 2> /dev/null; then
+        echo "error: \"--pget-value=NUM\" needs numeral greater than 0"
+        exit 1
+      fi
+      shift
+      ;;
+    -t)
+      shift
+      if [[ $1 -gt 0 ]] 2> /dev/null; then
+        TOTAL_THREAD_LIMIT=$1
+      else
+        echo "error: \"-t NUM\" needs numeral greater than 0"
+        exit 1
+      fi
+      shift
+      ;;
+    --total-thread-limit=*)
+      TOTAL_THREAD_LIMIT="${1#*=}"
+      if ! [[ $TOTAL_THREAD_LIMIT -gt 0 ]] 2> /dev/null; then
+        echo "error: \"--total-thread-limit=NUM\" needs numeral greater than 0"
+        exit 1
+      fi
+      shift
+      ;;
+    *)
+      REMOTE_PATH="$1"
+      shift
+      ;;
+  esac
+done
+
+#echo "NUM_DOWNLOADS: $NUM_DOWNLOADS"
+#echo "PGET_VALUE: $PGET_VALUE"
+#echo "TOTAL_THREAD_LIMIT: $TOTAL_THREAD_LIMIT"
+
+if [[ -z "$REMOTE_PATH" ]]; then
+  echo "Usage: $0 [-n num_downloads] [-p pget_value] [-t TOTAL_THREAD_LIMIT] remote_path"
+  exit 1
+fi
+
+# Ensure NUM_DOWNLOADS is not zero
+if [[ "$NUM_DOWNLOADS" -eq 0 ]]; then
+  echo "Error: num_downloads cannot be zero."
+  exit 1
+fi
+
+# Calculate the number of threads per file if not set
+if [[ -z "$PGET_VALUE" ]]; then
+  PGET_VALUE=$((TOTAL_THREAD_LIMIT / NUM_DOWNLOADS))
+  if [[ $? -ne 0 ]]; then
+    echo "Error: Division failed. Check if NUM_DOWNLOADS is zero or if there's an arithmetic error."
+    exit 1
+  fi
+fi
+
+echo "Calculated PGET_VALUE: $PGET_VALUE"
+
 REMOTE_PATH_ESCAPED="$(echo "$REMOTE_PATH" | sed 's/ /\\ /g')"
 BASE_NAME="$(basename "$REMOTE_PATH")"
 LOCAL_PATH="$PWD/$BASE_NAME"
 
-echo "$REMOTE_PATH_ESCAPED"
+echo "Remote Path: $REMOTE_PATH_ESCAPED"
+echo "Number files downloaded at once: $NUM_DOWNLOADS"
+echo "Calculated total segmented download threads: $(( $PGET_VALUE * $NUM_DOWNLOADS ))"
+echo "Calculated pget -n value (Threads per file): $PGET_VALUE"
 
 # Function to check if a path is a directory on the remote server
 is_remote_directory() {
   lftp -c "
   set sftp:connect-program 'ssh -o ForwardAgent=no -o ForwardX11=no'; 
   open ${SERVER}; 
-  cd "$1" && echo 'directory'
+  cd \"$1\" && echo 'directory'
   " 2>/dev/null
 }
 
@@ -30,24 +173,33 @@ if [[ $(is_remote_directory "$REMOTE_PATH") == "directory" ]]; then
   # Remove directories from the list of files
   NO_DIRS="$(echo "$FILES" | sed '/\/$/d')"
 
-  while read -r file; do
-    if [[ -n "$file" && "$file" != "." && "$file" != ".." ]]; then
-      RELATIVE_PATH="${file#./}"
-      LOCAL_FILE_PATH="${LOCAL_PATH}/${RELATIVE_PATH}"
-      LOCAL_DIR_PATH=$(dirname "${LOCAL_FILE_PATH}")
-      
-      mkdir -p "${LOCAL_DIR_PATH}"
-      
-      lftp -c "
-      set sftp:connect-program 'ssh -o ForwardAgent=no -o ForwardX11=no';
-      open ${SERVER};
-      cd ${REMOTE_PATH_ESCAPED};
-      pget -n 16 -c '${file}' -o '${LOCAL_FILE_PATH}'
-      "
-    fi
-  done <<< "$NO_DIRS"
+  # Export variables to be used by GNU Parallel
+  export SERVER REMOTE_PATH_ESCAPED PGET_VALUE LOCAL_PATH
+
+  download_file() {
+    local file="$1"
+    local relative_path="${file#./}"
+    local local_file_path="${LOCAL_PATH}/${relative_path}"
+    local local_dir_path
+    local_dir_path=$(dirname "${local_file_path}")
+
+    mkdir -p "${local_dir_path}"
+
+    lftp -c "
+    set sftp:connect-program 'ssh -o ForwardAgent=no -o ForwardX11=no';
+    open ${SERVER};
+    cd ${REMOTE_PATH_ESCAPED};
+    pget -n ${PGET_VALUE} -c '${file}' -o '${local_file_path}'
+    "
+  }
+
+  export -f download_file
+
+  echo "$NO_DIRS" | parallel -j "$NUM_DOWNLOADS" --bar download_file
+
 else
   # If it's a file, just download it directly
+  PGET_VALUE=${PGET_VALUE:-$((TOTAL_THREAD_LIMIT))}
   echo "File detected"
   LOCAL_FILE_PATH="${LOCAL_PATH}"
   LOCAL_DIR_PATH=$(dirname "${LOCAL_FILE_PATH}")
@@ -57,6 +209,6 @@ else
   lftp -c "
   set sftp:connect-program 'ssh -o ForwardAgent=no -o ForwardX11=no';
   open ${SERVER};
-  pget -n 16 -c '${REMOTE_PATH}' -o '${LOCAL_FILE_PATH}'
+  pget -n ${PGET_VALUE} -c '${REMOTE_PATH}' -o '${LOCAL_FILE_PATH}'
   "
 fi
