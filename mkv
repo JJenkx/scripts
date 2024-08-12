@@ -1,0 +1,76 @@
+#!/usr/bin/env bash
+
+# Define the target directory for the symbolic links
+search_dir="/run/media/jjenkx/01_10.91TB/Links/Nah/"
+target_dir="/run/media/jjenkx/01_10.91TB/Links/"
+
+# Ensure the target directory exists
+mkdir -p "$search_dir"
+mkdir -p "$target_dir"
+
+regex_filetypes='^.*\.(mkv|mp4|avi)$'
+regex_exclude='^.*(sample).*$'
+
+folders='/run/media/jjenkx/01_10.91TB/myfolders
+/run/media/jjenkx/01_10.91TB/myfolders
+/run/media/jjenkx/02_10.91TB/myfolders
+/run/media/jjenkx/02_10.91TB/myfolders
+/run/media/jjenkx/02_10.91TB/myfolders
+/run/media/jjenkx/02_10.91TB/myfolders
+/run/media/jjenkx/03_14.55TB/myfolders
+/run/media/jjenkx/03_14.55TB/myfolders
+/run/media/jjenkx/03_14.55TB/myfolders
+/run/media/jjenkx/03_14.55TB/myfolders
+/run/media/jjenkx/03_14.55TB/myfolders
+/run/media/jjenkx/03_14.55TB/myfolders
+/run/media/jjenkx/04_14.55TB/myfolders
+/run/media/jjenkx/04_14.55TB/myfolders
+/run/media/jjenkx/04_14.55TB/myfolders
+/run/media/jjenkx/04_14.55TB/myfolders
+/run/media/jjenkx/04_14.55TB/myfolders
+/run/media/jjenkx/04_14.55TB/myfolders'
+
+link_exists=0  # Initialize the counter
+links_deleted=0  # Counter for deleted links
+
+# Read each line in folders variable as a path
+while IFS= read -r folder; do
+  while IFS= read -r -d '' file; do
+    # Generate a symbolic link path, ensuring uniqueness by including a hash of the file's directory path
+    link_name=$(basename "$file")
+    link_search_path="${search_dir}/${link_name}"
+    target_path="${target_dir}/${link_name}"
+
+    # Check if a link with the same name already exists in the target directory
+    if [ ! -L "$link_search_path" ] && [ ! -L "$target_path" ]; then
+      # Create a symbolic link in the target directory
+      ln -s "$(realpath "$file")" "$target_path"
+      echo "Link created for $file"
+    else
+      link_exists=$((link_exists + 1))
+    fi
+  done < <(find "$folder" -type f -regextype posix-extended -iregex "$regex_filetypes" -regextype posix-extended -not -iregex "$regex_exclude" -print0)
+done <<< "$folders"
+
+# Check for broken links and delete them
+for link in "$target_dir"/*; do
+  if [ -L "$link" ] && [ ! -e "$(readlink -f "$link")" ]; then
+    rm "$link"
+    links_deleted=$((links_deleted + 1))
+    echo "Deleted broken link: $link"
+  fi
+done
+
+# Check for broken links and delete them
+for link in "$search_dir"/*; do
+  if [ -L "$link" ] && [ ! -e "$(readlink -f "$link")" ]; then
+    rm "$link"
+    links_deleted=$((links_deleted + 1))
+    echo "Deleted broken link: $link"
+  fi
+done
+
+echo "$link_exists links skipped. Already existed"
+echo "$links_deleted broken links deleted"
+
+
