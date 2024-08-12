@@ -21,6 +21,7 @@ progress_count_file=$(mktemp)
 echo 1 > "$progress_count_file"
 
 
+
 # Function to print no URL message
 print_no_url_message() {
     if [ "$clipboard_item_number" -lt "$max_clipboard_history_items_to_search" ]; then
@@ -31,6 +32,7 @@ print_no_url_message() {
     fi
     exit 1
 }
+
 
 
 parse_arguments() {
@@ -63,6 +65,7 @@ parse_arguments() {
 }
 
 
+
 # Function to search KDE clipboard history for urls matching regex jellyfin url pattern
 search_clipboard() {
 for (( clipboard_item_number = 0; clipboard_item_number < max_clipboard_history_items_to_search; clipboard_item_number++ )); do
@@ -79,7 +82,8 @@ for (( clipboard_item_number = 0; clipboard_item_number < max_clipboard_history_
     fi
 done
 }
-    
+
+
 
 # Function to convert URL list string to array
 get_url_array() {
@@ -89,6 +93,7 @@ IFS=$'\n'             # Change IFS to newline char
 url_list_dirty=($url_list_dirty)  # split the `url_list` string into an array by the same name
 IFS=$SAVEIFS          # Restore original IFS
 }
+
 
 
 # Iterate over the array and add items to new array if they match the regex and not logged as downloaded in results_file
@@ -160,7 +165,6 @@ set_dl_info() {
 
 
 
-
 aria2_dl() {
     echo "${format_filename}"
     aria2c \
@@ -179,28 +183,7 @@ aria2_dl() {
       --user-agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36' \
       "$url"
 }
-#      --allow-piece-length-change=true \
-#      --check-certificate=false \
-#      --console-log-level=notice \
-#      --content-disposition-default-utf8=true \
-#      --continue=true \
-#      --disk-cache=1024M \
-#      --download-result=full \
-#      --file-allocation=falloc \
-#      --enable-mmap=true \
-#      --max-concurrent-downloads=1 \
-#      --max-connection-per-server=$aria2_threads \
-#      --max-mmap-limit=9223372036854775807 \
-#      --max-resume-failure-tries=64 \
-#      --max-file-not-found=64 \
-#      --max-tries=64 \
-#      --out="$format_filename" \
-#      --realtime-chunk-checksum=true \
-#      --retry-wait=120 \
-#      --split=$aria2_threads \
-#      --summary-interval=0 \
-#      --timeout=10 \
-#      --user-agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36' \
+
 
 
 download_urls() {
@@ -228,35 +211,59 @@ handle_ctrl_c() {
 }
 
 
+
 # Set up a trap to catch Ctrl+C and call handle_ctrl_c
 trap handle_ctrl_c INT
 
 
-main() {
-parse_arguments "$@"
-search_clipboard
-get_url_array
-clean_url_array
-if [[ $aria2_instances -eq 1 ]]; then
-    for (( i=0; i<${#url_list[@]}; i++ )); do
-        download_urls "${url_list[$i]}"
-    done
-else
-    export -f aria2_dl
-    export -f download_urls
-    export -f set_dl_info
-    export aria2_threads
-    export arraylength
-    export max_clipboard_history_items_to_search
-    export progress_count_file
-    export regex_jellyfin_url_pattern
-    export results_file
-    printf "%s\n" "${url_list[@]}" | parallel -j $aria2_instances --lb download_urls # | awk '{if (/^FILE:/) {print line1; print line2; print $0; getline; print $0; next;} line1=line2; line2=$0;}'
-fi
-}
 
+main() {
+    parse_arguments "$@"
+    search_clipboard
+    get_url_array
+    clean_url_array
+
+    if [[ $aria2_instances -eq 1 ]]; then
+        for (( i=0; i<${#url_list[@]}; i++ )); do
+            download_urls "${url_list[$i]}"  # Run download in the foreground
+            
+            # Check if MKV script is already running
+            if ! pgrep -f "/home/jjenkx/.local/scripts/mkv" > /dev/null; then
+                {
+                    mkv_output=$( /home/jjenkx/.local/scripts/mkv )
+                    echo
+                    echo
+                    echo "$mkv_output"
+                    echo
+                    echo
+                } &
+            fi
+        done
+        wait  # Wait for all background MKV processes to finish
+    else
+        export -f aria2_dl
+        export -f download_urls
+        export -f set_dl_info
+        export aria2_threads
+        export arraylength
+        export max_clipboard_history_items_to_search
+        export progress_count_file
+        export regex_jellyfin_url_pattern
+        export results_file
+
+        # Run downloads in parallel using GNU parallel
+        printf "%s\n" "${url_list[@]}" | parallel -j $aria2_instances --lb download_urls &
+        
+        # Run the MKV script in the background, capturing its output
+        {
+            mkv_output=$( /home/jjenkx/.local/scripts/mkv )
+            echo "$mkv_output"
+        } &
+        
+        wait  # Wait for all background processes to finish
+    fi
+}
 
 main "$@"
 
 
-/home/jjenkx/.local/scripts/mkv
