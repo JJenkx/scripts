@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #Deps parallel, aria2c, kde-desktop, ripgrep (rg)
-
+#set -x
 # Vars
 regex_jellyfin_url_pattern="^https://[^/]+/Items/[a-z0-9]{32}/Download\?api_key=[a-z0-9]{32}"
 max_clipboard_history_items_to_search=100
@@ -135,7 +135,20 @@ set_dl_info() {
         filename=""
 
         while [[ -z "$filename" && $attempt -le $max_attempts ]]; do
-            filename=$(curl -i "$url" 2>/dev/null | head | sed -n 's/.*filename="\([^"]*\)".*/\1/p')
+            fileinfo="$(curl -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36" -i "$url" 2>/dev/null | head )"
+
+            filename="$( echo "$fileinfo" | awk -F'filename=|filename\\*=UTF-8'\'' ' \
+                '{ 
+                    if ($2 ~ /^"/) {
+                        match($2, /"([^"]+)"/, arr);
+                        if (arr[1] != "") print arr[1];
+                    } else {
+                        match($2, /([^;]+)/, arr);
+                        if (arr[1] != "") print arr[1];
+                    }
+                }' )"
+
+
             if [[ -z "$filename" ]]; then
                 echo "Attempt $attempt/$max_attempts failed to collect filename."
                 attempt=$((attempt + 1))
@@ -148,7 +161,7 @@ set_dl_info() {
             sleep 300
         else
             # Format output filenames
-            format_filename=$(echo "$filename" | perl -pe 's/(\{|\}|\[|\]|\s(?!$)|-(?![^\s]+$)|\(|\))+/./gm' | sed 's/\.-/-/g' | sed 's/\.\+/\./g')
+            format_filename=$(echo "$filename" | perl -pe 's/(\{|\}|\[|\]|\s(?!$)|-(?![^\s]+$)|\(|\))+/./gm' | sed 's/"//g' )
 
             # Echo progress in style that matches aria2 colored progress output
             local lightgreen="\033[1;38;2;28;220;154m"
@@ -231,6 +244,7 @@ main() {
             if ! pgrep -f "/home/jjenkx/.local/scripts/mkv" > /dev/null; then
                 {
                     mkv_output=$( /home/jjenkx/.local/scripts/mkv )
+                    echo
                     echo
                     echo
                     echo "$mkv_output"
