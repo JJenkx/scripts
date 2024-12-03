@@ -1,4 +1,5 @@
 /* Auto-hide the URL bar, bookmarks toolbar, and tabs toolbar */
+/* about:config set toolkit.legacyUserProfileCustomizations.stylesheets = true
 #nav-bar,
 #PersonalToolbar,
 #TabsToolbar {
